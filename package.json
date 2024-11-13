@@ -8,14 +8,22 @@
     "tsc": "tsc",
     "build": "node build/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "tnode": "ts-node-dev"
+    "tnode": "ts-node-dev",
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "prettier --write"
+  },
   "devDependencies": {
     "@types/inquirer": "^9.0.7",
     "@types/node": "^22.9.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3"
   },
