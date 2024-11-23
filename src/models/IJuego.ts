@@ -51,7 +51,7 @@ export interface IJuego {
     apuesta: number,
     accionElegida?: string
   ): {
-    resultado: "victora" | "derrota" | "proceso";
+    resultado: "victoria" | "derrota" | "proceso";
     ganancia: number;
     informacion?: string;
     acciones?: { valor: string; mensaje: string }[];
