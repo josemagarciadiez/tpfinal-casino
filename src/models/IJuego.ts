@@ -10,9 +10,11 @@ export interface IJuego {
    * - `rondas`: Número total de rondas que se jugarán en el juego.
    * - `apuestaMinima`: Monto mínimo requerido para realizar una apuesta en cada ronda.
    * - `accionesIniciales`: (Opcional) Array de objetos que describen las posibles acciones iniciales para el juego.
-   *   Cada objeto contiene:
-   *   - `valor`: Identificador único para la acción.
-   *   - `mensaje`: Descripción o texto a mostrar en el menu para que el usuario seleccione la acción.aaaaaaaaaaaaaa
+   *
+   *  Cada objeto contiene:
+   *      | `valor`: Identificador único para la acción.
+   *      | `mensaje`: Descripción o texto a mostrar en el menu para que el usuario seleccione la acción.
+   *
    */
   iniciar(): {
     instrucciones: string;
