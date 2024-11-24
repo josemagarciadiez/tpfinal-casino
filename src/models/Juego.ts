@@ -8,9 +8,9 @@ export abstract class Juego implements IJuego {
     return this.instrucciones;
   }
 
-  abstract ejecutar(jugador: Jugador): {
+  abstract ejecutar(jugador: Jugador): Promise<{
     apuestaTotal: number;
     resultado: "victoria" | "derrota";
     ganancia?: number;
-  };
+  }>;
 }
