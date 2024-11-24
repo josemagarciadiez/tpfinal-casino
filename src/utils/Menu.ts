@@ -127,13 +127,17 @@ export class Menu {
    */
   static async elegirOpcion(
     mensaje: string,
-    opciones: string[] | { name: string; value: string; disabled?: boolean }[]
+    opciones: { valor: string; nombre: string }[]
   ): Promise<string> {
+    const listaOpciones = opciones.map((opcion) => {
+      return { value: opcion.valor, name: opcion.nombre };
+    });
+
     const pregunta = await inquirer.prompt({
       name: "respuesta",
       type: "list",
       message: `${mensaje}: `,
-      choices: opciones,
+      choices: listaOpciones,
     });
 
     return pregunta.respuesta;
@@ -148,11 +152,37 @@ export class Menu {
    * @returns {Promise<Record<string, any>>} Una promesa que se resuelve con un objeto que contiene las respuestas del usuario,
    * donde cada clave es el `name` de la pregunta y el valor es la respuesta proporcionada.
    */
-  static async listaPreguntas(preguntas: ListaPreguntas) {
-    const pr = preguntas as unknown as (UnnamedDistinctQuestion<{
+  static async listaPreguntas(
+    preguntas: {
+      nombre: string;
+      tipo: "texto" | "numero" | "confirmacion" | "lista";
+      mensaje: string;
+      opciones?: { valor: string; nombre: string }[];
+      validacion?: (
+        entrada: string
+      ) => string | boolean | Promise<string | boolean>;
+    }[]
+  ) {
+    const tipos = {
+      texto: "input",
+      numero: "number",
+      confirmacion: "confirm",
+      lista: "list",
+    };
+    const listaPreguntas = preguntas.map((pregunta) => {
+      return {
+        name: pregunta.nombre,
+        type: tipos[pregunta.tipo],
+        message: pregunta.mensaje,
+        choices: pregunta.opciones?.map((opcion) => {
+          return { value: opcion.valor, name: opcion.nombre };
+        }),
+        validate: pregunta.validacion,
+      };
+    }) as unknown as (UnnamedDistinctQuestion<{
       [x: string]: any;
     }> & { name: string })[];
 
-    return await inquirer.prompt(pr);
+    return await inquirer.prompt(listaPreguntas);
   }
 }
