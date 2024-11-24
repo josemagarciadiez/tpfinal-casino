@@ -23,9 +23,9 @@ export interface IJuego {
    *                                   Si el resultado fue "derrota", este valor será `undefined`.
    */
 
-  ejecutar(jugador: Jugador): {
+  ejecutar(jugador: Jugador): Promise<{
     apuestaTotal: number;
     resultado: "victoria" | "derrota";
     ganancia?: number;
-  };
+  }>;
 }
