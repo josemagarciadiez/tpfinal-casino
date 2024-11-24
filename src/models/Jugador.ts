@@ -7,9 +7,19 @@ export class Jugador {
     this.saldo = saldoInicial;
   }
 
-  // HACER:
-  // 1. Método getter de nombre
-  // 2. Método getter de saldo actual
-  // 3. Método setter para agregar saldo
-  // 4. Método setter para disminuir saldo
+  obtenerNombre() {
+    return this.nombre;
+  }
+
+  obtenerSaldo() {
+    return this.saldo;
+  }
+
+  sumarSaldo(monto: number) {
+    this.saldo += monto;
+  }
+
+  restarSaldo(monto: number) {
+    this.saldo -= monto;
+  }
 }
