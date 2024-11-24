@@ -18,7 +18,7 @@ export class Menu {
   /**
    * Muestra una pregunta al usuario y obtiene una respuesta de texto.
    * @param {string} mensaje El mensaje o la pregunta que se mostrará al usuario.
-   * @param {(entrada: string) => boolean | string} [validar] Función opcional para validar la entrada del usuario.
+   * @param {(entrada: string | number | null) => boolean | string} [validar] Función opcional para validar la entrada del usuario.
    *  Debe retornar `true` si la entrada es válida, o un mensaje de error en caso contrario.
    * @returns {Promise<string>} La respuesta ingresada por el usuario como una cadena.
    *
@@ -33,7 +33,7 @@ export class Menu {
    */
   static async pedirTexto(
     mensaje: string,
-    validar?: (entrada: string) => boolean | string
+    validar?: (entrada: string | number | null) => boolean | string
   ): Promise<string> {
     const pregunta = await inquirer.prompt({
       name: "respuesta",
@@ -48,7 +48,7 @@ export class Menu {
   /**
    * Muestra una pregunta al usuario y obtiene una respuesta númerica.
    * @param {string} mensaje El mensaje o la pregunta que se mostrará al usuario.
-   * @param {(valor: number | undefined) => string | boolean | Promise<string | boolean>} [validar]
+   * @param {(entrada: string | number | null) => boolean | string} [validar]
    * Función opcional para validar el número ingresado. Debe retornar `true` si el número es válido,
    * o un mensaje de error en caso contrario.
    * @returns {Promise<number>} La respuesta ingresada por el usuario como un número.
@@ -181,9 +181,7 @@ export class Menu {
       tipo: "texto" | "numero" | "confirmacion" | "lista";
       mensaje: string;
       opciones?: { valor: string; nombre: string }[];
-      validacion?: (
-        entrada: string
-      ) => string | boolean | Promise<string | boolean>;
+      validacion?: (entrada: string | number | null) => string | boolean;
     }[]
   ) {
     const tipos = {
