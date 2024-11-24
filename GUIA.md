@@ -209,6 +209,7 @@ export class Ruleta extends Juego {
     }[];
   };
   constructor() {
+    super();
     this.instrucciones = "Apuesta en rojo o negro, o elige un número.";
     this.cantidadRondas = 1;
     this.apuestaMinima = 50;
