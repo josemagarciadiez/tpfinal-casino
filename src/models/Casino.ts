@@ -44,11 +44,32 @@ export class Casino {
         nombre: "nombre",
         mensaje: "¿Cuál es tu nombre?",
         tipo: "texto" as const,
+        validacion: (entrada: string | number | null) => {
+          if (typeof entrada === "string") {
+            if (entrada.length > 0) {
+              return true;
+            } else {
+              return "No puedes tener un nombre vacío.";
+            }
+          } else {
+            return "Debes ingresar un nombre válido.";
+          }
+        },
       },
       {
         nombre: "saldo",
-        mensaje: "¿Con cúanto saldo quieres comenzar?",
+        mensaje: "¿Con cúanto saldo quieres comenzar? (Mínimo  100)",
         tipo: "numero" as const,
+        validacion: (entrada: string | number | null) => {
+          if (typeof entrada === "number") {
+            if (entrada < 100) {
+              return "Debes comenzar con un saldo mínimo de 100 monedas.";
+            }
+            return true;
+          } else {
+            return "Debes ingresar un número válido.";
+          }
+        },
       },
     ];
 
