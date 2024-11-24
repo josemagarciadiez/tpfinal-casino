@@ -5,14 +5,6 @@
 import inquirer from "inquirer";
 import { UnnamedDistinctQuestion } from "inquirer/dist/commonjs/types";
 
-export type ListaPreguntas = {
-  name: string;
-  type: "input" | "number" | "confirmation" | "list";
-  message: string;
-  choices?: string[] | { name: string; value: string; disabled?: boolean }[];
-  validate?: (entrada: string) => string | boolean | Promise<string | boolean>;
-}[];
-
 /**
  * Clase utilitaria para facilitar el uso del paquete "inquirer.js" para
  * aplicaciones de consola, proporcionando una API simple y coherente para
@@ -146,11 +138,42 @@ export class Menu {
   /**
    * Muestra una lista de preguntas utilizando la biblioteca `inquirer` y devuelve las respuestas del usuario.
    *
-   * @param {ListaPreguntas} preguntas - Un arreglo de preguntas que se mostrarán al usuario. Cada pregunta debe incluir
+   * @param {Object} preguntas - Un arreglo de preguntas que se mostrarán al usuario. Cada pregunta debe incluir
    * un `name`, un `type`, un `message` y, opcionalmente, `choices` para las preguntas de tipo lista.
    *
    * @returns {Promise<Record<string, any>>} Una promesa que se resuelve con un objeto que contiene las respuestas del usuario,
    * donde cada clave es el `name` de la pregunta y el valor es la respuesta proporcionada.
+   *
+   * @example
+   * async function main() {
+   *  const preguntas = [
+   *   {
+   *      nombre: "nombre",
+   *      mensaje: "Cual es tu nombre",
+   *      tipo: "texto" as const,
+   *   },
+   *   { nombre: "edad", mensaje: "Cual es tu edad", tipo: "numero" as const },
+   *   {
+   *      nombre: "mayor",
+   *      mensaje: "Eres mayor de edad",
+   *      tipo: "confirmacion" as const,
+   *   },
+   *   {
+   *      nombre: "deporte",
+   *      mensaje: "Elige tu deporte favorito",
+   *      tipo: "lista" as const,
+   *      opciones: [
+   *          { valor: "futbol", nombre: "Futbol" },
+   *          { valor: "rugby", nombre: "Rugby" },
+   *          { valor: "basquet", nombre: "Basquet" },
+   *      ],
+   *    },
+   *  ];
+   *  const respuesta = await Menu.listaPreguntas(preguntas);
+   *  console.log(respuesta);
+   * }
+   *
+   * main();
    */
   static async listaPreguntas(
     preguntas: {
