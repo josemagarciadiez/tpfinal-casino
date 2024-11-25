@@ -1,7 +1,7 @@
 import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
 //fuente de los simbolos: https://emojipedia.org
-export abstract class Tragamonedas extends Juego {
+export class Tragamonedas extends Juego {
     private apuestaMinima: number;
     private apuestaMaxima: number;
     private simbolos: string[];
@@ -15,22 +15,68 @@ export abstract class Tragamonedas extends Juego {
         "🌹": 100,
         "🤡":1
     }
-    public constructor(){
+    private jugador: Jugador;
+    private apuesta: number;
+    public constructor(jugador: Jugador){
         super();
         this.apuestaMinima = 5;
         this.apuestaMaxima = 5000; 
         this.simbolos = ["🐈","🐕","🐀","🤡","❤️","💀","🌹"];
         this.jugada = [];
+        this.apuesta = 5;
+        this.jugador = jugador;
     }
 
     //getters----
-    getApuestaMinima(){
+    getApuestaMinima(): number{
         return this.apuestaMinima;
     }
-    getApuestaMaxima(){
+    getApuestaMaxima(): number{
         return this.apuestaMaxima;
     }
+    getApuesta(): number{
+        return this.apuesta;
+    }
+    //setters----
+    setApuesta(apuesta:number): number{
+        return this.apuesta = apuesta;
+    }
     //methods----
+
+    public realizarApuesta(apuestaMinima: number, apuestaMaxima: number): number {
+        let apuesta: number;
+        do {
+            apuesta = parseInt(prompt(`Ingresa tu apuesta: `) || "5");
+            if (isNaN(apuesta) || apuesta < apuestaMinima || apuesta > apuestaMaxima || apuesta > this.jugador.obtenerSaldo()) {
+                alert("Apuesta inválida. Ingresa un valor entre " + apuestaMinima + " y " + apuestaMaxima + " y que no supere tu saldo.");
+            }
+        } while (isNaN(apuesta) || apuesta < apuestaMinima || apuesta > apuestaMaxima || apuesta > this.jugador.obtenerSaldo());
+
+        this.jugador.restarSaldo(apuesta); // Resta la apuesta del saldo del jugador
+        return apuesta;
+    }
+
+    async ejecutar(jugador: Jugador): Promise<{
+        apuestaTotal: number;
+        resultado: "victoria" | "derrota";
+        ganancia?: number; 
+    }> {
+        const apuesta = this.realizarApuesta(this.apuestaMinima, this.apuestaMaxima); 
+        const tirada = this.tirada()!;
+        const ganancia = this.calcularGanancia(tirada);
+
+        let resultado: "victoria" | "derrota" = "derrota";
+        if (ganancia > 0) {
+            resultado = "victoria";
+        }
+
+        return {
+            apuestaTotal: apuesta,
+            resultado: resultado,
+            ganancia: ganancia // Si no hay ganancia, ganancia será undefined
+        };
+    }
+
     public simboloRandom(){
         let i = Math.floor(Math.random() * this.simbolos.length);
         return this.simbolos[i-1]; 
@@ -100,10 +146,4 @@ export abstract class Tragamonedas extends Juego {
         return ganancia;
     }
 
-
-    abstract ejecutar(jugador: Jugador): Promise<{
-        apuestaTotal: number;
-        resultado: "victoria" | "derrota";
-        ganancia?: number; 
-    }>
 }

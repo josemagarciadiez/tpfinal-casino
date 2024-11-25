@@ -7,19 +7,19 @@ export class Jugador {
     this.saldo = saldoInicial;
   }
 
-  obtenerNombre() {
+  public obtenerNombre() {
     return this.nombre;
   }
 
-  obtenerSaldo() {
+  public obtenerSaldo() {
     return this.saldo;
   }
 
-  sumarSaldo(monto: number) {
+  public sumarSaldo(monto: number) {
     this.saldo += monto;
   }
 
-  restarSaldo(monto: number) {
+  public restarSaldo(monto: number) {
     this.saldo -= monto;
   }
 }
