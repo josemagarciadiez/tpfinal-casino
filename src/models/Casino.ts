@@ -84,27 +84,29 @@ export class Casino {
    *
    */
   private async menuPrincipal() {
-    console.clear();
-    console.log("==========================================");
-    console.log("       🎰 🎲 Menú Principal 🎲 🎰       ");
-    console.log("------------------------------------------");
-
     const opciones = [
       { valor: "juegos", nombre: "Ver juegos 🕹️" },
       { valor: "saldo", nombre: "Administrar saldo 💵" },
       { valor: "salir", nombre: "Salir 🚪" },
     ];
 
-    const opcion = await Menu.elegirOpcion("Selecciona una opción", opciones);
+    while (true) {
+      console.clear();
+      console.log("==========================================");
+      console.log("       🎰 🎲 Menú Principal 🎲 🎰       ");
+      console.log("------------------------------------------");
 
-    if (opcion === "salir") {
-      return;
-    }
+      const opcion = await Menu.elegirOpcion("Selecciona una opción", opciones);
 
-    if (opcion === "juegos") {
-      await this.elegirJuego();
-    } else {
-      await this.manejarSaldo();
+      if (opcion === "salir") {
+        process.exit(0);
+      }
+
+      if (opcion === "juegos") {
+        await this.elegirJuego();
+      } else {
+        await this.manejarSaldo();
+      }
     }
   }
 
@@ -131,7 +133,7 @@ export class Casino {
         console.log("El juego seleccionado aún no esta disponible 😢");
     }
 
-    // ... demás lógica
+    await this.ejecutarJuego();
   }
 
   private async manejarSaldo(): Promise<void> {
@@ -141,11 +143,20 @@ export class Casino {
     console.log("------------------------------------------");
   }
 
-  private ejecutarJuego(): void {
+  private async ejecutarJuego(): Promise<void> {
     // ... Método donde Casino cede el control a el
     // juego que este seleccionado.
+    if (!this.jugador) {
+      throw new Error("Se debe crear un jugador.");
+    }
 
-    return;
+    if (!this.juego) {
+      throw new Error("Se debe seleccionar un juego.");
+    }
+
+    const jugada = await this.juego.ejecutar(this.jugador);
+
+    // Logica para escribir jugada en el log.
   }
 
   private async registrarJugada({
@@ -172,4 +183,5 @@ export class Casino {
   }
 
   // ... lógica para guardar en archivo txt con formato csv.
+}
 }
