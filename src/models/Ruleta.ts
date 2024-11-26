@@ -1,8 +1,9 @@
-import path from "path";
+
+import { promises } from "dns";
 import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
-import { promises } from "dns";
-import * as rls from "readline-sync"
+
+import { Menu } from "../utils/Menu";
 
 
 class Ruleta extends Juego {
@@ -12,7 +13,7 @@ class Ruleta extends Juego {
 
     constructor(){
         super()
-        this.apuestaMinima=20
+        this.apuestaMinima=500
         this.instrucciones=""
     
         this.tablero = {
@@ -60,53 +61,116 @@ class Ruleta extends Juego {
         resultado: "victoria" | "derrota";
         ganancia?: number;
       }>{
+        
         let juegoActivo:boolean=true
         let apuestaTotal:number=0
         let ganancia:number=0
         let resultado:"victoria" | "derrota"="derrota"
 
-        while(juegoActivo==true){
-            let juegaAlColorOAlNumero:string=rls.question("Juega al color o al numero?  ")
-            let valorApostado:number=rls.questionInt("Ingrese el monto a apostar: ")//aca va implementado inquirer
-            let resul:number=Math.round(Math.random()*36)
-            let color=this.tablero[resul]
+        console.log("==========================================");
+        console.log("     🎰 🎲 Bienvenido a Devil's Roullette 🎡 🎲 🎰    ");
+        console.log("------------------------------------------");
+
+       while(juegoActivo==true){
+
+            if (jugador.obtenerSaldo()<this.apuestaMinima){
+            console.log("Su saldo es menor a la apuesta minima requerida para jugar."+"\n"+
+                "Por favor cargue saldo y vuelva a ingresar al juego, lo esperamos")
+            process.exit()};
+
+            juegoActivo=false;
+
+            let juegaAlColorOAlNumero= await Menu.elegirOpcion("Apuesta al color o al numero? ",
+                [{valor:"color",nombre:"Color"},{valor:"numero",nombre:"Numero"}]);
+
+            let valorApostadoStr=await Menu.elegirOpcion("Seleccione el monto a apostar",
+                [{valor:"500",nombre:"$ 500"},{valor:"1000",nombre:"$ 1.000"},
+                    {valor:"5000",nombre:"$ 5.000"},{valor:"10000",nombre:"$ 10.000"}]);
+
+            let valorApostado=parseInt(valorApostadoStr);
+
+            let resul:number=Math.round(Math.random()*36);
+
+            let color=this.tablero[resul];
             
     
+
             if (juegaAlColorOAlNumero=="color"){
-                let colorIngresado:string=rls.question("Ingrese el color al que apuesta: ")//aca va inquirer
+                let colorIngresado= await Menu.elegirOpcion("seleccione el color al que apuesta",[{valor:"rojo",nombre:"Rojo"},{valor:"negro",nombre:"Negro"}])
                 if (color==colorIngresado){
-                    jugador.sumarSaldo(valorApostado*10)
-                    resultado="victoria"
-                    ganancia=ganancia+valorApostado*10
-                }else{ jugador.restarSaldo(valorApostado)}
+                    jugador.sumarSaldo(valorApostado*10);
+                    resultado="victoria";
+                    ganancia=ganancia+valorApostado*10;
+                }else{ jugador.restarSaldo(valorApostado)};
     
             }else {
-                    let valorIngresado:number=rls.questionInt("ingrese numero al que apuesta: ")//aca va inquirer
+                    let valorIngresado=await Menu.pedirNumero("Ingrese el numero al que apuesta ", (valor) => {
+                        if (valor === undefined) {
+                          return 'El valor no puede ser undefined';
+                        }
+                        if (typeof valor !== 'number') {
+                          return 'El valor debe ser un número';
+                        }
+                        if (valor <= 0 || valor > 36) {
+                          return 'El valor debe ser mayor que 0 y menor o igual a 36';
+                        }
+                        return true;
+                      })
                 
                     if (resul==valorIngresado){
-                        jugador.sumarSaldo(valorApostado*100)
-                        resultado="victoria"
-                        ganancia=ganancia+valorApostado*100
-                    }else{ jugador.restarSaldo(valorApostado)}
+                        jugador.sumarSaldo(valorApostado*100);
+                        resultado="victoria";
+                        ganancia=ganancia+valorApostado*100;
+                    }else{ jugador.restarSaldo(valorApostado)};
                 }
     
             
-            apuestaTotal=apuestaTotal+valorApostado
-            console.log(resul)
-            console.log(color)
+            apuestaTotal=apuestaTotal+valorApostado;
+            
+            setTimeout(()=> console.log("\n"+"No va mas, ya no se reciben mas apuestas!!!"),3000);
 
-            let mje:string=rls.question("Desea apostar de nuevo: ")// aca va inquirer
+            setTimeout(()=>console.log("La rueta esta girando..."),5000);
+            
+            setTimeout(()=>console.log(" Ha salido el "+resul+" "+color),7000);
+            
+            let mje:Promise<string>;
 
-            if (mje=="no"){
-                juegoActivo=false
+            async function esperarOpcion() {
+                return new Promise<string>((resolve) => {
+                    setTimeout(async () => {    
+                        const mje = await Menu.elegirOpcion(
+                            "Desea volver a jugar?",
+                            [{ valor: "apostar", nombre: "Volver a Jugar" }, { valor: "no", nombre: "Salir del juego" }]
+                        );
+                        resolve(mje);  
+                    }, 9000);
+            })};
+            
+
+            
+
+            async function reiniciarJuego(): Promise<boolean> {
+                // Esperamos a que la promesa se resuelva para obtener el valor de mje
+                const mje = await esperarOpcion();
+            
+                // Evaluamos el valor de mje y actualizamos la variable juegoActivo
+                if (mje === "apostar") {
+                    juegoActivo = true;
+                } else {
+                    juegoActivo = false;
+                }
+            
+                // Devolvemos el valor de juegoActivo
+                return juegoActivo;
             }
+            juegoActivo=await reiniciarJuego();
         
             
 
         }
-        return {apuestaTotal,resultado,ganancia }
+        return {apuestaTotal,resultado,ganancia };
         
-
+        
         
 
       
@@ -115,10 +179,9 @@ class Ruleta extends Juego {
  
 
 }
-/*Instancias para probar juego
+/* Instancias para probar el juego
 let ruleta=new Ruleta()
-let jugador=new Jugador("Jose",2000)
-console.log(jugador)
-let resultado=ruleta.ejecutar(jugador)
-console.log(resultado)
-console.log(jugador)*/
+let jugador=new Jugador("Jose",100000)
+
+
+ruleta.ejecutar(jugador)*/
