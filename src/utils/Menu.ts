@@ -119,10 +119,14 @@ export class Menu {
    */
   static async elegirOpcion(
     mensaje: string,
-    opciones: { valor: string; nombre: string }[]
+    opciones: { valor: string; nombre: string; desactivada?: boolean }[]
   ): Promise<string> {
     const listaOpciones = opciones.map((opcion) => {
-      return { value: opcion.valor, name: opcion.nombre };
+      return {
+        value: opcion.valor,
+        name: opcion.nombre,
+        disabled: opcion.desactivada ?? false,
+      };
     });
 
     const pregunta = await inquirer.prompt({
@@ -180,7 +184,8 @@ export class Menu {
       nombre: string;
       tipo: "texto" | "numero" | "confirmacion" | "lista";
       mensaje: string;
-      opciones?: { valor: string; nombre: string }[];
+      opciones?: { valor: string; nombre: string; desactiada?: boolean }[];
+      desactivada?: boolean;
       validacion?: (
         entrada: string
       ) => string | boolean | Promise<string | boolean>;
@@ -198,7 +203,11 @@ export class Menu {
         type: tipos[pregunta.tipo],
         message: pregunta.mensaje,
         choices: pregunta.opciones?.map((opcion) => {
-          return { value: opcion.valor, name: opcion.nombre };
+          return {
+            value: opcion.valor,
+            name: opcion.nombre,
+            disabled: opcion.desactiada ?? false,
+          };
         }),
         validate: pregunta.validacion,
       };
