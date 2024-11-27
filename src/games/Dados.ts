@@ -1,4 +1,3 @@
-import { log } from "console";
 import { Juego } from "../models/Juego";
 import { Jugador } from "../models/Jugador";
 
@@ -7,7 +6,7 @@ import { Menu } from "../utils/Menu";
 
 export class Dados extends Juego {
   private readonly apuestaMinima: number = 200;
-  private readonly multiplicadorPremio: number = 10;
+  private readonly multiplicadorPremio: number = 7;
 
   constructor() {
     super();
@@ -38,14 +37,15 @@ export class Dados extends Juego {
     // 3. Ejecutar primera mano
     //.... Tirando dadosss
     // Resultado: dado 1 y dado 2
-    let dados = await this.lanzarDados();
+    let dados = this.lanzarDados();
     // Hacer conteo
     let conteoJugador = (dados[0] + dados[1]) * 2;
 
     /***** MENU *****/
     // Mostrar partida
-    this.interface(apuestaTotal, conteoJugador);
 
+    await this.simularTiro();
+    this.interface(apuestaTotal, conteoJugador);
     this.imprimirTiro(dados);
 
     /***************/
@@ -75,6 +75,8 @@ export class Dados extends Juego {
     // Si el conteo del jugador es mayor de 21
     // pierde automaticamente
     if (conteoJugador > 21) {
+      this.interface(apuestaTotal, conteoJugador);
+      await this.mostrarResultado("derrota", apuestaTotal);
       return {
         apuestaTotal,
         resultado: "derrota",
@@ -85,7 +87,7 @@ export class Dados extends Juego {
     // Si el conteo del jugador es igual a 21
     // se planta automaticamente.
     if (conteoJugador === 21) {
-      opcion === "plantar";
+      opcion = "plantar";
     }
 
     // Si no, se dan opciones
@@ -106,7 +108,7 @@ export class Dados extends Juego {
       if (opcion === "pedir") {
         // Actualizar pantalla
         this.interface(apuestaTotal, conteoJugador);
-        dados = await this.lanzarDados();
+        dados = this.lanzarDados();
         await this.simularTiro();
         // Actualizar pantalla
         this.interface(apuestaTotal, conteoJugador);
@@ -114,7 +116,8 @@ export class Dados extends Juego {
         conteoJugador = await this.actualizarConteo(dados, conteoJugador);
         // Imprimir mensaje de perdida
         if (conteoJugador === 0) {
-          this.mostrarResultado("perdida", apuestaTotal);
+          this.interface(apuestaTotal, conteoJugador);
+          await this.mostrarResultado("derrota", apuestaTotal);
           return {
             apuestaTotal,
             resultado: "derrota",
@@ -131,6 +134,8 @@ export class Dados extends Juego {
         );
 
         if (confirmacion) {
+          this.interface(apuestaTotal, conteoJugador);
+          await this.mostrarResultado("derrota", apuestaTotal);
           return {
             apuestaTotal,
             resultado: "derrota",
@@ -140,34 +145,152 @@ export class Dados extends Juego {
       }
     }
 
-    // Aca llegamos porque opcion fue igual a plantarse
+    /************************ TURNO DE LA CASA  *********************/
 
-    // TODO: TURNO CASA
+    dados = this.lanzarDados();
+    // Hacer conteo
+    let conteoCasa = (dados[0] + dados[1]) * 2;
 
-    // Actualizar pantalla
+    // Mostrar partida
     this.interface(apuestaTotal, conteoJugador, undefined, false);
+    await this.simularTiro();
+    this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
+    this.imprimirTiro(dados);
+    /***************/
 
-    while (true) {}
+    // Si el conteo en la primer mano es menor a 17,
+    // pide hasta que saque 17 o mas
+    while (conteoCasa < 17 && conteoCasa !== conteoJugador) {
+      // pide carta y chequea
+      dados = this.lanzarDados();
+
+      // LOGICA DE ELECCION
+      const opcion = this.seleccionarOpcion(dados, conteoCasa, conteoJugador);
+
+      conteoCasa += opcion.valor;
+      // Logica de interfaces
+      console.log("La Casa pide otra carta...");
+      // Pausa
+      await this.simularTiro();
+      this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
+      this.imprimirTiro(dados);
+      console.log(opcion.mensaje);
+    }
+
+    // Una vez que se sale del bucle con un conteo
+    // mayor o igual a 17, se hacen todas los chequeos.
+
+    // Si la casa se pasa, jugador gana
+    if (conteoCasa > 21) {
+      this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
+      await this.mostrarResultado("victoria", apuestaTotal);
+      jugador.sumarSaldo(apuestaTotal * this.multiplicadorPremio);
+      return {
+        resultado: "victoria",
+        apuestaTotal,
+        ganancia: apuestaTotal * this.multiplicadorPremio,
+      };
+    }
+
+    // Si conteo Casa es mayor, o hay empate, la casa gana
+    if (conteoCasa >= conteoJugador) {
+      this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
+      await this.mostrarResultado("derrota", apuestaTotal);
+      return {
+        resultado: "derrota",
+        apuestaTotal,
+      };
+    }
+
+    this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
+    await this.mostrarResultado("victoria", apuestaTotal);
+
+    // Se le paga al jugador
+    jugador.sumarSaldo(apuestaTotal * this.multiplicadorPremio);
 
     return {
-      apuestaTotal: 0,
-      resultado: "derrota",
-      ganancia: 0,
+      apuestaTotal: apuestaTotal,
+      resultado: "victoria",
+      ganancia: apuestaTotal * this.multiplicadorPremio,
     };
   }
 
   /*
-   *  Metodo para simular la mano de la Casa.
-   *  Devuelve el conteo final de la Casa.
+   *  Metodo para que la Casa seleccione la
+   *  mejor opcion para su tiro
    */
-  private turnoCasa() {
-    return 0;
+  private seleccionarOpcion(
+    dados: number[],
+    conteoCasa: number,
+    conteoJugador: number
+  ) {
+    const opciones = [
+      {
+        valor: dados[0] + dados[1],
+        mensaje: `La Casa decide sumar ambos (${dados[0] + dados[1]}) → Total: ${conteoCasa + dados[0] + dados[1]}`,
+      },
+      {
+        valor: dados[0],
+        mensaje: `La Casa decide sumar solo 🎲 ${dados[0]} → Total: ${conteoCasa + dados[0]}.`,
+      },
+      {
+        valor: dados[1],
+        mensaje: `La Casa decide sumar solo 🎲 ${dados[1]} → Total: ${conteoCasa + dados[1]}.`,
+      },
+    ];
+
+    // Filtrar las opciones validas:
+    const opcionesElegibles = opciones.filter((opcion) => {
+      const nuevoConteo = conteoCasa + opcion.valor;
+      if (nuevoConteo <= 21 && nuevoConteo >= conteoJugador) {
+        return true;
+      }
+      return false;
+    });
+
+    // Si hay opciones elegibles, elegir la de mayor valor
+    if (opcionesElegibles.length > 0) {
+      return opcionesElegibles.reduce((mejorOpcion, opcion) =>
+        opcion.valor > mejorOpcion.valor ? opcion : mejorOpcion
+      );
+    }
+
+    // En el caso de que no haya opciones elegibles
+    // se busca la segunda mejor opcion para la casa
+    const opcionesParciales = opciones.map((opcion) => {
+      // Por cada requisito cumplido, se suma 1 punto
+      let puntaje = 0;
+
+      // Evaluar requisitos
+      if (conteoCasa + opcion.valor <= 21) {
+        puntaje++;
+      }
+
+      if (conteoCasa + opcion.valor >= conteoJugador) {
+        puntaje++;
+      }
+
+      return { ...opcion, puntaje };
+    });
+
+    // Busco la opcion con mayor puntaje y la devuelvo
+    return opcionesParciales.reduce((mejorOpcion, opcion) => {
+      if (opcion.puntaje > mejorOpcion.puntaje) {
+        return opcion;
+      } else if (
+        opcion.puntaje === mejorOpcion.puntaje &&
+        opcion.valor > mejorOpcion.valor
+      ) {
+        return opcion;
+      }
+      return mejorOpcion;
+    });
   }
 
   /**
    * Metodo para simular el lanzamiento de los dados
    */
-  private async lanzarDados() {
+  private lanzarDados() {
     return [
       Math.floor(Math.random() * 6) + 1,
       Math.floor(Math.random() * 6) + 1,
@@ -308,12 +431,12 @@ export class Dados extends Juego {
       // Se usa este metodo de escritura asi
       // escribe en la misma linea.
       process.stdout.write("\rLanzando dados 🎲");
-      // Esperar 500 ms
+      // Esperar 250 ms
       await new Promise((resolve) => setTimeout(resolve, 250));
 
       // Pintar segundo dado
       process.stdout.write("  🎲 ");
-      // Esperar 500 ms
+      // Esperar 250 ms
       await new Promise((resolve) => setTimeout(resolve, 250));
     }
   }
@@ -326,10 +449,11 @@ export class Dados extends Juego {
   }
 
   /** Metodo para mostrar resultado del juego */
-  private mostrarResultado(
-    resultado: "victoria" | "perdida",
+  private async mostrarResultado(
+    resultado: "victoria" | "derrota",
     apuestaTotal: number
   ) {
+    console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
     if (resultado === "victoria") {
       console.log("🎉 🍾  =======================================  🎉 🍾");
       console.log("         🥇 🏆 ¡FELICIDADES! ¡HAS GANADO! 🥇 🏆");
@@ -342,14 +466,27 @@ export class Dados extends Juego {
       console.log("=======================================================");
     } else {
       console.log("💔 ❤️‍🩹  =======================================  💔 ❤️‍🩹");
-      console.log("          🥲 😔 ¡FELICIDADES! ¡HAS GANADO! 🥲 😔");
+      console.log("          🥲 😔 LO SENTIMOS, HAS PERDIDO 🥲 😔");
       console.log("=======================================================");
-      console.log(
-        `💰   Ganancia total: ${apuestaTotal * this.multiplicadorPremio}`
-      );
-      console.log("🎲   ¡La suerte estuvo de tu lado!");
-      console.log("🍾   Disfruta de tu victoria y sigue jugando.");
+      console.log(`❌   Pérdida total: ${apuestaTotal}`);
+      console.log("🎲   ¡No te rindas, la próxima vez será mejor!");
+      console.log("🃏   Inténtalo de nuevo y vence a la casa.");
       console.log("=======================================================");
+    }
+
+    // Conteo para volver al menu
+    for (let i = 5; i > 0; i--) {
+      if (i === 1) {
+        process.stdout.write(
+          `\r🔄  Seras redirigido al menu principal en ${i} segundo..`
+        );
+      } else {
+        process.stdout.write(
+          `\r🔄  Seras redirigido al menu principal en ${i} segundos..`
+        );
+      }
+      // Esperar 1 s
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 }
