@@ -4,6 +4,7 @@ import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
 
 import { Menu } from "../utils/Menu";
+import  * as fs from 'fs';
 
 
 class Ruleta extends Juego {
@@ -14,7 +15,8 @@ class Ruleta extends Juego {
     constructor(){
         super()
         this.apuestaMinima=500
-        this.instrucciones=""
+        this.instrucciones=fs.readFileSync("instruccionesRuleta.txt", 'utf8');
+        
     
         this.tablero = {
             1: "rojo",
@@ -61,35 +63,56 @@ class Ruleta extends Juego {
         resultado: "victoria" | "derrota";
         ganancia?: number;
       }>{
-        
+        await this.mostrarInstrucciones();
         let juegoActivo:boolean=true
         let apuestaTotal:number=0
         let ganancia:number=0
         let resultado:"victoria" | "derrota"="derrota"
 
-        console.log("==========================================");
-        console.log("     🎰 🎲 Bienvenido a Devil's Roullette 🎡 🎲 🎰    ");
-        console.log("------------------------------------------");
-
+       
        while(juegoActivo==true){
+        console.clear()
+        console.log("                           ========================================================="+"\n");
+        console.log("                                   🎡 🎡     Devil's Roullette      🎡 🎡    "+"\n");
+        console.log("                           ---------------------------------------------------------"+"\n");
+
+        console.log("JUGADOR: "+ jugador.obtenerNombre())
+        console.log("Saldo Inicial: "+ jugador.obtenerSaldo())
+        console.log("Apuesta Minima: "+ this.apuestaMinima+"\n")
+
 
             if (jugador.obtenerSaldo()<this.apuestaMinima){
-            console.log("Su saldo es menor a la apuesta minima requerida para jugar."+"\n"+
-                "Por favor cargue saldo y vuelva a ingresar al juego, lo esperamos")
-            process.exit()};
+                console.log("                       ================================================================="+"\n");
+                console.log("                       😔  Su saldo es menor a la apuesta minima requerida para jugar  😔"+"\n"+
+                    "                       🎲  Por favor cargue saldo y vuelva a ingresar al juego. Lo esperamos!!!  🎲"+"\n");
+                console.log("                       -----------------------------------------------------------------"+"\n");
+            
+                process.exit();
+               
+            };
 
             juegoActivo=false;
 
             let juegaAlColorOAlNumero= await Menu.elegirOpcion("Apuesta al color o al numero? ",
                 [{valor:"color",nombre:"Color"},{valor:"numero",nombre:"Numero"}]);
 
-            let valorApostadoStr=await Menu.elegirOpcion("Seleccione el monto a apostar",
-                [{valor:"500",nombre:"$ 500"},{valor:"1000",nombre:"$ 1.000"},
-                    {valor:"5000",nombre:"$ 5.000"},{valor:"10000",nombre:"$ 10.000"}]);
+            let valorApostado= await Menu.pedirNumero("Ingrese el monto que desea apostar ", (valor) => {
+                if (valor === undefined) {
+                  return 'Debe ingresar un valor';
+                }
+                if (typeof(valor) !== 'number') {
+                  return 'El valor debe ser un número';
+                }
+                if (valor > jugador.obtenerSaldo()) {
+                  return 'No tiene suficinte saldo, ingrese un monto menor ';
+                }
+                if (valor <this.apuestaMinima) {
+                    return 'Debe ingresar un monto mayor a la apuesta minima';
+                  }
+                return true;
+              })
 
-            let valorApostado=parseInt(valorApostadoStr);
-
-            let resul:number=Math.round(Math.random()*36);
+            let resul:number=Math.round((Math.random()*35)+1);
 
             let color=this.tablero[resul];
             
@@ -101,14 +124,16 @@ class Ruleta extends Juego {
                     jugador.sumarSaldo(valorApostado*10);
                     resultado="victoria";
                     ganancia=ganancia+valorApostado*10;
-                }else{ jugador.restarSaldo(valorApostado)};
+                }else{ jugador.restarSaldo(valorApostado)
+                    resultado="derrota";
+                };
     
             }else {
                     let valorIngresado=await Menu.pedirNumero("Ingrese el numero al que apuesta ", (valor) => {
                         if (valor === undefined) {
-                          return 'El valor no puede ser undefined';
+                          return 'Debe ingresar un valor';
                         }
-                        if (typeof valor !== 'number') {
+                        if (typeof(valor) !== 'number') {
                           return 'El valor debe ser un número';
                         }
                         if (valor <= 0 || valor > 36) {
@@ -121,17 +146,23 @@ class Ruleta extends Juego {
                         jugador.sumarSaldo(valorApostado*100);
                         resultado="victoria";
                         ganancia=ganancia+valorApostado*100;
-                    }else{ jugador.restarSaldo(valorApostado)};
+                    }else{ jugador.restarSaldo(valorApostado)
+                        resultado="derrota";
+                    };
                 }
     
             
             apuestaTotal=apuestaTotal+valorApostado;
             
-            setTimeout(()=> console.log("\n"+"No va mas, ya no se reciben mas apuestas!!!"),3000);
+            setTimeout(()=> console.log("\n"+"Crupier:....NO VA MAS, ya no se reciben mas apuestas!!!"),3000);
 
-            setTimeout(()=>console.log("La rueta esta girando..."),5000);
+            setTimeout(()=>console.log("La ruleta esta girando..."),5000);
             
-            setTimeout(()=>console.log(" Ha salido el "+resul+" "+color),7000);
+            setTimeout(()=>{console.clear()
+                            console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||"+"\n");
+                            console.log("        Crupier:....HA SALIDO EL "+resul+" "+color+"\n")
+                            this.mostrarResultado(resultado,jugador)
+            },8000);
             
             let mje:Promise<string>;
 
@@ -143,7 +174,7 @@ class Ruleta extends Juego {
                             [{ valor: "apostar", nombre: "Volver a Jugar" }, { valor: "no", nombre: "Salir del juego" }]
                         );
                         resolve(mje);  
-                    }, 9000);
+                    }, 10000);
             })};
             
 
@@ -163,6 +194,8 @@ class Ruleta extends Juego {
                 // Devolvemos el valor de juegoActivo
                 return juegoActivo;
             }
+
+            
             juegoActivo=await reiniciarJuego();
         
             
@@ -176,12 +209,52 @@ class Ruleta extends Juego {
       
     }
 
- 
+    private async mostrarResultado(
+        resultado: "victoria" | "derrota",jugador:Jugador
+        
+      ) {
+        console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+        if (resultado === "victoria") {
+          console.log("🎉 🍾  =======================================  🎉 🍾");
+          console.log("         🥇 🏆 ¡FELICIDADES! ¡HAS GANADO! 🥇 🏆");
+          console.log("=======================================================");
+          console.log(
+            `💰                 Saldo acumulado: ${jugador.obtenerSaldo() }`
+          );
+          console.log("🎲   ¡La suerte estuvo de tu lado!");
+          console.log("🍾   Disfruta de tu victoria y sigue jugando.");
+          console.log("======================================================="+"\n");
+        } else {
+          console.log("💔 ❤️‍🩹  =======================================  💔 ❤️‍🩹");
+          console.log("          🥲 😔 LO SENTIMOS, HAS PERDIDO 🥲 😔");
+          console.log("=======================================================");
+          console.log(`❌    Saldo restante: ${jugador.obtenerSaldo() }`);
+          console.log("🎲   ¡No te rindas, la próxima vez será mejor!");
+          console.log("🃏   Inténtalo de nuevo y vence a la casa.");
+          console.log("======================================================="+"\n");
+        }
+
+    }
+
+    async mostrarInstrucciones(){
+        console.log("                           ========================================================="+"\n");
+        console.log("                                   🎡 🎡 Bienvenido a Devil's Roullette 🎡 🎡    "+"\n");
+        console.log("                           ---------------------------------------------------------"+"\n");
+        console.log(this.instrucciones+"\n");
+        let resp=Menu.elegirOpcion("Presione enter para continuar: ",[{valor:"continuar",nombre:"Continuar"}])
+                if (await resp=="salir"){
+                    process.exit();
+                    
+                }
+
+    }
+
+
 
 }
-/* Instancias para probar el juego
+
 let ruleta=new Ruleta()
-let jugador=new Jugador("Jose",100000)
+let jugador=new Jugador("Jose",4000)
 
 
-ruleta.ejecutar(jugador)*/
+ruleta.ejecutar(jugador)
