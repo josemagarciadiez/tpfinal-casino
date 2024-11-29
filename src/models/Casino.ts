@@ -6,7 +6,7 @@ import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 
 // Implementaciones de juegos
-import { Dados } from "../games/Dados";
+import { DeluxeCrazyDK } from "./tragamonedasA";
 
 export class Casino {
   private jugador: Jugador | undefined;
@@ -14,11 +14,7 @@ export class Casino {
   private readonly juegos: { valor: string; nombre: string }[];
 
   constructor() {
-    this.juegos = [
-      { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
-      { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
-      { valor: "tragamonedas", nombre: "Deluxe Crazy DK 🎰" },
-    ];
+    this.juegos = [{ valor: "tragamonedas", nombre: "Deluxe Crazy DK 🎰" }];
   }
 
   /**
@@ -127,8 +123,8 @@ export class Casino {
     );
 
     switch (opcionSeleccionada) {
-      case "dados":
-        this.juego = new Dados();
+      case "tragamonedas":
+        this.juego = new DeluxeCrazyDK();
         break;
       default:
         console.log("El juego seleccionado aún no esta disponible 😢");
