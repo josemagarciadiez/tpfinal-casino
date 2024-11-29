@@ -9,7 +9,8 @@ export class Archivo {
   // con el fin de bloquear cualquier instancia de la clase.
   private constructor() {}
 
-  private static readonly archivo = "src/db/jugadas.txt";
+  private static readonly carpeta = "src/db";
+  private static readonly archivo = "jugadas.txt";
 
   // Metodos necesarios.
   // Chequear si archivo existe (privado)
@@ -40,8 +41,17 @@ export class Archivo {
     const fila = Archivo.crearFilaCSV(data);
 
     // Escribir
-    // TODO: Add callback
-    fs.appendFile(Archivo.archivo, `\n${fila}`, () => {});
+    fs.appendFile(
+      `${Archivo.carpeta}/${Archivo.archivo}`,
+      `\n${fila}`,
+      (error) => {
+        if (error) {
+          if (error instanceof Error) {
+            throw new Error(error.message);
+          }
+        }
+      }
+    );
   }
 
   /**
@@ -49,7 +59,7 @@ export class Archivo {
    * @returns true si el archivo existe, false en caso contrario.
    */
   private static check(): boolean {
-    if (fs.existsSync(Archivo.archivo)) {
+    if (fs.existsSync(`${Archivo.carpeta}/${Archivo.archivo}`)) {
       return true;
     } else {
       return false;
@@ -60,7 +70,13 @@ export class Archivo {
    * Metodo para crear una base de datos vacia.
    */
   private static crear() {
-    fs.writeFile(Archivo.archivo, "", (error) => {
+    // Si no existe la carpeta
+    if (!fs.existsSync(Archivo.carpeta)) {
+      // se crea.
+      fs.mkdirSync(Archivo.carpeta, { recursive: true });
+    }
+
+    fs.writeFile(`${Archivo.carpeta}/${Archivo.archivo}`, "", (error) => {
       if (error) {
         if (error instanceof Error) {
           throw new Error(error.message);
