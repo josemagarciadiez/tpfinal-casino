@@ -17,6 +17,7 @@ export class Casino {
     this.juegos = [
       { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
+      { valor: "tragamonedas", nombre: "Deluxe Crazy DK 🎰" },
     ];
   }
 
