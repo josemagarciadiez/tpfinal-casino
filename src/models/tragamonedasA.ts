@@ -4,8 +4,10 @@ import { IJuego } from "./IJuego";
 import { Menu } from "../utils/Menu";
 import { publicDecrypt } from "crypto";
 import { AnyTxtRecord } from "dns";
+import { Serializer } from "v8";
+import { Casino } from "./Casino";
 //fuente de los simbolos: https://emojipedia.org
-export class Tragamonedas extends Juego {
+export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
   private apuestaMaxima: number;
   private simbolos: string[];
@@ -19,55 +21,77 @@ export class Tragamonedas extends Juego {
     "🌹": 100,
     "🤡": 1,
   };
-  private apuesta: number;
   public constructor() {
     super();
     this.apuestaMinima = 5;
     this.apuestaMaxima = 5000;
     this.simbolos = ["🐈", "🐕", "🐀", "🤡", "❤️", "💀", "🌹"];
     this.jugada = [];
-    this.apuesta = 5;
-  }
-
-  //getters----
-  getApuestaMinima(): number {
-    return this.apuestaMinima;
-  }
-  getApuestaMaxima(): number {
-    return this.apuestaMaxima;
-  }
-  getApuesta(): number {
-    return this.apuesta;
-  }
-  //setters----
-  setApuesta(apuesta: number): number {
-    return (this.apuesta = apuesta);
   }
   //methods----
-
   async ejecutar(jugador: Jugador): Promise<{
     apuestaTotal: number;
     resultado: "victoria" | "derrota";
     ganancia?: number;
   }> {
-    const apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
+    //opciones del jugador dentro del juego
+    this.interfaceTragamonedas();
+    let apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
     if (apuesta < this.apuestaMinima) {
       console.error(
-        `El monto ingresado es inferior al minimo (${this.apuestaMinima})`
+        `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`
       );
     } else if (apuesta > this.apuestaMaxima) {
       console.error(
-        `El monto ingresado es superior al maximo (${this.apuestaMaxima})`
+        `El monto ingresado (${apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`
       );
     } else {
       console.log("Monto ingresado exitosamente");
     }
-    const tirada = this.tirada()!;
+
+    this.interfaceTragamonedas();
+    const tirada = this.tirada(apuesta)!;
     const ganancia = this.calcularGanancia(tirada);
 
     let resultado: "victoria" | "derrota" = "derrota";
     if (ganancia > 0) {
       resultado = "victoria";
+    }
+
+    let opcion = "";
+
+    let opciones = [
+      {
+        valor: "tirada",
+        nombre: "🎰 Probar suerte",
+      },
+      {
+        valor: "apuesta",
+        nombre: "🎰 Cambiar apuesta",
+      },
+      {
+        valor: "salir",
+        nombre: "🔙 Volver",
+      },
+    ];
+
+    while (opcion != "salir" && jugador.obtenerSaldo() != 0) {
+      opcion = await Menu.elegirOpcion(
+        "¿Que quieres hacer a continuacion?",
+        opciones
+      );
+      if (opcion === "tirada") {
+        this.interfaceTragamonedas(apuesta, jugador);
+        this.tirada(apuesta);
+        jugador.restarSaldo(apuesta);
+        this.calcularGanancia(tirada, apuesta);
+      }
+      if (opcion === "apuesta") {
+        apuesta = await Menu.pedirNumero("Ingrese el nuevo monto: ");
+      }
+      if (opcion === "salir") {
+        //Jose: Vuelvo a elergirJuego()?
+      }
     }
 
     return {
@@ -81,7 +105,7 @@ export class Tragamonedas extends Juego {
     let i = Math.floor(Math.random() * this.simbolos.length);
     return this.simbolos[i - 1];
   }
-  public tirada() {
+  public tirada(apuesta?: number, jugador?: Jugador) {
     let i: number;
     for (i = 0; i < this.simbolos.length; i++) {
       let newSymbol = this.simboloRandom();
@@ -120,32 +144,49 @@ export class Tragamonedas extends Juego {
     return false;
   }
 
-  public calcularGanancia(tirada: string[]): number {
+  public calcularGanancia(
+    tirada: string[],
+    apuesta?: number,
+    jugador?: Jugador
+  ): number {
     const contador = this.contarOcurrencias(tirada);
     let gananciaTotal = 0;
-
     for (const simbolo in contador) {
       if (contador[simbolo] >= 2) {
         //verifica que se repita al menos dos veces
         const valorSimbolo = this.valores[simbolo];
-        gananciaTotal += valorSimbolo * contador[simbolo]; //habria que agregar para que multiplique tambien por el valor de la apuesta
+        gananciaTotal += apuesta! + valorSimbolo * contador[simbolo];
+        jugador?.sumarSaldo(gananciaTotal);
       }
     }
 
     return gananciaTotal;
   }
 
-  public analizarTirada() {
+  public analizarTirada(apuesta: any) {
     //se almacena lo que retorno la funcion tirada()
     const tirada = this.tirada();
     if (tirada !== undefined) {
       //se asegura de que tirada no sea undefined
       this.jugada = tirada; //asigna tirada a this.jugada
       return this.contarSimilitudes(this.jugada); //analiza si el usuario ganó, tomando como parametro jugada
+      this.calcularGanancia(tirada!, apuesta);
     } else {
       return console.error(0); //Si tirada = undefined retorna error
     }
-    const ganancia = this.calcularGanancia(this.jugada);
-    return ganancia;
+  }
+
+  private async interfaceTragamonedas(
+    apuestaTotal?: number,
+    jugador?: Jugador
+  ) {
+    console.clear();
+    console.log(
+      "========================================================",
+      "                  🎰Deluxe Crazy DK🎰                  ",
+      "========================================================",
+      ` 💲Apuesta total: ${apuestaTotal}     Saldo: ${jugador?.obtenerSaldo}`,
+      "--------------------------------------------------------"
+    );
   }
 }
