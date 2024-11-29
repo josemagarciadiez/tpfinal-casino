@@ -6,7 +6,8 @@ import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 
 // Implementaciones de juegos
-//import { Dados } from "../games/Dados";
+import { Dados } from "../games/Dados";
+import { Archivo } from "../utils/Archivo";
 
 export class Casino {
   private jugador: Jugador | undefined;
@@ -127,7 +128,7 @@ export class Casino {
 
     switch (opcionSeleccionada) {
       case "dados":
-        //this.juego = new Dados();
+        this.juego = new Dados();
         break;
       default:
         console.log("El juego seleccionado aún no esta disponible 😢");
@@ -157,6 +158,12 @@ export class Casino {
     const jugada = await this.juego.ejecutar(this.jugador);
 
     // Logica para escribir jugada en el log.
+
+    await this.registrarJugada({
+      ...jugada,
+      juego: "",
+      nombreJugador: this.jugador.obtenerNombre(),
+    });
   }
 
   private async registrarJugada({
@@ -165,22 +172,21 @@ export class Casino {
     resultado,
     nombreJugador,
   }: {
-    juego: string;
     apuestaTotal: number;
-    resultado: "victoria" | "perdida";
-    nombreJugador: string;
+    resultado: "victoria" | "derrota";
     ganancia?: number;
+    juego: string;
+    nombreJugador: string;
   }): Promise<void> {
     // ... Lógica para guardar una jugada en el diario de jugadas
     const jugada = {
-      id: "generarId unico",
       fecha: new Date().toDateString(),
-      juego,
-      apuestaTotal,
+      juego: "ruleta",
+      apuesta: apuestaTotal,
       resultado,
-      nombreJugador,
+      jugador: nombreJugador,
     };
-  }
 
-  // ... lógica para guardar en archivo txt con formato csv.
+    await Archivo.escribir(jugada);
+  }
 }
