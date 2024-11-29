@@ -23,17 +23,17 @@ export class Archivo {
    * @param data Objeto con los datos necesarios para guardar la jugada.
    */
   public static async escribir(data: {
-    fecha: Date;
+    fecha: string;
     jugador: string;
     apuesta: number;
     resultado: "victoria" | "derrota";
     juego: string;
   }) {
     // Chequear si existe el archivo
-    const existe = Archivo.checkFile();
+    const existe = Archivo.check();
     // Si archivo no existe, se crea
     if (!existe) {
-      Archivo.crearDB();
+      Archivo.crear();
     }
 
     // Convertir data de jugada en formato CSV
@@ -48,7 +48,7 @@ export class Archivo {
    * Metodo para chequear si la base de datos ya fue creada.
    * @returns true si el archivo existe, false en caso contrario.
    */
-  private static checkFile(): boolean {
+  private static check(): boolean {
     if (fs.existsSync(Archivo.archivo)) {
       return true;
     } else {
@@ -59,7 +59,7 @@ export class Archivo {
   /**
    * Metodo para crear una base de datos vacia.
    */
-  private static crearDB() {
+  private static crear() {
     fs.writeFile(Archivo.archivo, "", (error) => {
       if (error) {
         if (error instanceof Error) {
@@ -74,7 +74,7 @@ export class Archivo {
    * en una cadena de texto separada por comas (csv)
    */
   private static crearFilaCSV(data: {
-    fecha: Date;
+    fecha: string;
     jugador: string;
     apuesta: number;
     resultado: "victoria" | "derrota";
