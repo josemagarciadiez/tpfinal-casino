@@ -47,9 +47,9 @@ export class DeluxeCrazyDK extends Juego {
       );
     } else {
       console.log("Monto ingresado exitosamente");
+      this.interfaceTragamonedas();
     }
 
-    this.interfaceTragamonedas();
     const tirada = this.tirada(apuesta)!;
     const ganancia = this.calcularGanancia(tirada);
 
@@ -169,8 +169,8 @@ export class DeluxeCrazyDK extends Juego {
     if (tirada !== undefined) {
       //se asegura de que tirada no sea undefined
       this.jugada = tirada; //asigna tirada a this.jugada
-      return this.contarSimilitudes(this.jugada); //analiza si el usuario ganó, tomando como parametro jugada
       this.calcularGanancia(tirada!, apuesta);
+      return this.contarSimilitudes(this.jugada); //analiza si el usuario ganó, tomando como parametro jugada
     } else {
       return console.error(0); //Si tirada = undefined retorna error
     }
@@ -185,7 +185,7 @@ export class DeluxeCrazyDK extends Juego {
       "========================================================",
       "                  🎰Deluxe Crazy DK🎰                  ",
       "========================================================",
-      ` 💲Apuesta total: ${apuestaTotal}     Saldo: ${jugador?.obtenerSaldo}`,
+      ` 💲Apuesta total: ${apuestaTotal}    🤑Saldo: ${jugador?.obtenerSaldo}`,
       "--------------------------------------------------------"
     );
   }
