@@ -10,7 +10,7 @@ export class Dados extends Juego {
 
   constructor() {
     super();
-    this.instrucciones = "";
+    this.instrucciones = this.leerInstrucciones("dados.txt");
   }
 
   public async ejecutar(jugador: Jugador): Promise<{
@@ -19,6 +19,7 @@ export class Dados extends Juego {
     ganancia?: number;
   }> {
     // PUNTO DE ENTRADA DEL JUEGO
+    await this.mostrarInstrucciones();
     // Mostrar primera pantalla
     this.interface();
 
@@ -213,6 +214,18 @@ export class Dados extends Juego {
       resultado: "victoria",
       ganancia: apuestaTotal * this.multiplicadorPremio,
     };
+  }
+
+  private async mostrarInstrucciones() {
+    console.clear();
+    console.log(this.instrucciones);
+
+    await Menu.elegirOpcion("Ingresa al juego", [
+      {
+        valor: "continue",
+        nombre: "Continuar",
+      },
+    ]);
   }
 
   /*
