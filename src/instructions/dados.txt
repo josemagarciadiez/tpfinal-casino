@@ -1,0 +1,72 @@
+==================================================================================
+                🎲 LAS VEGAS'S ROLLER MASTER 🎲
+==================================================================================
+
+📜 **Descripción:**
+Dice Blackjack es un juego inspirado en el 21 BlackJack, jugado con dados.
+El Jugador competirá contra la Casa.
+El objetivo es alcanzar un total de 21 o acercarse lo máximo posible sin pasarse.
+
+==================================================================================
+                        📖 **REGLAS DEL JUEGO** 📖
+==================================================================================
+
+🎲  **Turno del Jugador:**
+1️⃣  El Jugador realiza una apuesta inicial (al menos ${this.apuestaMinima} fichas).
+2️⃣  Lanza los 2 dados y calcula el "Conteo de Dados" (suma de ambos).
+3️⃣  Duplica el Conteo de Dados para obtener el "Conteo de Juego".
+
+💡 Ejemplo:
+- Dados: 🎲 3 y 🎲 4 → Conteo de Dados: 7 → Conteo de Juego: 14.
+
+🔸 **Opciones del Jugador a partir de la segunda ronda:**
+- **Pedir Carta:** Lanzar nuevamente los dos dados y podrá optar por:
+   - Sumar ambos dados al Conteo de Juego, o
+   - Sumar solo uno de los dados al Conteo de Juego.
+- **Plantarse:** Mantener el Conteo de Juego actual y pasar el turno al Crupier.
+- **Pasarse:** Si el Conteo de Juego supera 21, la Casa gana automáticamente.
+
+🔄 **Ejemplo de Pedir Carta:**
+- Conteo Actual: 14.
+- Tira Dados y obtiene: 🎲 2 y 🎲 6.
+  - Opciones:
+    - Sumar ambos (8) → Total: 22 (se pasa).
+    - Sumar solo 🎲 2 → Total: 16.
+    - Sumar solo 🎲 6 → Total: 20.
+
+🎯 El Jugador puede seguir pidiendo mientras no supere 21.
+
+==================================================================================
+
+🎲  **Turno de la Casa:**
+1️⃣  La Casa lanza sus 2 dados y calcula su "Conteo de Dados".
+2️⃣  Duplica el Conteo de Dados para obtener su "Conteo de Juego".
+
+🔸 **Reglas de la Casa:**
+- Si el Conteo de Juego es **17 o más** en la primera tirada, **debe plantarse**.
+- Si es menos de 17, debe pedir cartas hasta alcanzar 17 o más.
+- **Elección Estratégica:** Si alguna combinación lo pone en riesgo de perder y 
+tiene otra opción legal, puede elegir la mejor alternativa.
+
+🔄 **Ejemplo de Pedir Carta:**
+- Conteo Actual: 14.
+- Tira Dados y obtiene: 🎲 2 y 🎲 4.
+  - Opciones:
+    - Sumar ambos (6) → Total: 20 (la Casa seleccionará esta opción).
+    - Sumar solo 🎲 2 → Total: 16.
+    - Sumar solo 🎲 4 → Total: 18.
+
+==================================================================================
+                     ⚖️  **EMPATES Y GANADORES** ⚖️
+==================================================================================
+
+🤝 **Empates:**
+- Si el Conteo de la Casa y del Jugador son iguales, la Casa gana automáticamente.
+
+🏆 **Ganador:**
+- El ganador es quien tenga el total más cercano a 21 sin pasarse.
+- Si el Jugador se pasa, la Casa gana automáticamente.
+
+==================================================================================
+                       ¡Que comience el juego! 🎉
+==================================================================================
