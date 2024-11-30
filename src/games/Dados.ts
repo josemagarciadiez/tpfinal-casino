@@ -10,6 +10,7 @@ export class Dados extends Juego {
 
   constructor() {
     super();
+    this.nombre = "Las Vegas's Roller Master 🎲";
     this.instrucciones = this.leerInstrucciones("dados.txt");
   }
 
