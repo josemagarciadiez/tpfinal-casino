@@ -6,7 +6,7 @@ import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 
 // Implementaciones de juegos
-//import { Dados } from "../games/Dados";
+import { Dados } from "../games/Dados";
 
 export class Casino {
   private jugador: Jugador | undefined;
@@ -127,7 +127,7 @@ export class Casino {
 
     switch (opcionSeleccionada) {
       case "dados":
-        //this.juego = new Dados();
+        this.juego = new Dados();
         break;
       default:
         console.log("El juego seleccionado aún no esta disponible 😢");
