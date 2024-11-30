@@ -10,7 +10,7 @@ export class Archivo {
   private constructor() {}
 
   private static readonly carpeta = "src/db";
-  private static readonly archivo = "jugadas.txt";
+  private static readonly archivo = "src/db/jugadas.txt";
 
   // Metodos necesarios.
   // Chequear si archivo existe (privado)
@@ -30,20 +30,38 @@ export class Archivo {
     resultado: "victoria" | "derrota";
     juego: string;
   }) {
-    // Chequear si existe el archivo
-    const existe = Archivo.check();
-    // Si archivo no existe, se crea
-    if (!existe) {
-      Archivo.crear();
+    // Si no existe el archivo:
+    if (!fs.existsSync(`${Archivo.archivo}`)) {
+      // se crea
+      this.crear();
     }
 
     // Convertir data de jugada en formato CSV
     const fila = Archivo.crearFilaCSV(data);
 
-    // Escribir
-    fs.appendFile(
-      `${Archivo.carpeta}/${Archivo.archivo}`,
-      `\n${fila}`,
+    // Se escribe en la ultima linea disponible
+    fs.appendFile(`${Archivo.archivo}`, `\n${fila}`, (error) => {
+      if (error) {
+        if (error instanceof Error) {
+          throw new Error(error.message);
+        }
+      }
+    });
+  }
+
+  /**
+   * Metodo para crear una base de datos vacia.
+   */
+  private static crear() {
+    // 1. Chequeo si existe la carpeta,
+    if (!fs.existsSync(Archivo.carpeta)) {
+      // si no existe, se crea.
+      fs.mkdirSync(Archivo.carpeta, { recursive: true });
+    }
+    // Se crea el archivo vacio.
+    fs.writeFile(
+      `${Archivo.archivo}`,
+      "Fecha,Nombre,Juego,Apuesta,Resultado",
       (error) => {
         if (error) {
           if (error instanceof Error) {
@@ -52,37 +70,6 @@ export class Archivo {
         }
       }
     );
-  }
-
-  /**
-   * Metodo para chequear si la base de datos ya fue creada.
-   * @returns true si el archivo existe, false en caso contrario.
-   */
-  private static check(): boolean {
-    if (fs.existsSync(`${Archivo.carpeta}/${Archivo.archivo}`)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Metodo para crear una base de datos vacia.
-   */
-  private static crear() {
-    // Si no existe la carpeta
-    if (!fs.existsSync(Archivo.carpeta)) {
-      // se crea.
-      fs.mkdirSync(Archivo.carpeta, { recursive: true });
-    }
-
-    fs.writeFile(`${Archivo.carpeta}/${Archivo.archivo}`, "", (error) => {
-      if (error) {
-        if (error instanceof Error) {
-          throw new Error(error.message);
-        }
-      }
-    });
   }
 
   /**
