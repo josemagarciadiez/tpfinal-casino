@@ -2,6 +2,12 @@ import { Jugador } from "./Jugador";
 
 export interface IJuego {
   /**
+   * Método para mostrar el nombre del juego..
+   * @returns {string} Cadena de texto que contiene el nombre del juego.
+   */
+  obtenerNombre(): string;
+
+  /**
    * Método para mostrar las instrucciones del juego.
    * @returns {string} Cadena de texto formateada para mostrar al usuario las instrucciones de juego.
    */

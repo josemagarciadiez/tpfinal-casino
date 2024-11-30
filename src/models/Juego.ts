@@ -4,7 +4,12 @@ import { IJuego } from "./IJuego";
 import { Jugador } from "./Jugador";
 
 export abstract class Juego implements IJuego {
+  protected nombre!: string;
   protected instrucciones!: string;
+
+  obtenerNombre(): string {
+    return this.nombre;
+  }
 
   obtenerInstrucciones(): string {
     return this.instrucciones;
