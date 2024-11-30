@@ -77,7 +77,7 @@ export class Dados extends Juego {
     // pierde automaticamente
     if (conteoJugador > 21) {
       this.interface(apuestaTotal, conteoJugador);
-      await this.mostrarResultado("derrota", apuestaTotal);
+      await this.mostrarResultado("derrota", apuestaTotal, jugador);
       return {
         apuestaTotal,
         resultado: "derrota",
@@ -118,7 +118,7 @@ export class Dados extends Juego {
         // Imprimir mensaje de perdida
         if (conteoJugador === 0) {
           this.interface(apuestaTotal, conteoJugador);
-          await this.mostrarResultado("derrota", apuestaTotal);
+          await this.mostrarResultado("derrota", apuestaTotal, jugador);
           return {
             apuestaTotal,
             resultado: "derrota",
@@ -136,7 +136,7 @@ export class Dados extends Juego {
 
         if (confirmacion) {
           this.interface(apuestaTotal, conteoJugador);
-          await this.mostrarResultado("derrota", apuestaTotal);
+          await this.mostrarResultado("derrota", apuestaTotal, jugador, true);
           return {
             apuestaTotal,
             resultado: "derrota",
@@ -184,7 +184,7 @@ export class Dados extends Juego {
     // Si la casa se pasa, jugador gana
     if (conteoCasa > 21) {
       this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
-      await this.mostrarResultado("victoria", apuestaTotal);
+      await this.mostrarResultado("victoria", apuestaTotal, jugador);
       jugador.sumarSaldo(apuestaTotal * this.multiplicadorPremio);
       return {
         resultado: "victoria",
@@ -196,7 +196,7 @@ export class Dados extends Juego {
     // Si conteo Casa es mayor, o hay empate, la casa gana
     if (conteoCasa >= conteoJugador) {
       this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
-      await this.mostrarResultado("derrota", apuestaTotal);
+      await this.mostrarResultado("derrota", apuestaTotal, jugador);
       return {
         resultado: "derrota",
         apuestaTotal,
@@ -204,7 +204,7 @@ export class Dados extends Juego {
     }
 
     this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
-    await this.mostrarResultado("victoria", apuestaTotal);
+    await this.mostrarResultado("victoria", apuestaTotal, jugador);
 
     // Se le paga al jugador
     jugador.sumarSaldo(apuestaTotal * this.multiplicadorPremio);
@@ -464,7 +464,9 @@ export class Dados extends Juego {
   /** Metodo para mostrar resultado del juego */
   private async mostrarResultado(
     resultado: "victoria" | "derrota",
-    apuestaTotal: number
+    apuestaTotal: number,
+    jugador: Jugador,
+    salir: boolean = false
   ) {
     console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
     if (resultado === "victoria") {
@@ -487,19 +489,45 @@ export class Dados extends Juego {
       console.log("=======================================================");
     }
 
-    // Conteo para volver al menu
-    for (let i = 5; i > 0; i--) {
-      if (i === 1) {
-        process.stdout.write(
-          `\r🔄  Seras redirigido al menu principal en ${i} segundo..`
-        );
-      } else {
-        process.stdout.write(
-          `\r🔄  Seras redirigido al menu principal en ${i} segundos..`
-        );
+    const opciones = [
+      {
+        valor: "jugar",
+        nombre: "🔁  Volver a jugar",
+        desactivada: jugador.obtenerSaldo() < this.apuestaMinima,
+      },
+      {
+        valor: "salir",
+        nombre: "↩️   Salir",
+      },
+    ];
+
+    // Si el usuario eligio salir, se muestra mensaje
+    // y se redirige automaticamente.
+    if (salir) {
+      // Conteo para volver al menu
+      for (let i = 5; i > 0; i--) {
+        if (i === 1) {
+          process.stdout.write(
+            `\r🔄  Seras redirigido al menu principal en ${i} segundo..`
+          );
+        } else {
+          process.stdout.write(
+            `\r🔄  Seras redirigido al menu principal en ${i} segundos..`
+          );
+        }
+        // Esperar 1 s
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
-      // Esperar 1 s
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } else {
+      // Si no, se muestran las opciones
+      const opcion = await Menu.elegirOpcion(
+        "¿Que quieres hacer a continuación?",
+        opciones
+      );
+
+      if (opcion === "jugar") {
+        await this.ejecutar(jugador);
+      }
     }
   }
 }
