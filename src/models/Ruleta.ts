@@ -2,6 +2,7 @@ import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 import  * as fs from 'fs';
+import { promises } from "dns";
 
 
 export class Ruleta extends Juego {
@@ -140,6 +141,7 @@ export class Ruleta extends Juego {
     
             
       apuestaTotal=apuestaTotal+valorApostado;
+
       //metodo que simula la ruleta girando y muestra el resultado de manera asincronica
       this.ruletaGirando(resultado,jugador,resul,color);
 
