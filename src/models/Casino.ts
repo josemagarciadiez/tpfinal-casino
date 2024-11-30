@@ -6,10 +6,11 @@ import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 
 // Implementaciones de juegos
-import { Dados } from "../games/Dados";
+//import { Dados } from "../games/Dados";
+import { Ruleta } from "./Ruleta";
 
 export class Casino {
-  private jugador: Jugador | undefined;
+  private jugador!: Jugador;
   private juego: IJuego | undefined;
   private readonly juegos: { valor: string; nombre: string }[];
 
@@ -95,6 +96,8 @@ export class Casino {
       console.log("==========================================");
       console.log("       🎰 🎲 Menú Principal 🎲 🎰       ");
       console.log("------------------------------------------");
+      console.log("Nombre : "+this.jugador.obtenerNombre()+"\n"+"Saldo : "+ this.jugador.obtenerSaldo())
+      console.log("------------------------------------------");
 
       const opcion = await Menu.elegirOpcion("Selecciona una opción", opciones);
 
@@ -126,11 +129,13 @@ export class Casino {
     );
 
     switch (opcionSeleccionada) {
-      case "dados":
-        this.juego = new Dados();
-        break;
-      default:
-        console.log("El juego seleccionado aún no esta disponible 😢");
+      //case "dados":
+        //this.juego = new Dados();
+        //break;
+      //default:
+       // console.log("El juego seleccionado aún no esta disponible 😢");
+       case "ruleta":
+       this.juego= new Ruleta();
     }
 
     await this.ejecutarJuego();
@@ -141,6 +146,55 @@ export class Casino {
     console.log("==========================================");
     console.log("      🎰 💵 Administrar Saldo 💵 🎰     ");
     console.log("------------------------------------------");
+    console.log("Nombre : "+this.jugador.obtenerNombre()+"\n"+"Saldo : "+ this.jugador.obtenerSaldo())
+    console.log("------------------------------------------");
+
+    let opcion= await Menu.elegirOpcion("Que desea Hacer? ",
+      [{valor:"saldo",nombre:"Cargar Saldo"},{valor:"numero",nombre:"Retirar su saldo"}]);
+
+      if(opcion=="saldo"){
+        this.jugador?.sumarSaldo(await Menu.pedirNumero("ingrese el monto que desea cargar", (valor)=>{
+          
+          if (valor === undefined) {
+            return 'Debe ingresar un valor';
+          }
+
+          if (typeof(valor) !== 'number') {
+            return 'El valor debe ser un número';
+          }
+          
+          if (valor < 100) {
+            return 'El valor minimo de recarga es 100';
+          }
+          
+          return true;
+        }))
+        
+      }else{
+        
+        this.jugador?.restarSaldo(await Menu.pedirNumero("ingrese el monto que desea retirar", (valor)=>{
+          
+          if (valor === undefined) {
+            return 'Debe ingresar un valor';
+          }
+
+          if (typeof(valor) !== 'number') {
+            return 'El valor debe ser un número';
+          }
+          
+          if (valor > this.jugador?.obtenerSaldo() ) {
+            return 'El valor que desea retirar debe ser menor o igual a su saldo';
+          }
+
+          if (valor < 0 ) {
+            return 'Ingrese un valor mayor a cero y menor a su saldo';
+          }
+          
+          return true;
+        }))
+      }
+
+
   }
 
   private async ejecutarJuego(): Promise<void> {
