@@ -157,13 +157,16 @@ export class Casino {
 
     const jugada = await this.juego.ejecutar(this.jugador);
 
-    // Logica para escribir jugada en el log.
-
-    await this.registrarJugada({
-      ...jugada,
-      juego: "",
-      nombreJugador: this.jugador.obtenerNombre(),
-    });
+    // Chequeamos que las apuestas en 0 no se escriban.
+    // Las apuestas en 0 significan que se abandono la partida
+    // antes de aposta.
+    if (jugada.apuestaTotal) {
+      await this.registrarJugada({
+        ...jugada,
+        juego: this.juego!.obtenerNombre(),
+        nombreJugador: this.jugador.obtenerNombre(),
+      });
+    }
   }
 
   private async registrarJugada({
@@ -181,7 +184,7 @@ export class Casino {
     // ... Lógica para guardar una jugada en el diario de jugadas
     const jugada = {
       fecha: new Date().toDateString(),
-      juego: "ruleta",
+      juego,
       apuesta: apuestaTotal,
       resultado,
       jugador: nombreJugador,
