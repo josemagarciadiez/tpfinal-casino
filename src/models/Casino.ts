@@ -155,17 +155,31 @@ export class Casino {
       throw new Error("Se debe seleccionar un juego.");
     }
 
+    // Muestra las instrucciones
+    // Ejecuta el juego y espera el resultado.
     const jugada = await this.juego.ejecutar(this.jugador);
+    // Muestra resultado
+    const opcion = await this.juego.mostrarResultado(
+      jugada.apuestaTotal,
+      jugada.resultado,
+      this.jugador,
+      this.juego.obtenerApuestaMinima(),
+      jugada.apuestaTotal === 0,
+      jugada.ganancia ?? undefined
+    );
 
-    // Chequeamos que las apuestas en 0 no se escriban.
-    // Las apuestas en 0 significan que se abandono la partida
-    // antes de aposta.
-    if (jugada.apuestaTotal) {
-      await this.registrarJugada({
-        ...jugada,
-        juego: this.juego!.obtenerNombre(),
-        nombreJugador: this.jugador.obtenerNombre(),
-      });
+    // Guarda la partida
+    const partida = {
+      fecha: new Date().toDateString(),
+      jugador: this.jugador.obtenerNombre(),
+      apuesta: jugada.apuestaTotal,
+      resultado: jugada.resultado,
+      juego: this.juego.obtenerNombre(),
+    };
+
+    // y chequea si tiene que reiniciar el juego.
+    if (opcion === "jugar") {
+      await this.ejecutarJuego();
     }
   }
 
@@ -189,7 +203,5 @@ export class Casino {
       resultado,
       jugador: nombreJugador,
     };
-
-    await Archivo.escribir(jugada);
   }
 }
