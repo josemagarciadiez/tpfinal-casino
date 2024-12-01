@@ -5,7 +5,7 @@ import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 
 export class Dados extends Juego {
-  private readonly apuestaMinima: number = 200;
+  private readonly apuestaMinima: number = 150;
   private readonly multiplicadorPremio: number = 7;
 
   constructor() {
