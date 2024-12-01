@@ -35,22 +35,46 @@ export class DeluxeCrazyDK extends Juego {
     // Opciones del jugador dentro del juego
     this.interfaceTragamonedas(jugador);
 
-    this.apuesta = await Menu.pedirNumero("Ingrese su apuesta");
-    // Todo eso iria en la funcion validadora
-    if (this.apuesta < this.apuestaMinima) {
-      console.error(
-        `El monto ingresado (${this.apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`
-      );
-      this.apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
-    } else if (this.apuesta > this.apuestaMaxima) {
-      console.error(
-        `El monto ingresado (${this.apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`
-      );
-      this.apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
-    } else {
-      console.log("Monto ingresado exitosamente");
-      this.interfaceTragamonedas(jugador);
-    }
+    this.apuesta = await Menu.pedirNumero("Ingrese su apuesta", (apuesta) => {
+      // Primero valida que sea un numero
+      if (typeof apuesta === "number") {
+        // Si es numero
+        // chequea que lo ingresado no sea menor q la apuesta minima
+        if (apuesta < this.apuestaMinima) {
+          return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
+        }
+
+        // despues, chequea que no supere la apuesta maxima
+        if (apuesta > this.apuestaMaxima) {
+          return `El monto ingresado (${apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`;
+        }
+
+        // Yo aca agregue que chequee que lo q quiere apostar el usuario sea menor o igual q su saldo
+        // pq aca yo puedo apostar mas de lo que tengo. OJO
+
+        // Cuando todo va bien, se retorna true, y se guarda en this.apuesta lo
+        // ingreso el usuario.
+        return true;
+      } else {
+        return "Debes ingresar un número válido.";
+      }
+    });
+    // this.apuesta = await Menu.pedirNumero("Ingrese su apuesta");
+    // // Todo eso iria en la funcion validadora
+    // if (this.apuesta < this.apuestaMinima) {
+    //   console.error(
+    //     `El monto ingresado (${this.apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`
+    //   );
+    //   this.apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
+    // } else if (this.apuesta > this.apuestaMaxima) {
+    //   console.error(
+    //     `El monto ingresado (${this.apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`
+    //   );
+    //   this.apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
+    // } else {
+    //   console.log("Monto ingresado exitosamente");
+    //   this.interfaceTragamonedas(jugador);
+    // }
 
     let opcion = "";
     let opciones = [
