@@ -4,10 +4,10 @@ import { Jugador } from "./Jugador";
 
 // Clases utilitarias
 import { Menu } from "../utils/Menu";
+import { Archivo } from "../utils/Archivo";
 
 // Implementaciones de juegos
 import { Dados } from "../games/Dados";
-import { Archivo } from "../utils/Archivo";
 
 export class Casino {
   private jugador: Jugador | undefined;
@@ -128,7 +128,7 @@ export class Casino {
 
     switch (opcionSeleccionada) {
       case "dados":
-        this.juego = new Dados();
+        // this.juego = new Dados();
         break;
       default:
         console.log("El juego seleccionado aún no esta disponible 😢");
@@ -189,19 +189,20 @@ export class Casino {
     resultado,
     nombreJugador,
   }: {
-    apuestaTotal: number;
-    resultado: "victoria" | "derrota";
-    ganancia?: number;
     juego: string;
+    apuestaTotal: number;
+    resultado: "victoria" | "perdida";
     nombreJugador: string;
+    ganancia?: number;
   }): Promise<void> {
     // ... Lógica para guardar una jugada en el diario de jugadas
     const jugada = {
+      id: "generarId unico",
       fecha: new Date().toDateString(),
       juego,
-      apuesta: apuestaTotal,
+      apuestaTotal,
       resultado,
-      jugador: nombreJugador,
+      nombreJugador,
     };
   }
 }
