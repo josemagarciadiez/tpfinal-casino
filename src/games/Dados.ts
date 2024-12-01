@@ -5,12 +5,13 @@ import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 
 export class Dados extends Juego {
-  private readonly apuestaMinima: number = 150;
+  // private readonly apuestaMinima: number = 150;
   private readonly multiplicadorPremio: number = 7;
 
   constructor() {
     super();
     this.nombre = "Las Vegas's Roller Master 🎲";
+    this.apuestaMinima = 150;
     this.instrucciones = this.leerInstrucciones("dados.txt");
   }
 
@@ -78,7 +79,7 @@ export class Dados extends Juego {
     // pierde automaticamente
     if (conteoJugador > 21) {
       this.interface(apuestaTotal, conteoJugador);
-      await this.mostrarResultado("derrota", apuestaTotal, jugador);
+      // await this.mostrarResultado("derrota", apuestaTotal, jugador);
       return {
         apuestaTotal,
         resultado: "derrota",
@@ -119,7 +120,7 @@ export class Dados extends Juego {
         // Imprimir mensaje de perdida
         if (conteoJugador === 0) {
           this.interface(apuestaTotal, conteoJugador);
-          await this.mostrarResultado("derrota", apuestaTotal, jugador);
+          // await this.mostrarResultado("derrota", apuestaTotal, jugador);
           return {
             apuestaTotal,
             resultado: "derrota",
@@ -137,7 +138,7 @@ export class Dados extends Juego {
 
         if (confirmacion) {
           this.interface(apuestaTotal, conteoJugador);
-          await this.mostrarResultado("derrota", apuestaTotal, jugador, true);
+          // await this.mostrarResultado("derrota", apuestaTotal, jugador, true);
           return {
             apuestaTotal,
             resultado: "derrota",
@@ -185,7 +186,7 @@ export class Dados extends Juego {
     // Si la casa se pasa, jugador gana
     if (conteoCasa > 21) {
       this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
-      await this.mostrarResultado("victoria", apuestaTotal, jugador);
+      // await this.mostrarResultado("victoria", apuestaTotal, jugador);
       jugador.sumarSaldo(apuestaTotal * this.multiplicadorPremio);
       return {
         resultado: "victoria",
@@ -197,7 +198,7 @@ export class Dados extends Juego {
     // Si conteo Casa es mayor, o hay empate, la casa gana
     if (conteoCasa >= conteoJugador) {
       this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
-      await this.mostrarResultado("derrota", apuestaTotal, jugador);
+      // await this.mostrarResultado("derrota", apuestaTotal, jugador);
       return {
         resultado: "derrota",
         apuestaTotal,
@@ -205,7 +206,7 @@ export class Dados extends Juego {
     }
 
     this.interface(apuestaTotal, conteoJugador, conteoCasa, false);
-    await this.mostrarResultado("victoria", apuestaTotal, jugador);
+    // await this.mostrarResultado("victoria", apuestaTotal, jugador);
 
     // Se le paga al jugador
     jugador.sumarSaldo(apuestaTotal * this.multiplicadorPremio);
@@ -464,76 +465,5 @@ export class Dados extends Juego {
     console.log("-------------------------------------------------------");
     console.log(`   Dados lanzados: 🎲  ${dados[0]} y 🎲  ${dados[1]}   `);
     console.log("=======================================================");
-  }
-
-  /** Metodo para mostrar resultado del juego */
-  private async mostrarResultado(
-    resultado: "victoria" | "derrota",
-    apuestaTotal: number,
-    jugador: Jugador,
-    salir: boolean = false
-  ) {
-    console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
-    if (resultado === "victoria") {
-      console.log("🎉 🍾  =======================================  🎉 🍾");
-      console.log("         🥇 🏆 ¡FELICIDADES! ¡HAS GANADO! 🥇 🏆");
-      console.log("=======================================================");
-      console.log(
-        `💰   Ganancia total: ${apuestaTotal * this.multiplicadorPremio}`
-      );
-      console.log("🎲   ¡La suerte estuvo de tu lado!");
-      console.log("🍾   Disfruta de tu victoria y sigue jugando.");
-      console.log("=======================================================");
-    } else {
-      console.log("💔 ❤️‍🩹  =======================================  💔 ❤️‍🩹");
-      console.log("          🥲 😔 LO SENTIMOS, HAS PERDIDO 🥲 😔");
-      console.log("=======================================================");
-      console.log(`❌   Pérdida total: ${apuestaTotal}`);
-      console.log("🎲   ¡No te rindas, la próxima vez será mejor!");
-      console.log("🃏   Inténtalo de nuevo y vence a la casa.");
-      console.log("=======================================================");
-    }
-
-    const opciones = [
-      {
-        valor: "jugar",
-        nombre: "🔁  Volver a jugar",
-        desactivada: jugador.obtenerSaldo() < this.apuestaMinima,
-      },
-      {
-        valor: "salir",
-        nombre: "↩️   Salir",
-      },
-    ];
-
-    // Si el usuario eligio salir, se muestra mensaje
-    // y se redirige automaticamente.
-    if (salir) {
-      // Conteo para volver al menu
-      for (let i = 5; i > 0; i--) {
-        if (i === 1) {
-          process.stdout.write(
-            `\r🔄  Seras redirigido al menu principal en ${i} segundo..`
-          );
-        } else {
-          process.stdout.write(
-            `\r🔄  Seras redirigido al menu principal en ${i} segundos..`
-          );
-        }
-        // Esperar 1 s
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    } else {
-      // Si no, se muestran las opciones
-      const opcion = await Menu.elegirOpcion(
-        "¿Que quieres hacer a continuación?",
-        opciones
-      );
-
-      if (opcion === "jugar") {
-        // TODO: Agregar aqui la escritura de la partida en base de datos.
-        await this.ejecutar(jugador);
-      }
-    }
   }
 }
