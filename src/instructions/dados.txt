@@ -12,7 +12,7 @@ El objetivo es alcanzar un total de 21 o acercarse lo máximo posible sin pasars
 ==================================================================================
 
 🎲  **Turno del Jugador:**
-1️⃣  El Jugador realiza una apuesta inicial (al menos ${this.apuestaMinima} fichas).
+1️⃣  El Jugador realiza una apuesta inicial (al menos 150 fichas).
 2️⃣  Lanza los 2 dados y calcula el "Conteo de Dados" (suma de ambos).
 3️⃣  Duplica el Conteo de Dados para obtener el "Conteo de Juego".
 
