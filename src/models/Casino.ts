@@ -128,7 +128,7 @@ export class Casino {
 
     switch (opcionSeleccionada) {
       case "dados":
-        // this.juego = new Dados();
+        this.juego = new Dados();
         break;
       default:
         console.log("El juego seleccionado aún no esta disponible 😢");
@@ -176,6 +176,8 @@ export class Casino {
       resultado: jugada.resultado,
       juego: this.juego.obtenerNombre(),
     };
+
+    Archivo.escribir(partida);
 
     // y chequea si tiene que reiniciar el juego.
     if (opcion === "jugar") {
