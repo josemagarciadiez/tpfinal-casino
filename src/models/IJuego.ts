@@ -2,7 +2,7 @@ import { Jugador } from "./Jugador";
 
 export interface IJuego {
   /**
-   * Método para mostrar el nombre del juego..
+   * Método para mostrar el nombre del juego.
    * @returns {string} Cadena de texto que contiene el nombre del juego.
    */
   obtenerNombre(): string;
@@ -12,6 +12,12 @@ export interface IJuego {
    * @returns {string} Cadena de texto formateada para mostrar al usuario las instrucciones de juego.
    */
   obtenerInstrucciones(): string;
+
+  /**
+   * Método para mostrar la apuesta minima del juego.
+   * @returns {number} Numero que indica la cantidad minima de fichas que necesita el Jugador para jugar al juego.
+   */
+  obtenerApuestaMinima(): number;
 
   /**
    * Inicia la ejecución del juego concreto.
