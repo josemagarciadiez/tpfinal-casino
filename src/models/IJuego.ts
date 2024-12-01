@@ -34,4 +34,27 @@ export interface IJuego {
     resultado: "victoria" | "derrota";
     ganancia?: number;
   }>;
+
+  /**
+   * Muestra en pantalla el resultado del juego ejecutado.
+   * Ademas le pregunta al usuario que quiere hacer a continuación [Jugar otra vez] o [Salir]
+   *
+   * @param apuestaTotal  Monto total apostado por el jugador en todas las rondas del juego.
+   * @param resultado     Resultado del juego, desde el punto de vista del jugador. Puede ser "victoria" o "derrota"
+   * @param jugador       Instancia de la clase `Jugador` que representa al jugador que participó en el juego.
+   * @param apuestaMinima Monto minimo para apostar en el juego seleccionado.
+   * @param abandono      Flag que indica si el usuario esta abandonando el juego a mitad de partida.
+   * @param ganancia      (Opcional) Monto total pagado por el casino al jugador si el resultado fue "victoria".
+   *                                   Si el resultado fue "derrota", este valor será `undefined`.
+   *
+   * @returns La opción seleccionada por el jugador en la pantalla.
+   */
+  mostrarResultado(
+    apuestaTotal: number,
+    resultado: "victoria" | "derrota",
+    jugador: Jugador,
+    apuestaMinima: number,
+    abandono?: boolean,
+    ganancia?: number
+  ): Promise<"jugar" | "salir">;
 }
