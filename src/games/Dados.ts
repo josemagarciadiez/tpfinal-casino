@@ -531,6 +531,7 @@ export class Dados extends Juego {
       );
 
       if (opcion === "jugar") {
+        // TODO: Agregar aqui la escritura de la partida en base de datos.
         await this.ejecutar(jugador);
       }
     }
