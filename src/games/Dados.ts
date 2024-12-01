@@ -217,18 +217,6 @@ export class Dados extends Juego {
     };
   }
 
-  private async mostrarInstrucciones() {
-    console.clear();
-    console.log(this.instrucciones);
-
-    await Menu.elegirOpcion("Ingresa al juego", [
-      {
-        valor: "continue",
-        nombre: "Continuar",
-      },
-    ]);
-  }
-
   /*
    *  Metodo para que la Casa seleccione la
    *  mejor opcion para su tiro
@@ -343,6 +331,22 @@ export class Dados extends Juego {
     });
 
     return apuesta;
+  }
+
+  /**
+   * Metoto para mostrar instrucciones al principio del juego,
+   * y solicitarle al usuario que presione continuar para jugar.
+   */
+  private async mostrarInstrucciones() {
+    console.clear();
+    console.log(this.instrucciones);
+
+    await Menu.elegirOpcion("Ingresa al juego", [
+      {
+        valor: "continue",
+        nombre: "Continuar",
+      },
+    ]);
   }
 
   /**
