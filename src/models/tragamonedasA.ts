@@ -6,6 +6,7 @@ import { publicDecrypt } from "crypto";
 import { AnyTxtRecord } from "dns";
 import { Serializer } from "v8";
 import { Casino } from "./Casino";
+import { exit } from "process";
 //fuente de los simbolos: https://emojipedia.org
 export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
@@ -13,20 +14,18 @@ export class DeluxeCrazyDK extends Juego {
   private simbolos: string[];
   private jugada: string[];
   private valores: Record<string, number> = {
-    "🐈": 20,
-    "🐕": 30,
-    "🐀": 25,
-    "❤️": 35,
-    "💀": 50,
-    "🌹": 100,
+    "🐈": 200,
+    "🌹": 1000,
     "🤡": 1,
   };
+  private apuesta: number;
   public constructor() {
     super();
     this.apuestaMinima = 5;
     this.apuestaMaxima = 5000;
-    this.simbolos = ["🐈", "🐕", "🐀", "🤡", "❤️", "💀", "🌹"];
+    this.simbolos = ["🐈","🤡","🌹"];
     this.jugada = [];
+    this.apuesta = 5; //Iniciliza en 5 para evitar conflictos
   }
   //methods----
   async ejecutar(jugador: Jugador): Promise<{
@@ -36,25 +35,28 @@ export class DeluxeCrazyDK extends Juego {
   }> {
     //opciones del jugador dentro del juego
     this.interfaceTragamonedas();
-    let apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
-    if (apuesta < this.apuestaMinima) {
-      console.error(
-        `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`
-      );
-    } else if (apuesta > this.apuestaMaxima) {
-      console.error(
-        `El monto ingresado (${apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`
-      );
-    } else {
-      console.log("Monto ingresado exitosamente");
-      this.interfaceTragamonedas();
+    while(true){
+        this.apuesta = await Menu.pedirNumero("Ingrese su apuesta: ");
+        if (this.apuesta < this.apuestaMinima) {
+            console.error(
+                `El monto ingresado (${this.apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`
+            );
+        } else if (this.apuesta > this.apuestaMaxima) {
+            console.error(
+                `El monto ingresado (${this.apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`
+            );
+        } else {
+            console.log("Monto ingresado exitosamente");
+            this.interfaceTragamonedas();
+            break;
+        }
     }
-
-    const tirada = this.tirada(apuesta)!;
-    const ganancia = this.calcularGanancia(tirada);
-
-    let resultado: "victoria" | "derrota" = "derrota";
-    if (ganancia > 0) {
+        
+        const tirada = this.tirada(this.apuesta)!;
+        const ganancia = this.calcularGanancia(tirada);
+        
+        let resultado: "victoria" | "derrota" = "derrota";
+        if (ganancia > 0) {
       resultado = "victoria";
     }
 
@@ -75,27 +77,27 @@ export class DeluxeCrazyDK extends Juego {
       },
     ];
 
-    while (opcion != "salir" && jugador.obtenerSaldo() != 0) {
+    while (opcion != "salir" && jugador.obtenerSaldo() > 0) {
       opcion = await Menu.elegirOpcion(
         "¿Que quieres hacer a continuacion?",
         opciones
       );
       if (opcion === "tirada") {
-        this.interfaceTragamonedas(apuesta, jugador);
-        this.tirada(apuesta);
-        jugador.restarSaldo(apuesta);
-        this.calcularGanancia(tirada, apuesta);
+        this.interfaceTragamonedas(this.apuesta, jugador);
+        console.log(this.tirada(this.apuesta));
+        jugador.restarSaldo(this.apuesta);
+        this.calcularGanancia(tirada, jugador);
       }
       if (opcion === "apuesta") {
-        apuesta = await Menu.pedirNumero("Ingrese el nuevo monto: ");
+        this.apuesta = await Menu.pedirNumero("Ingrese el nuevo monto: ");
       }
       if (opcion === "salir") {
-        //Jose: Vuelvo a elergirJuego()?
+        return exit(0);
       }
     }
 
     return {
-      apuestaTotal: apuesta,
+      apuestaTotal: this.apuesta,
       resultado: resultado,
       ganancia: ganancia, // Si no hay ganancia, ganancia será undefined
     };
@@ -103,15 +105,16 @@ export class DeluxeCrazyDK extends Juego {
 
   public simboloRandom() {
     let i = Math.floor(Math.random() * this.simbolos.length);
-    return this.simbolos[i - 1];
+    return this.simbolos[i];
   }
   public tirada(apuesta?: number, jugador?: Jugador) {
     let i: number;
+    this.jugada = [];
     for (i = 0; i < this.simbolos.length; i++) {
       let newSymbol = this.simboloRandom();
       this.jugada.push(newSymbol);
-      return this.jugada;
     }
+    return this.jugada;
   }
 
   //Funcion auxiliar para contar las similitudes de cada simbolo
@@ -121,11 +124,7 @@ export class DeluxeCrazyDK extends Juego {
       //Si el simbolo es 🤡, cuenta como comodin
       if (simbolo === "🤡") {
         contador["🐈"] = (contador["🐈"] || 0) + 1; // || 0 verifica si simbolo existe en contador
-        contador["🐕"] = (contador["🐕"] || 0) + 1; // 0 return 0, luego contador[] se establece en 1
-        contador["🐀"] = (contador["🐀"] || 0) + 1;
-        contador["❤️"] = (contador["❤️"] || 0) + 1;
-        contador["💀"] = (contador["💀"] || 0) + 1;
-        contador["🌹"] = (contador["🌹"] || 0) + 1;
+        contador["🌹"] = (contador["🌹"] || 0) + 1;// 0 return 0, luego contador[] se establece en 1
       } else {
         contador[simbolo] = (contador[simbolo] || 0) + 1;
       }
@@ -146,7 +145,6 @@ export class DeluxeCrazyDK extends Juego {
 
   public calcularGanancia(
     tirada: string[],
-    apuesta?: number,
     jugador?: Jugador
   ): number {
     const contador = this.contarOcurrencias(tirada);
@@ -155,7 +153,7 @@ export class DeluxeCrazyDK extends Juego {
       if (contador[simbolo] >= 2) {
         //verifica que se repita al menos dos veces
         const valorSimbolo = this.valores[simbolo];
-        gananciaTotal += apuesta! + valorSimbolo * contador[simbolo];
+        gananciaTotal +=valorSimbolo * contador[simbolo];
         jugador?.sumarSaldo(gananciaTotal);
       }
     }
@@ -180,13 +178,12 @@ export class DeluxeCrazyDK extends Juego {
     apuestaTotal?: number,
     jugador?: Jugador
   ) {
+    apuestaTotal = apuestaTotal;
     console.clear();
-    console.log(
-      "========================================================",
-      "                  🎰Deluxe Crazy DK🎰                  ",
-      "========================================================",
-      ` 💲Apuesta total: ${apuestaTotal}    🤑Saldo: ${jugador?.obtenerSaldo}`,
-      "--------------------------------------------------------"
-    );
+    console.log("========================================================");
+    console.log("                  🎰Deluxe Crazy DK🎰                  ");
+    console.log("========================================================");
+    console.log(` 💲Apuesta total: ${apuestaTotal}    🤑Saldo: ${jugador?.obtenerSaldo()}`);
+    console.log("--------------------------------------------------------");  
   }
 }
