@@ -12,18 +12,11 @@ export class Archivo {
   private static readonly carpeta = "src/db";
   private static readonly archivo = "src/db/jugadas.txt";
 
-  // Metodos necesarios.
-  // Chequear si archivo existe (privado)
-  // NO: Crear nuevo archivo, y escribir datos.
-  // SI: Agregar datos en el mismo archivo.
-  // Leer todo el contenido del archivo.
-  // Filtrar contenido del archivo.
-
   /**
    *
    * @param data Objeto con los datos necesarios para guardar la jugada.
    */
-  public static async escribir(data: {
+  public static escribir(data: {
     fecha: string;
     jugador: string;
     apuesta: number;
@@ -31,10 +24,7 @@ export class Archivo {
     juego: string;
   }) {
     // Si no existe el archivo:
-    if (!fs.existsSync(`${Archivo.archivo}`)) {
-      // se crea
-      this.crear();
-    }
+    Archivo.check();
 
     // Convertir data de jugada en formato CSV
     const fila = Archivo.crearFilaCSV(data);
@@ -47,6 +37,18 @@ export class Archivo {
         }
       }
     });
+  }
+
+  public static leer(filtro: string) {
+    // 1. Chequear si existe archivo:
+    Archivo.check();
+    // 2. Leer archivo.
+    // 3. Convertir archivo a fila
+    // 4. Convertir filas en objetos
+    // 5. Agregar objetos a arreglo
+    // 6. Chequear si hay filtro
+    // 6.a. Si no: Devolver arreglo entero
+    // 6.b. Filtrar arreglo y devolver copia filtrada.
   }
 
   /**
@@ -70,6 +72,14 @@ export class Archivo {
         }
       }
     );
+  }
+
+  private static check() {
+    // Si no existe el archivo:
+    if (!fs.existsSync(`${Archivo.archivo}`)) {
+      // se crea
+      this.crear();
+    }
   }
 
   /**
