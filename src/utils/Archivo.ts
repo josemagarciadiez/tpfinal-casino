@@ -13,6 +13,7 @@ export class Archivo {
   private static readonly archivo = "src/db/jugadas.txt";
 
   /**
+   * Metodo para escribir una jugada en la base de datos.
    *
    * @param data Objeto con los datos necesarios para guardar la jugada.
    */
@@ -30,7 +31,7 @@ export class Archivo {
     const fila = Archivo.crearFilaCSV(data);
 
     // Se escribe en la ultima linea disponible
-    fs.appendFile(`${Archivo.archivo}`, `\n${fila}`, (error) => {
+    fs.appendFile(Archivo.archivo, `\n${fila}`, (error) => {
       if (error) {
         if (error instanceof Error) {
           throw new Error(error.message);
@@ -39,16 +40,41 @@ export class Archivo {
     });
   }
 
-  public static leer(filtro: string) {
+  /**
+   * Metodo para leer las jugadas registradas en la base de datos.
+   *
+   * @param filtro Cadena de texto que corresponde al nombre del juego.
+   * @returns Arreglo de jugadas registradas en la base de datos.
+   */
+  public static leer(filtro?: string) {
     // 1. Chequear si existe archivo:
     Archivo.check();
     // 2. Leer archivo.
-    // 3. Convertir archivo a fila
-    // 4. Convertir filas en objetos
-    // 5. Agregar objetos a arreglo
-    // 6. Chequear si hay filtro
-    // 6.a. Si no: Devolver arreglo entero
-    // 6.b. Filtrar arreglo y devolver copia filtrada.
+    const data = fs.readFileSync(Archivo.archivo, "utf-8");
+    // 3. Convertir archivo a filas y limpio caracteres
+    // inecesarios.
+    const filas = data.split("\n").map((fila) => fila.trim());
+    // 4. Convertir filas en arreglo de arreglos
+    const matriz = filas.map((fila) => fila.split(","));
+    // 5. Convertir matriz en arreglo de objetos
+    const resultadosConEncabezado = matriz.map((fila) => {
+      return {
+        fecha: fila[0],
+        jugador: fila[1],
+        juego: fila[2],
+        apuesta: fila[3],
+        resultado: fila[4],
+      };
+    });
+    // 6. Elimino encabezado
+    const resultadosSinEncabezado = resultadosConEncabezado.slice(1);
+    // 7. Chequear si hay filtro
+    if (filtro) {
+      // 7.a. Filtrar arreglo y devolver copia filtrada.
+      return resultadosSinEncabezado.filter((fila) => fila.juego === filtro);
+    }
+    // 7.b. Si no: Devolver arreglo entero
+    return resultadosSinEncabezado;
   }
 
   /**
@@ -62,7 +88,7 @@ export class Archivo {
     }
     // Se crea el archivo vacio.
     fs.writeFile(
-      `${Archivo.archivo}`,
+      Archivo.archivo,
       "Fecha,Nombre,Juego,Apuesta,Resultado",
       (error) => {
         if (error) {
@@ -76,7 +102,7 @@ export class Archivo {
 
   private static check() {
     // Si no existe el archivo:
-    if (!fs.existsSync(`${Archivo.archivo}`)) {
+    if (!fs.existsSync(Archivo.archivo)) {
       // se crea
       this.crear();
     }
