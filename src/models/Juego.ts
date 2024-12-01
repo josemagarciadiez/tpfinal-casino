@@ -7,6 +7,7 @@ import { Menu } from "../utils/Menu";
 export abstract class Juego implements IJuego {
   protected nombre!: string;
   protected instrucciones!: string;
+  protected apuestaMinima!: number;
 
   obtenerNombre(): string {
     return this.nombre;
@@ -14,6 +15,10 @@ export abstract class Juego implements IJuego {
 
   obtenerInstrucciones(): string {
     return this.instrucciones;
+  }
+
+  obtenerApuestaMinima(): number {
+    return this.apuestaMinima;
   }
 
   abstract ejecutar(jugador: Jugador): Promise<{
