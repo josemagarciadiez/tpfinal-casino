@@ -20,7 +20,7 @@ export class Dados extends Juego {
     ganancia?: number;
   }> {
     // PUNTO DE ENTRADA DEL JUEGO
-    await this.mostrarInstrucciones();
+
     // Mostrar primera pantalla
     this.interface();
 
@@ -331,22 +331,6 @@ export class Dados extends Juego {
     });
 
     return apuesta;
-  }
-
-  /**
-   * Metoto para mostrar instrucciones al principio del juego,
-   * y solicitarle al usuario que presione continuar para jugar.
-   */
-  private async mostrarInstrucciones() {
-    console.clear();
-    console.log(this.instrucciones);
-
-    await Menu.elegirOpcion("Ingresa al juego", [
-      {
-        valor: "continue",
-        nombre: "Continuar",
-      },
-    ]);
   }
 
   /**

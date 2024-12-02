@@ -6,7 +6,7 @@ import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 
 // Implementaciones de juegos
-import { Ruleta } from "./Ruleta";
+import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
 
 export class Casino {
@@ -148,6 +148,9 @@ export class Casino {
     await this.ejecutarJuego();
   }
 
+  /**
+   *
+   */
   private async manejarSaldo(): Promise<void> {
     console.clear();
     console.log("==========================================");
@@ -229,6 +232,18 @@ export class Casino {
     if (!this.juego) {
       throw new Error("Se debe seleccionar un juego.");
     }
+
+    const instrucciones = this.juego.obtenerInstrucciones();
+
+    console.clear();
+    console.log(instrucciones);
+
+    await Menu.elegirOpcion("Ingresa al juego", [
+      {
+        valor: "continuar",
+        nombre: "Continuar",
+      },
+    ]);
 
     const jugada = await this.juego.ejecutar(this.jugador);
 
