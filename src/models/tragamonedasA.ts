@@ -71,23 +71,54 @@ export class DeluxeCrazyDK extends Juego {
     while (opcion !== "salir") {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
+        const interactuarTirada = [
+          {
+            valor: "jugar",
+            nombre: "▶️ Seguir jugando",
+          },
+          {
+            valor: "cambiar",
+            nombre: "🎰 Cambiar apuesta",
+          },
+          {
+            valor: "salir",
+            nombre: " 🚪salir",
+          },
+        ];
         jugador.restarSaldo(this.apuesta);
-        for (let i = 0; i < this.tiros; i++) {
+        for (let iP = 0; iP < this.tiros; iP++) {
           console.clear();
           this.interfaceTragamonedas(jugador, this.apuesta);
           this.jugada = [];
           console.log(
-            `\n                 Tiros restantes: ${this.tiros - i}   `
+            `\n                 Tiros restantes: ${this.tiros - iP}   `
           );
           console.log(
             "========================================================"
           );
           await this.simularTiro();
           console.log("\n", this.calcularGanancia(this.jugada, jugador)); // Calcula la ganancia para el tiro actual
-          console.log(
-            "Por favor aguarda 5 segundos mientras cargamos el proximo tiro..."
+          let interaccion = await Menu.elegirOpcion(
+            "¿Deseas continuar con la jugada?",
+            interactuarTirada
           );
-          await this.esperar(5);
+          if (interaccion === "jugar") {
+            continue;
+          }
+          if (interaccion === "cambiar") {
+            this.apuesta = await this.pedirApuesta(jugador);
+          }
+          if (interaccion === "salir") {
+            const confirmacion = await Menu.pedirConfirmacion(
+              "¿Estás seguro? Perderas todo el progreso obtenido en este tiro"
+            );
+            if (confirmacion) {
+              return {
+                apuestaTotal: this.apuesta,
+                resultado: "derrota",
+              };
+            }
+          }
         }
       }
 
@@ -231,13 +262,13 @@ export class DeluxeCrazyDK extends Juego {
   private async interfaceTragamonedas(jugador: Jugador, apuestaTotal: number) {
     apuestaTotal = this.apuesta;
     console.clear();
-    console.log("========================================================");
-    console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
-    console.log("========================================================");
+    console.log("|========================================================|");
+    console.log("|                 🎰 Deluxe Crazy DK 🎰                  |");
+    console.log("|========================================================|");
     console.log(
-      ` 💲Apuesta total: ${apuestaTotal}    🤑 Saldo: ${jugador.obtenerSaldo()}`
+      `| 💲Apuesta total: ${apuestaTotal}      🤑 Saldo: ${jugador.obtenerSaldo()}                |`
     );
-    console.log("--------------------------------------------------------");
+    console.log("|--------------------------------------------------------|");
   }
 
   private async mostrarResultados(
