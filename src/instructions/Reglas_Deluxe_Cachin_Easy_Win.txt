@@ -1,0 +1,48 @@
+
+Reglas del Juego: Deluxe Cachin Easy Win 🎰
+
+1. **Objetivo del Juego:**
+   - El objetivo es realizar apuestas y obtener combinaciones de símbolos en una simulación de tiradas para ganar premios.
+
+2. **Símbolos y Valores:**
+   - 🤴: 80 puntos
+   - 🧙: 250 puntos
+   - 🦄: 40 puntos
+   - 👑: 90 puntos
+
+3. **Apuesta:**
+   - Mínima: 100 créditos.
+   - Máxima: 1500 créditos.
+   - La apuesta debe estar dentro del saldo disponible del jugador.
+   - Si el monto ingresado es inferior al mínimo o superior al máximo, se solicitará una nueva apuesta.
+
+4. **Mecánica del Juego:**
+   - El jugador puede elegir entre:
+     - 🎰 Probar suerte (iniciar tirada).
+     - 🎰 Cambiar apuesta.
+     - 🔙 Volver (salir del juego).
+
+5. **Tiradas:**
+   - Se realizan 5 tiradas por jugada.
+   - El jugador puede detenerse después de cada tirada o continuar.
+   - Si se detiene antes de terminar las 5 tiradas, perderá el progreso actual.
+
+6. **Ganancias:**
+   - Se gana si hay al menos dos símbolos consecutivos iguales.
+   - La ganancia es calculada multiplicando el valor del símbolo por la cantidad de veces que se repite consecutivamente.
+   - Si no hay símbolos consecutivos iguales, el jugador pierde la apuesta.
+
+7. **Saldo del Jugador:**
+   - Si el saldo del jugador es inferior a la apuesta mínima, el juego terminará.
+   - Se recomienda gestionar bien el saldo para prolongar la experiencia de juego.
+
+8. **Interfaz:**
+   - La interfaz del juego muestra la apuesta total y el saldo del jugador.
+   - Se proporciona retroalimentación visual para cada acción.
+
+9. **Finalización del Juego:**
+   - El juego termina cuando el jugador decide salir o cuando su saldo es insuficiente.
+   - En caso de victoria, se muestra un mensaje de felicitación junto con la ganancia total.
+   - En caso de derrota, se invita al jugador a intentarlo nuevamente.
+
+¡Buena suerte y que la fortuna esté de tu lado! 😃
