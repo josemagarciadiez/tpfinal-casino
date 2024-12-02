@@ -121,13 +121,13 @@ export class DeluxeCrazyDK extends Juego {
 
       // Abandona, pierde todo
       if (opcion === "salir") {
-        return {
-          apuestaTotal: this.apuesta,
-          resultado: "derrota",
-        };
+        console.log(this.mostrarResultados("derrota", jugador, true));
       }
       if (opcion === "apuesta") {
         this.apuesta += await this.pedirApuesta(jugador);
+      }
+      if (jugador.obtenerSaldo() < 100) {
+        console.log(this.mostrarResultados("derrota", jugador, true));
       }
     }
     return {
