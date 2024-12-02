@@ -2,7 +2,7 @@ import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
 import { IJuego } from "./IJuego";
 import { Menu } from "../utils/Menu";
-import { exit, exitCode, off } from "process";
+import { exit, exitCode, off, resourceUsage } from "process";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
 import { promises } from "dns";
@@ -50,6 +50,17 @@ export class DeluxeCrazyDK extends Juego {
     this.interfaceTragamonedas(jugador, this.apuesta);
 
     this.apuesta = await this.pedirApuesta(jugador);
+    if (this.apuesta === 0) {
+      const confirmacion = await Menu.pedirConfirmacion(
+        "Estás seguro que deseas salir?"
+      );
+      if (confirmacion) {
+        return {
+          apuestaTotal: 0,
+          resultado: "derrota",
+        };
+      }
+    }
 
     let opcion = "";
     let opciones = [
@@ -104,6 +115,18 @@ export class DeluxeCrazyDK extends Juego {
           }
           if (interaccion === "cambiar") {
             this.apuesta = await this.pedirApuesta(jugador);
+            if (this.apuesta === 0) {
+              const confirmacion = await Menu.pedirConfirmacion(
+                "Estás seguro que deseas salir?"
+              );
+              if (confirmacion) {
+                return {
+                  apuestaTotal: 0,
+                  resultado: "derrota",
+                };
+              }
+            }
+            await this.interfaceTragamonedas(jugador, this.apuesta);
           }
           if (interaccion === "salir") {
             const confirmacion = await Menu.pedirConfirmacion(
@@ -125,6 +148,18 @@ export class DeluxeCrazyDK extends Juego {
       }
       if (opcion === "apuesta") {
         this.apuesta += await this.pedirApuesta(jugador);
+        if (this.apuesta === 0) {
+          const confirmacion = await Menu.pedirConfirmacion(
+            "Estás seguro que deseas salir?"
+          );
+          if (confirmacion) {
+            return {
+              apuestaTotal: 0,
+              resultado: "derrota",
+            };
+          }
+        }
+        await this.interfaceTragamonedas(jugador, this.apuesta);
       }
       if (jugador.obtenerSaldo() < 100) {
         console.log(this.mostrarResultados("derrota", jugador, true));
@@ -213,9 +248,6 @@ export class DeluxeCrazyDK extends Juego {
     const montoApostado = await Menu.pedirNumero(
       "Ingrese su apuesta [0: Para salir]",
       (apuesta) => {
-        if (apuesta === 0) {
-          return exit(0);
-        }
         // Primero valida que sea un numero
         if (typeof apuesta === "number") {
           // Si es numero
@@ -245,7 +277,6 @@ export class DeluxeCrazyDK extends Juego {
   }
 
   private async interfaceTragamonedas(jugador: Jugador, apuestaTotal: number) {
-    apuestaTotal = this.apuesta;
     console.clear();
     console.log("|========================================================|");
     console.log("|                 🎰 Deluxe Crazy DK 🎰                  |");
