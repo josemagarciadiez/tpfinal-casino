@@ -2,7 +2,7 @@ import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
 import { IJuego } from "./IJuego";
 import { Menu } from "../utils/Menu";
-import { exit, off } from "process";
+import { exit, exitCode, off } from "process";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
 import { promises } from "dns";
@@ -20,7 +20,6 @@ export class DeluxeCrazyDK extends Juego {
     "🍀": 50,
     "🐞": 90,
   };
-  private registro: any[];
   private ganancia: number;
   private apuesta: number;
   public constructor() {
@@ -31,7 +30,6 @@ export class DeluxeCrazyDK extends Juego {
     this.jugada = [];
     this.apuesta = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
-    this.registro = [];
   }
   private readonly tiros: number = 5;
 
@@ -85,7 +83,6 @@ export class DeluxeCrazyDK extends Juego {
             nombre: " 🚪salir",
           },
         ];
-        jugador.restarSaldo(this.apuesta);
         for (let iP = 0; iP < this.tiros; iP++) {
           console.clear();
           this.interfaceTragamonedas(jugador, this.apuesta);
@@ -143,21 +140,6 @@ export class DeluxeCrazyDK extends Juego {
   public simboloRandom() {
     let i = Math.floor(Math.random() * this.simbolos.length);
     return this.simbolos[i];
-  }
-
-  public tirada() {
-    let i: number;
-    this.jugada = [];
-    for (i = 0; i < this.simbolos.length; i++) {
-      let newSymbol = this.simboloRandom();
-      this.jugada.push(newSymbol);
-    }
-    // JOSE: Si laburas sobre una propiedad de la clase,
-    // para que un return? si el valor nuevo ya esta guardado
-    // en esa propiedad.
-    //porque si no retorno algo lo toma como VOID
-    console.log(this.jugada);
-    return this.jugada;
   }
 
   public contarOcurrencias(tirada: string[]): Record<string, number> {
@@ -231,6 +213,9 @@ export class DeluxeCrazyDK extends Juego {
     const montoApostado = await Menu.pedirNumero(
       "Ingrese su apuesta [0: Para salir]",
       (apuesta) => {
+        if (apuesta === 0) {
+          return exit(0);
+        }
         // Primero valida que sea un numero
         if (typeof apuesta === "number") {
           // Si es numero
@@ -266,7 +251,7 @@ export class DeluxeCrazyDK extends Juego {
     console.log("|                 🎰 Deluxe Crazy DK 🎰                  |");
     console.log("|========================================================|");
     console.log(
-      `| 💲Apuesta total: ${apuestaTotal}      🤑 Saldo: ${jugador.obtenerSaldo()}                |`
+      `| 💲Apuesta total: ${apuestaTotal}      🤑 Saldo: ${jugador.obtenerSaldo()}             |`
     );
     console.log("|--------------------------------------------------------|");
   }
