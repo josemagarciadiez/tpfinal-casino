@@ -20,6 +20,7 @@ export class DeluxeCrazyDK extends Juego {
     "🍀": 50,
     "🐞": 90,
   };
+  private registro: any[];
   private ganancia: number;
   private apuesta: number;
   public constructor() {
@@ -30,6 +31,7 @@ export class DeluxeCrazyDK extends Juego {
     this.jugada = [];
     this.apuesta = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
+    this.registro = [];
   }
   private readonly tiros: number = 5;
 
@@ -71,19 +73,21 @@ export class DeluxeCrazyDK extends Juego {
       if (opcion === "tirada") {
         jugador.restarSaldo(this.apuesta);
         for (let i = 0; i < this.tiros; i++) {
+          console.clear();
           this.interfaceTragamonedas(jugador, this.apuesta);
           this.jugada = [];
           console.log(
-            `\n         Tiros restantes: ${this.tiros - i}           `
+            `\n                 Tiros restantes: ${this.tiros - i}   `
           );
           console.log(
             "========================================================"
           );
           await this.simularTiro();
-          console.log(`\n[ ${this.jugada.join(" | ")} ]`);
-          this.esperar(5);
-          this.calcularGanancia(this.jugada, jugador); // Calcula la ganancia para el tiro actual
-          this.esperar(3);
+          console.log("\n", this.calcularGanancia(this.jugada, jugador)); // Calcula la ganancia para el tiro actual
+          console.log(
+            "Por favor aguarda 5 segundos mientras cargamos el proximo tiro..."
+          );
+          await this.esperar(5);
         }
       }
 
@@ -141,7 +145,7 @@ export class DeluxeCrazyDK extends Juego {
     const contador = this.contarOcurrencias(tirada);
 
     for (const simbolo in contador) {
-      if (contador[simbolo] >= 1) {
+      if (contador[simbolo] >= 2) {
         return true; // Si encontramos símbolos consecutivos iguales, devolvemos true
       }
     }
@@ -151,7 +155,7 @@ export class DeluxeCrazyDK extends Juego {
     let contador = this.contarOcurrencias(tirada);
     let gananciaTotal = 0;
     for (const simbolo in contador) {
-      if (contador[simbolo] >= 1) {
+      if (contador[simbolo] >= 2) {
         // Verifica que se repita al menos dos veces
         const valorSimbolo = this.valores[simbolo];
         gananciaTotal += valorSimbolo * contador[simbolo];
@@ -161,7 +165,7 @@ export class DeluxeCrazyDK extends Juego {
     if (gananciaTotal > 0) {
       console.log("😃 Ganaste: ");
     } else if (gananciaTotal === 0) {
-      console.log("😔 No hubo esta vez:");
+      console.log("😔 No hubo suerte esta vez:");
     }
     return gananciaTotal;
   }
@@ -188,7 +192,6 @@ export class DeluxeCrazyDK extends Juego {
         this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
     }
     this.jugada.push(...rieles);
-    console.log(`\n[ ${this.jugada.join(" | ")} ]`);
   }
   private async esperar(segundos: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, segundos * 1000));
