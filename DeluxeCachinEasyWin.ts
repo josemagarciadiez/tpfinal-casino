@@ -28,6 +28,7 @@ export class DeluxeCachinEasyWin extends Juego {
     this.jugada = [];
     this.montoApostado = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
+    this.apuesta = "";
   }
   private readonly tiros: number = 5;
 
@@ -74,6 +75,10 @@ export class DeluxeCachinEasyWin extends Juego {
         valor: "salir",
         nombre: "🔙 Volver",
       },
+      {
+        valor: "instrucciones",
+        nombre: "📜 Reglamente",
+      }
     ];
     while (opcion !== "salir") {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
@@ -161,6 +166,16 @@ export class DeluxeCachinEasyWin extends Juego {
       }
       if (jugador.obtenerSaldo() < 100) {
         console.log(this.mostrarResultadosCachin("derrota", jugador, true));
+      }
+      
+      if(opcion === "instrucciones"){
+        console.log(this.leerInstrucciones("Reglas_Deluxe_Cachin_Easy_Win.txt"));
+        let confirmarJuego = await Menu.pedirConfirmacion(
+          "¿Deseas jugar?"
+        );
+        if(confirmarJuego){
+          continue;
+        }
       }
     }
     return {
@@ -273,6 +288,31 @@ export class DeluxeCachinEasyWin extends Juego {
     );
     return montoApostado;
   }
+  protected leerInstrucciones(archivo: string): string {
+    const carpeta = "src/instructions";
+    const ruta = `${carpeta}/${archivo}`;
+
+    if (!fs.existsSync(ruta)) {
+      return `El archivo ${ruta} no existe.`;
+    }
+
+    try {
+      this.instrucciones = fs.readFileSync(ruta, "utf-8");
+
+      if (!this.instrucciones.trim()) {
+        return `El archivo ${ruta} esta vacio.`;
+      }
+
+      return this.instrucciones;
+    } catch (error) {
+      if (error instanceof Error) {
+        return `Error al leer el archivo ${ruta}: ${error.message}`;
+      }
+
+      return `Error al leer el archivo ${ruta}`;
+    }
+  }
+
 
   private async interfaceCachin(jugador: Jugador, apuestaTotal: number) {
     apuestaTotal = this.montoApostado;
