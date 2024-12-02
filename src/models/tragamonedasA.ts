@@ -163,9 +163,9 @@ export class DeluxeCrazyDK extends Juego {
       }
     }
     if (gananciaTotal > 0) {
-      console.log("😃 Ganaste: ");
+      console.log("\n😃 Ganaste: ");
     } else if (gananciaTotal === 0) {
-      console.log("😔 No hubo suerte esta vez:");
+      console.log("\n😔 No hubo suerte esta vez:");
     }
     return gananciaTotal;
   }
