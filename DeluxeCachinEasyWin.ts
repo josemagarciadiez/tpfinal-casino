@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { resolve } from "path";
 import { promises } from "dns";
 
-export class DeluxeCrazyDK extends Juego {
+export class DeluxeCachinEasyWin extends Juego {
   private apuestaMinima: number;
   private apuestaMaxima: number;
   private simbolos: string[];
