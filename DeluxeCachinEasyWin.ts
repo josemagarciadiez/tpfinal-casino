@@ -48,6 +48,17 @@ export class DeluxeCachinEasyWin extends Juego {
     this.interfaceCachin(jugador, this.montoApostado);
 
     this.montoApostado = await this.solicitarApuesta(jugador);
+        if (this.apuesta === 0) {
+          const confirmacion = await Menu.pedirConfirmacion(
+            "Estás seguro que deseas salir?"
+          );
+          if (confirmacion) {
+            return {
+              apuestaTotal: 0,
+              resultado: "derrota",
+            };
+          }
+        }
 
     let opcion = "";
     let opciones = [
@@ -102,6 +113,18 @@ export class DeluxeCachinEasyWin extends Juego {
           }
           if (interaccion === "cambiar") {
             this.montoApostado = await this.solicitarApuesta(jugador);
+        if (this.apuesta === 0) {
+          const confirmacion = await Menu.pedirConfirmacion(
+            "Estás seguro que deseas salir?"
+          );
+          if (confirmacion) {
+            return {
+              apuestaTotal: 0,
+              resultado: "derrota",
+            };
+          }
+        }
+        await this.interfaceCachin(jugador, this.apuesta);
           }
           if (interaccion === "salir") {
             const confirmacion = await Menu.pedirConfirmacion(
@@ -123,6 +146,16 @@ export class DeluxeCachinEasyWin extends Juego {
       }
       if (opcion === "apuesta") {
         this.montoApostado += await this.solicitarApuesta(jugador);
+                if (this.apuesta === 0) {
+          const confirmacion = await Menu.pedirConfirmacion(
+            "Estás seguro que deseas salir?"
+          );
+          if (confirmacion) {
+            return {
+              apuestaTotal: 0,
+              resultado: "derrota",
+            };
+          }
       }
       if (jugador.obtenerSaldo() < 100) {
         console.log(this.mostrarResultadosCachin("derrota", jugador, true));
