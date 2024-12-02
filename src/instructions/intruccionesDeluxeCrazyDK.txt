@@ -1,0 +1,40 @@
+REGLAS DEL JUEGO: Deluxe Crazy DK
+
+INTRODUCCIÓN:
+Deluxe Crazy DK es un juego de tragamonedas temático donde los jugadores pueden apostar créditos 
+para obtener combinaciones de símbolos que otorgan ganancias según su frecuencia y tipo. El objetivo 
+es acumular la mayor cantidad de créditos posible.
+
+CONFIGURACIÓN DEL JUEGO:
+- Apuesta mínima: 100 créditos.
+- Apuesta máxima: 1500 créditos.
+- Símbolos en el juego y sus valores (por cada símbolo consecutivo adicional):
+  - 🐈 (Gato): 80 créditos.
+  - 🌹 (Rosa): 250 créditos.
+  - 🐕 (Perro): 40 créditos.
+  - 🎄 (Árbol de Navidad): 30 créditos.
+  - 🍀 (Trébol): 50 créditos.
+  - 🐞 (Mariquita): 90 créditos.
+
+DINÁMICA DEL JUEGO:
+1. El jugador inicia con un saldo determinado.
+2. Antes de cada tirada, el jugador debe establecer su apuesta, respetando los límites establecidos.
+3. El juego permite múltiples tiradas en una sesión, con un máximo de 5 tiros consecutivos por jugada.
+4. Al iniciar una tirada, se generan símbolos aleatorios para determinar el resultado.
+5. Si se obtienen símbolos consecutivos iguales (mínimo dos), el jugador recibe ganancias según los valores 
+   del símbolo correspondiente y la cantidad de repeticiones.
+
+INTERACCIONES DURANTE LA PARTIDA:
+- Cambiar apuesta: El jugador puede ajustar su apuesta entre tiradas, siempre que respete los límites y tenga saldo suficiente.
+- Salir del juego: El jugador puede abandonar la partida en cualquier momento, pero perderá el progreso actual de la tirada.
+- Confirmación de acciones: Algunas decisiones críticas, como abandonar el juego, requieren confirmación por parte del jugador.
+
+RESULTADOS:
+- Victoria: Si el jugador obtiene ganancias en una tirada, estas se suman a su saldo.
+- Derrota: Si no se obtienen combinaciones ganadoras o si el jugador pierde su saldo, se considera una derrota.
+
+CONDICIONES ADICIONALES:
+- Si el saldo del jugador cae por debajo de 100 créditos, no podrá realizar más apuestas y el juego finalizará automáticamente.
+- Las ganancias se calculan en tiempo real y se actualizan tras cada tirada.
+
+¡Buena suerte y que la fortuna esté de tu lado!
