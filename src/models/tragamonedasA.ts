@@ -5,8 +5,7 @@ import { Menu } from "../utils/Menu";
 import { exit, exitCode, off, resourceUsage } from "process";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
-import { promises } from "dns";
-
+import { promises as fs } from "fs";
 export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
   private apuestaMaxima: number;
@@ -30,6 +29,7 @@ export class DeluxeCrazyDK extends Juego {
     this.jugada = [];
     this.apuesta = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
+    this.instrucciones = "";
   }
   private readonly tiros: number = 5;
 
@@ -276,6 +276,7 @@ export class DeluxeCrazyDK extends Juego {
     return montoApostado;
   }
 
+  //obtener instrucciones
   private async interfaceTragamonedas(jugador: Jugador, apuestaTotal: number) {
     console.clear();
     console.log("|========================================================|");
