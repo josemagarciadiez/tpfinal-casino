@@ -5,7 +5,7 @@ import { Menu } from "../utils/Menu";
 import { exit, exitCode, off, resourceUsage } from "process";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
-import { promises as fs } from "fs";
+import * as fs from "node:fs";
 export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
   private apuestaMaxima: number;
@@ -75,6 +75,10 @@ export class DeluxeCrazyDK extends Juego {
       {
         valor: "salir",
         nombre: "🔙 Volver",
+      },
+      {
+        valor: "instrucciones",
+        nombre: "📜 Reglamento",
       },
     ];
     while (opcion !== "salir") {
@@ -164,6 +168,13 @@ export class DeluxeCrazyDK extends Juego {
       if (jugador.obtenerSaldo() < 100) {
         console.log(this.mostrarResultados("derrota", jugador, true));
       }
+      if (opcion === "instrucciones") {
+        console.log(this.leerInstrucciones("tragamonedasA.txt"));
+        let confirmarJuego = await Menu.pedirConfirmacion("¿Deseas jugar?");
+        if (confirmarJuego) {
+          continue;
+        }
+      }
     }
     return {
       apuestaTotal: this.apuesta,
@@ -206,7 +217,7 @@ export class DeluxeCrazyDK extends Juego {
       if (contador[simbolo] >= 2) {
         // Verifica que se repita al menos dos veces
         const valorSimbolo = this.valores[simbolo];
-        gananciaTotal += valorSimbolo * contador[simbolo];
+        gananciaTotal = this.apuesta + valorSimbolo * contador[simbolo];
         jugador?.sumarSaldo(gananciaTotal);
       }
     }
@@ -276,7 +287,31 @@ export class DeluxeCrazyDK extends Juego {
     return montoApostado;
   }
 
-  //obtener instrucciones
+  protected leerInstrucciones(archivo: string): string {
+    const carpeta = "src/instructions";
+    const ruta = `${carpeta}/${archivo}`;
+
+    if (!fs.existsSync(ruta)) {
+      return `El archivo ${ruta} no existe.`;
+    }
+
+    try {
+      this.instrucciones = fs.readFileSync(ruta, "utf-8");
+
+      if (!this.instrucciones.trim()) {
+        return `El archivo ${ruta} esta vacio.`;
+      }
+
+      return this.instrucciones;
+    } catch (error) {
+      if (error instanceof Error) {
+        return `Error al leer el archivo ${ruta}: ${error.message}`;
+      }
+
+      return `Error al leer el archivo ${ruta}`;
+    }
+  }
+
   private async interfaceTragamonedas(jugador: Jugador, apuestaTotal: number) {
     console.clear();
     console.log("|========================================================|");
