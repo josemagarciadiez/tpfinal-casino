@@ -48,24 +48,7 @@ export class DeluxeCrazyDK extends Juego {
     // Opciones del jugador dentro del juego
     this.interfaceTragamonedas(jugador, this.apuesta, this.tiros);
 
-    this.apuesta = await Menu.pedirNumero("Ingrese su apuesta", (apuesta) => {
-      if (typeof apuesta === "number") {
-        if (apuesta < this.apuestaMinima) {
-          return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
-        }
-        if (apuesta > this.apuestaMaxima) {
-          return `El monto ingresado (${apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`;
-        }
-        if (apuesta >= jugador.obtenerSaldo()) {
-          console.log(
-            `Tu monto actual (${jugador.obtenerSaldo()}), es menor que el de la apuesta ingresada (${apuesta})`
-          );
-        }
-        return true;
-      } else {
-        return "Debes ingresar un número válido.";
-      }
-    });
+    this.apuesta = await this.pedirApuesta(jugador);
 
     let opcion = "";
     let opciones = [
@@ -83,17 +66,18 @@ export class DeluxeCrazyDK extends Juego {
       },
     ];
     while (opcion !== "salir") {
-      let opcionesDeMenu = await Menu.elegirOpcion(
-        "¿Que deseas hacer?",
-        opciones
-      );
+      opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
         jugador.restarSaldo(this.apuesta);
         this.interfaceTragamonedas(jugador, this.apuesta, this.tiros);
         for (let i = 0; i === this.tiros; i++) {
           const tirosRestantes = this.tiros - (i + i);
         }
-        const tiro = await this.simularTiro();
+        // Esto te digo, guardas ese resultado en la variable tiro
+        // y no la usas
+        // const tiro = await this.simularTiro();
+        await this.simularTiro();
+        // ESTO BORRALO PQ ME PONE OTRA COSA AL LADO
         console.log(
           (this.ganancia = this.calcularGanancia(this.tirada(), jugador))
         );
@@ -107,10 +91,15 @@ export class DeluxeCrazyDK extends Juego {
         };
       }
 
-      if (opcion === "apostar") {
+      // Aca tenes mal el valor de la opcion
+      // if (opcion === "apostar") {
+      //   this.apuesta += await this.pedirApuesta(jugador);
+      // }
+      if (opcion === "apuesta") {
         this.apuesta += await this.pedirApuesta(jugador);
       }
 
+      // Esta validacion te la puse en el metodo pedirApuesta, fijate
       if (jugador.obtenerSaldo() < 100) {
         console.log("Tu saldo es insuficiente para seguir jugando");
       }
@@ -208,9 +197,11 @@ export class DeluxeCrazyDK extends Juego {
       }
       rieles[i] =
         this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
-      this.jugada.push(rieles[i]);
-      console.log(this.jugada);
-      return this.jugada;
+      // ESTO VA FUERA DEL FOR
+      // Estas haciendo push de un array dentro de otro array
+      // this.jugada.push(rieles[i]);
+      // console.log(this.jugada);
+      // return this.jugada;
     }
   }
   private async pedirApuesta(jugador: Jugador) {
