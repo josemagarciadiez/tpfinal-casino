@@ -103,7 +103,7 @@ export class DeluxeCrazyDK extends Juego {
           this.interfaceTragamonedas(jugador, this.apuesta);
           this.jugada = [];
           console.log(
-            `\n                 Tiros restantes: ${this.tiros - iP}   `
+            `\n                 Tiros restantes: ${this.tiros - iP}  `
           );
           console.log(
             "========================================================"
@@ -314,13 +314,13 @@ export class DeluxeCrazyDK extends Juego {
 
   private async interfaceTragamonedas(jugador: Jugador, apuestaTotal: number) {
     console.clear();
-    console.log("|========================================================|");
-    console.log("|                 🎰 Deluxe Crazy DK 🎰                  |");
-    console.log("|========================================================|");
+    console.log("========================================================");
+    console.log("                 🎰 Deluxe Crazy DK 🎰                  ");
+    console.log("========================================================");
     console.log(
-      `| 💲Apuesta total: ${apuestaTotal}      🤑 Saldo: ${jugador.obtenerSaldo()}             |`
+      ` 💲Apuesta total: ${apuestaTotal}      🤑 Saldo: ${jugador.obtenerSaldo()}`
     );
-    console.log("|--------------------------------------------------------|");
+    console.log("--------------------------------------------------------");
   }
 
   private async mostrarResultados(
