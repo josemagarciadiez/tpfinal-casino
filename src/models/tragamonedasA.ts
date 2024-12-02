@@ -159,7 +159,6 @@ export class DeluxeCrazyDK extends Juego {
 
     for (const simbolo in contador) {
       if (contador[simbolo] >= 1) {
-        // Al menos 2 símbolos iguales consecutivos
         return true; // Si encontramos símbolos consecutivos iguales, devolvemos true
       }
     }
