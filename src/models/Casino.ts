@@ -150,8 +150,9 @@ export class Casino {
     console.log("------------------------------------------");
 
     let opcion= await Menu.elegirOpcion("Que desea Hacer? ",
-      [{valor:"saldo",nombre:"Cargar Saldo"},{valor:"numero",nombre:"Retirar su saldo"}]);
+      [{valor:"saldo",nombre:"Cargar Saldo"},{valor:"numero",nombre:"Retirar su saldo"},{valor:"salir",nombre:"Salir"}]);
 
+      if (opcion != "salir"){
       if(opcion=="saldo"){
         this.jugador?.sumarSaldo(await Menu.pedirNumero("ingrese el monto que desea cargar", (valor)=>{
           
@@ -163,9 +164,10 @@ export class Casino {
             return 'El valor debe ser un número';
           }
           
-          if (valor < 100) {
+          if (valor < 100 && valor != 0) {
             return 'El valor minimo de recarga es 100';
           }
+          
           
           return true;
         }))
@@ -193,7 +195,7 @@ export class Casino {
           return true;
         }))
       }
-
+      }
 
   }
 

@@ -14,7 +14,7 @@ export class Ruleta extends Juego {
   constructor(){
     super()
     this.apuestaMinima=500
-    this.instrucciones=fs.readFileSync("src/models/instruccionesRuleta.txt", 'utf8');
+    this.instrucciones=fs.readFileSync("src/instructions/instruccionesRuleta.txt", 'utf8');
     this.tablero = {
       1: "rojo",
       2: "negro",
@@ -59,9 +59,9 @@ export class Ruleta extends Juego {
 
     let juegoActivo:boolean= await this.comprobarSaldo(jugador);
 
-    if (juegoActivo==true){
+    /*if (juegoActivo==true){
       await this.mostrarInstrucciones();//metodo que muestra las instrucciones del juego
-    }
+    }*/
         
     let apuestaTotal:number=0;
     let ganancia:number=0;
