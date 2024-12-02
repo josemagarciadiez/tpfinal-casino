@@ -1,5 +1,5 @@
-import { Juego } from "./Juego";
-import { Jugador } from "./Jugador";
+import { Juego } from "../models/Juego";
+import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 import * as fs from "fs";
 import { promises } from "dns";
@@ -56,9 +56,7 @@ export class Ruleta extends Juego {
     };
   }
 
-  async ejecutar(
-    jugador: Jugador
-  ): Promise<{
+  async ejecutar(jugador: Jugador): Promise<{
     apuestaTotal: number;
     resultado: "victoria" | "derrota";
     ganancia?: number;
