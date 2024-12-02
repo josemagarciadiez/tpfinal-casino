@@ -5,6 +5,7 @@ import { Menu } from "../utils/Menu";
 import { exit, off } from "process";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
+import { promises } from "dns";
 
 export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
@@ -46,7 +47,7 @@ export class DeluxeCrazyDK extends Juego {
     }
 
     // Opciones del jugador dentro del juego
-    this.interfaceTragamonedas(jugador, this.apuesta, this.tiros);
+    this.interfaceTragamonedas(jugador, this.apuesta);
 
     this.apuesta = await this.pedirApuesta(jugador);
 
@@ -69,18 +70,21 @@ export class DeluxeCrazyDK extends Juego {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
         jugador.restarSaldo(this.apuesta);
-        this.interfaceTragamonedas(jugador, this.apuesta, this.tiros);
-        for (let i = 0; i === this.tiros; i++) {
-          const tirosRestantes = this.tiros - (i + i);
+        for (let i = 0; i < this.tiros; i++) {
+          this.interfaceTragamonedas(jugador, this.apuesta);
+          this.jugada = [];
+          console.log(
+            `\n         Tiros restantes: ${this.tiros - i}           `
+          );
+          console.log(
+            "========================================================"
+          );
+          await this.simularTiro();
+          console.log(`\n[ ${this.jugada.join(" | ")} ]`);
+          this.esperar(5);
+          this.calcularGanancia(this.jugada, jugador); // Calcula la ganancia para el tiro actual
+          this.esperar(3);
         }
-        // Esto te digo, guardas ese resultado en la variable tiro
-        // y no la usas
-        // const tiro = await this.simularTiro();
-        await this.simularTiro();
-        // ESTO BORRALO PQ ME PONE OTRA COSA AL LADO
-        console.log(
-          (this.ganancia = this.calcularGanancia(this.tirada(), jugador))
-        );
       }
 
       // Abandona, pierde todo
@@ -90,18 +94,8 @@ export class DeluxeCrazyDK extends Juego {
           resultado: "derrota",
         };
       }
-
-      // Aca tenes mal el valor de la opcion
-      // if (opcion === "apostar") {
-      //   this.apuesta += await this.pedirApuesta(jugador);
-      // }
       if (opcion === "apuesta") {
         this.apuesta += await this.pedirApuesta(jugador);
-      }
-
-      // Esta validacion te la puse en el metodo pedirApuesta, fijate
-      if (jugador.obtenerSaldo() < 100) {
-        console.log("Tu saldo es insuficiente para seguir jugando");
       }
     }
     return {
@@ -153,7 +147,7 @@ export class DeluxeCrazyDK extends Juego {
     }
     return false;
   }
-  public calcularGanancia(tirada: string[], jugador: Jugador): number {
+  public calcularGanancia(tirada: any, jugador: Jugador): number {
     let contador = this.contarOcurrencias(tirada);
     let gananciaTotal = 0;
     for (const simbolo in contador) {
@@ -180,29 +174,24 @@ export class DeluxeCrazyDK extends Juego {
       this.simbolos[0],
       this.simbolos[0],
     ]; // Inicializamos con el primer simbolo
-
-    // Recorremos cada posicion de los rieles
-    for (let i = 0; i < rieles.length; i++) {
-      // Cada riel cambia 10 veces antes de caer en el valor aleatorio
+    let i: number;
+    for (i = 0; i < rieles.length; i++) {
       for (let j = 0; j < 10; j++) {
-        // Cambia solo el riel actual, mostrando un simbolo aleatorio
         rieles[i] =
           this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
 
-        // Muestra los rieles actuales
         process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
 
-        // Espera 150 ms entre cada actualización
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
       rieles[i] =
         this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
-      // ESTO VA FUERA DEL FOR
-      // Estas haciendo push de un array dentro de otro array
-      // this.jugada.push(rieles[i]);
-      // console.log(this.jugada);
-      // return this.jugada;
     }
+    this.jugada.push(...rieles);
+    console.log(`\n[ ${this.jugada.join(" | ")} ]`);
+  }
+  private async esperar(segundos: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, segundos * 1000));
   }
   private async pedirApuesta(jugador: Jugador) {
     const montoApostado = await Menu.pedirNumero(
@@ -236,11 +225,7 @@ export class DeluxeCrazyDK extends Juego {
     return montoApostado;
   }
 
-  private async interfaceTragamonedas(
-    jugador: Jugador,
-    apuestaTotal: number,
-    tiros: number
-  ) {
+  private async interfaceTragamonedas(jugador: Jugador, apuestaTotal: number) {
     apuestaTotal = this.apuesta;
     console.clear();
     console.log("========================================================");
@@ -250,7 +235,6 @@ export class DeluxeCrazyDK extends Juego {
       ` 💲Apuesta total: ${apuestaTotal}    🤑 Saldo: ${jugador.obtenerSaldo()}`
     );
     console.log("--------------------------------------------------------");
-    console.log(`                Tiros restantes: ${tiros}               `);
   }
 
   private async mostrarResultados(
