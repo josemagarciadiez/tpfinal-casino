@@ -13,12 +13,10 @@ export class DeluxeCrazyDK extends Juego {
   private simbolos: string[];
   private jugada: string[];
   private valoresSimbolos: Record<string, number> = {
-    "🐈": 80,
-    "🌹": 250,
-    "🐕": 40,
-    "🎄": 30,
-    "🍀": 50,
-    "🐞": 90,
+    "🤴": 80,
+    "🧙": 250,
+    "🦄": 40,
+    "👑": 90,
   };
   private ganancia: number;
   private montoApostado: number;
@@ -26,7 +24,7 @@ export class DeluxeCrazyDK extends Juego {
     super();
     this.apuestaMinima = 100;
     this.apuestaMaxima = 1500;
-    this.simbolos = ["🐈", "🐕", "🌹", "🎄", "🍀", "🐞"];
+    this.simbolos = ["🦄", "🧙", "🤴","👑"];
     this.jugada = [];
     this.montoApostado = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
