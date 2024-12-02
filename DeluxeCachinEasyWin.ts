@@ -2,29 +2,31 @@ import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
 import { IJuego } from "./IJuego";
 import { Menu } from "../utils/Menu";
-import { exit, exitCode, off } from "process";
+import { exit, exitCode, off, resourceUsage } from "process";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
 import { promises } from "dns";
 
-export class DeluxeCachinEasyWin extends Juego {
+export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
   private apuestaMaxima: number;
   private simbolos: string[];
   private jugada: string[];
-  private valorSimbolos: Record<string, number> = {
-    "🎁": 80,
-    "🦌": 250,
-    "🎅": 40,
-    "🦄": 90
+  private valoresSimbolos: Record<string, number> = {
+    "🐈": 80,
+    "🌹": 250,
+    "🐕": 40,
+    "🎄": 30,
+    "🍀": 50,
+    "🐞": 90,
   };
   private ganancia: number;
   private montoApostado: number;
   public constructor() {
     super();
-    this.apuestaMinima = 150;
-    this.apuestaMaxima = 1000;
-    this.simbolos = ["🎁", "🎅", "🦌","🦄"];
+    this.apuestaMinima = 100;
+    this.apuestaMaxima = 1500;
+    this.simbolos = ["🐈", "🐕", "🌹", "🎄", "🍀", "🐞"];
     this.jugada = [];
     this.montoApostado = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
@@ -47,18 +49,18 @@ export class DeluxeCachinEasyWin extends Juego {
     // Opciones del jugador dentro del juego
     this.interfaceCachin(jugador, this.montoApostado);
 
-    this.montoApostado = await this.solicitarApuesta(jugador);
-        if (this.apuesta === 0) {
-          const confirmacion = await Menu.pedirConfirmacion(
-            "Estás seguro que deseas salir?"
-          );
-          if (confirmacion) {
-            return {
-              apuestaTotal: 0,
-              resultado: "derrota",
-            };
-          }
-        }
+    this.montoApostado = await this.pedirApuesta(jugador);
+    if (this.montoApostado === 0) {
+      const confirmacion = await Menu.pedirConfirmacion(
+        "Estás seguro que deseas salir?"
+      );
+      if (confirmacion) {
+        return {
+          apuestaTotal: 0,
+          resultado: "derrota",
+        };
+      }
+    }
 
     let opcion = "";
     let opciones = [
@@ -92,12 +94,12 @@ export class DeluxeCachinEasyWin extends Juego {
             nombre: " 🚪salir",
           },
         ];
-        for (let iP = 0; iP < this.tiros; iP++) {
+        for (let i = 0; i < this.tiros; i++) {
           console.clear();
           this.interfaceCachin(jugador, this.montoApostado);
           this.jugada = [];
           console.log(
-            `\n                 Tiros restantes: ${this.tiros - iP}   `
+            `\n                 Tiros restantes: ${this.tiros - i}   `
           );
           console.log(
             "========================================================"
@@ -112,19 +114,19 @@ export class DeluxeCachinEasyWin extends Juego {
             continue;
           }
           if (interaccion === "cambiar") {
-            this.montoApostado = await this.solicitarApuesta(jugador);
-        if (this.apuesta === 0) {
-          const confirmacion = await Menu.pedirConfirmacion(
-            "Estás seguro que deseas salir?"
-          );
-          if (confirmacion) {
-            return {
-              apuestaTotal: 0,
-              resultado: "derrota",
-            };
-          }
-        }
-        await this.interfaceCachin(jugador, this.apuesta);
+            this.montoApostado = await this.pedirApuesta(jugador);
+            if (this.montoApostado === 0) {
+              const confirmacion = await Menu.pedirConfirmacion(
+                "Estás seguro que deseas salir?"
+              );
+              if (confirmacion) {
+                return {
+                  apuestaTotal: 0,
+                  resultado: "derrota",
+                };
+              }
+            }
+            await this.interfaceCachin(jugador, this.montoApostado);
           }
           if (interaccion === "salir") {
             const confirmacion = await Menu.pedirConfirmacion(
@@ -145,8 +147,8 @@ export class DeluxeCachinEasyWin extends Juego {
         console.log(this.mostrarResultadosCachin("derrota", jugador, true));
       }
       if (opcion === "apuesta") {
-        this.montoApostado += await this.solicitarApuesta(jugador);
-                if (this.apuesta === 0) {
+        this.montoApostado += await this.pedirApuesta(jugador);
+        if (this.montoApostado === 0) {
           const confirmacion = await Menu.pedirConfirmacion(
             "Estás seguro que deseas salir?"
           );
@@ -156,6 +158,8 @@ export class DeluxeCachinEasyWin extends Juego {
               resultado: "derrota",
             };
           }
+        }
+        await this.interfaceCachin(jugador, this.montoApostado);
       }
       if (jugador.obtenerSaldo() < 100) {
         console.log(this.mostrarResultadosCachin("derrota", jugador, true));
@@ -168,12 +172,12 @@ export class DeluxeCachinEasyWin extends Juego {
     };
   }
 
-  public mostrarSimbolosAlAzar() {
+  public simboloRandom() {
     let i = Math.floor(Math.random() * this.simbolos.length);
     return this.simbolos[i];
   }
 
-  public contadodParecidos(tirada: string[]): Record<string, number> {
+  public contarOcurrencias(tirada: string[]): Record<string, number> {
     const contador: Record<string, number> = {};
 
     // Itera sobre la tirada de izquierda a derecha
@@ -185,8 +189,8 @@ export class DeluxeCachinEasyWin extends Juego {
     return contador;
   }
 
-  public contadorSimilitudes(tirada: string[]): boolean {
-    const contador = this.contadodParecidos(tirada);
+  public contarSimilitudes(tirada: string[]): boolean {
+    const contador = this.contarOcurrencias(tirada);
 
     for (const simbolo in contador) {
       if (contador[simbolo] >= 2) {
@@ -196,12 +200,12 @@ export class DeluxeCachinEasyWin extends Juego {
     return false;
   }
   public calcularGanancia(tirada: any, jugador: Jugador): number {
-    let contador = this.contadodParecidos(tirada);
+    let contador = this.contarOcurrencias(tirada);
     let gananciaTotal = 0;
     for (const simbolo in contador) {
       if (contador[simbolo] >= 2) {
         // Verifica que se repita al menos dos veces
-        const valorSimbolo = this.valorSimbolos[simbolo];
+        const valorSimbolo = this.valoresSimbolos[simbolo];
         gananciaTotal += valorSimbolo * contador[simbolo];
         jugador?.sumarSaldo(gananciaTotal);
       }
@@ -214,7 +218,7 @@ export class DeluxeCachinEasyWin extends Juego {
     return gananciaTotal;
   }
   private async simularTiro() {
-    const animacion = [
+    const rieles = [
       this.simbolos[0],
       this.simbolos[0],
       this.simbolos[0],
@@ -223,30 +227,27 @@ export class DeluxeCachinEasyWin extends Juego {
       this.simbolos[0],
     ]; // Inicializamos con el primer simbolo
     let i: number;
-    for (i = 0; i < animacion.length; i++) {
+    for (i = 0; i < rieles.length; i++) {
       for (let j = 0; j < 10; j++) {
-        animacion[i] =
+        rieles[i] =
           this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
 
-        process.stdout.write(`\r[ ${animacion.join(" | ")} ] `);
+        process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
 
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
-      animacion[i] =
+      rieles[i] =
         this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
     }
-    this.jugada.push(...animacion);
+    this.jugada.push(...rieles);
   }
-  private async cronometro(segundos: number): Promise<void> {
+  private async esperar(segundos: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, segundos * 1000));
   }
-  private async solicitarApuesta(jugador: Jugador) {
-    const montoApuesta = await Menu.pedirNumero(
+  private async pedirApuesta(jugador: Jugador) {
+    const montoApostado = await Menu.pedirNumero(
       "Ingrese su apuesta [0: Para salir]",
       (apuesta) => {
-        if (apuesta === 0) {
-          return exit(0);
-        }
         // Primero valida que sea un numero
         if (typeof apuesta === "number") {
           // Si es numero
@@ -272,7 +273,7 @@ export class DeluxeCachinEasyWin extends Juego {
         }
       }
     );
-    return montoApuesta;
+    return montoApostado;
   }
 
   private async interfaceCachin(jugador: Jugador, apuestaTotal: number) {
