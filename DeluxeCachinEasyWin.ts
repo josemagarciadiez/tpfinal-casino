@@ -219,7 +219,7 @@ export class DeluxeCachinEasyWin extends Juego {
       if (contador[simbolo] >= 2) {
         // Verifica que se repita al menos dos veces
         const valorSimbolo = this.valoresSimbolos[simbolo];
-        gananciaTotal += valorSimbolo * contador[simbolo];
+        gananciaTotal = this.montonApostado + valorSimbolo * contador[simbolo];
         jugador?.sumarSaldo(gananciaTotal);
       }
     }
