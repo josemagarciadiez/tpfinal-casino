@@ -266,7 +266,20 @@ export class Ruleta extends Juego {
       3000
     );
 
-    setTimeout(() => console.log("La rueta esta girando..."), 5000);
+    setTimeout(async () => {
+      for (let i = 0; i < 8; i++) {
+        // Se usa este metodo de escritura asi
+        // escribe en la misma linea.
+        process.stdout.write("\rRuleta girando  🎡");
+        // Esperar 250 ms
+        await new Promise((resolve) => setTimeout(resolve, 250));
+
+        
+        process.stdout.write("  🎡 ");
+        // Esperar 250 ms
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
+    }, 5000);
 
     setTimeout(() => {
       console.clear();
@@ -277,7 +290,7 @@ export class Ruleta extends Juego {
         "        Crupier:....HA SALIDO EL " + resul + " " + color + "\n"
       );
       this.mostrarResultado(resultado, jugador);
-    }, 8000);
+    }, 10000);
   }
 
   private async esperarOpcion() {
