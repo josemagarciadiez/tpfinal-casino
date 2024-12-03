@@ -1,0 +1,45 @@
+Instrucciones  :
+
+Objetivo:
+El objetivo de la ruleta es predecir el número o color en el que caerá la bola después de girar la ruleta. 
+Los jugadores pueden elegir entre diferentes apuestas, que se dividen en dos categorías principales:
+1.Número específico (del 1 al 36).
+2.Color (rojo o negro).
+
+Configuración de la ruleta:
+La ruleta estándar está dividida en 36 casillas numeradas del 1 al 36, donde:
+Los números 1 a 36 están divididos en rojo y negro, alternándose.
+
+Tipos de apuestas disponibles:
+1. Apuesta a un número específico:
+Los jugadores pueden apostar a un número entre el 0 y el 36.
+Si la bola cae en el número elegido, el jugador gana.
+2. Apuesta a color:
+Los jugadores pueden apostar a uno de los dos colores: rojo o negro.
+Si la bola cae en un número que tiene el color seleccionado, el jugador gana.
+
+Pasos para jugar:
+
+Coloca tu apuesta:
+Elige entre apostar a un número específico o a un color.
+Para apostar a un número, simplemente selecciona el número en el que crees que caerá la bola.
+Para apostar a un color, elige entre rojo o negro.
+
+Haz tu apuesta:
+Si apuestas a un número, tu pago será más alto, ya que la probabilidad de acertar es más baja .
+Si apuestas a un color, la probabilidad de acertar es más alta.
+
+Gira la ruleta:
+
+Una vez que todos los jugadores hayan hecho sus apuestas, se gira la ruleta.
+La bola se lanza y gira dentro de la rueda hasta que se detiene en una casilla.
+
+Resultados:
+
+Si la bola cae en el número o color en el que apostaste, ganas.
+Si no es el número o color que seleccionaste, pierdes.
+
+Pagos:
+
+Apuesta a un número: Si aciertas el número exacto, el pago puede ser 100:1, es decir, por cada unidad apostada, ganarías 100 unidades más la cantidad apostada.
+Apuesta a color: Si aciertas el color, el pago es 10:1, es decir.es decir, por cada unidad apostada, ganarías 10 unidades más la cantidad apostada.
