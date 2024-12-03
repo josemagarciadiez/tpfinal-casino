@@ -128,10 +128,14 @@ export class Casino {
     console.log("       🎰 🕹️  LISTADO JUEGOS 🕹️  🎰      ");
     console.log("------------------------------------------");
 
+    // Creamos opciones a partir del listado de juegos, y agregamos la
+    // opcion de salir
+    const opciones = [...this.juegos, { valor: "salir", nombre: "Atras" }];
+
     // ... Menu para mostrar opciones de juego
     const opcionSeleccionada = await Menu.elegirOpcion(
       "Selecciona que juego quieres jugar",
-      this.juegos
+      opciones
     );
 
     switch (opcionSeleccionada) {
@@ -141,11 +145,15 @@ export class Casino {
       case "ruleta":
         this.juego = new Ruleta();
         break;
+      case "salir":
+        break;
       default:
         console.log("El juego seleccionado aún no esta disponible 😢");
     }
 
-    await this.ejecutarJuego();
+    if (opcionSeleccionada !== "salir") {
+      await this.ejecutarJuego();
+    }
   }
 
   /**
