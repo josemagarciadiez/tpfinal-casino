@@ -26,6 +26,9 @@ Reglas del Juego: Deluxe Cachin Easy Win 🎰
    - Se realizan 5 tiradas por jugada.
    - El jugador puede detenerse después de cada tirada o continuar.
    - Si se detiene antes de terminar las 5 tiradas, perderá el progreso actual.
+   -En caso de elegir la opcion cambiar apuesta, se solicitará al usuario que ingrese el nuevo monton, pero a su vez no le será 
+    reintegrado lo apostado anteriormente.
+
 
 6. **Ganancias:**
    - Se gana si hay al menos dos símbolos consecutivos iguales.
