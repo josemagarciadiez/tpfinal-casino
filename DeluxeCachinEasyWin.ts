@@ -22,8 +22,8 @@ export class DeluxeCachinEasyWin extends Juego {
   private montoApostado: number;
   public constructor() {
     super();
-    this.apuestaMinima = 100;
-    this.apuestaMaxima = 1500;
+    this.apuestaMinima = 50;
+    this.apuestaMaxima = 750;
     this.simbolos = ["🦄", "🧙", "🤴","👑"];
     this.jugada = [];
     this.montoApostado = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
@@ -359,17 +359,13 @@ export class DeluxeCachinEasyWin extends Juego {
       },
     ];
     if (salir) {
-      for (let i: number = 5; i > 0; i--) {
-        if (i === 1) {
-          console.log(
-            `\r🔄  Seras redirigido al menu principal en ${i} segundo..`
-          );
-        } else {
-          console.log(
-            `\r🔄  Seras redirigido al menu principal en ${i} segundos..`
-          );
-        }
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      return{
+        apuestaTotal: jugador.obtenerSaldo(),
+        resultado: "victoria" | "derrota"
+      }; if(apuestaTotal < 0){
+        resultado = "derrota"
+      }else{
+        resultado = "victoria"
       }
     } else {
       let ultimaOpcion = await Menu.elegirOpcion(
