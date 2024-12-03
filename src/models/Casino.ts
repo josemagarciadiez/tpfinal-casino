@@ -16,8 +16,9 @@ export class Casino {
 
   constructor() {
     this.juegos = [
-      { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
+      { valor: "tragamonedas", nombre: "Deluxe Crazy DK 🎰" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
+      { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
     ];
   }
 
@@ -149,6 +150,11 @@ export class Casino {
         break;
       default:
         console.log("El juego seleccionado aún no esta disponible 😢");
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
+
+    if (!this.juego) {
+      return;
     }
 
     if (opcionSeleccionada !== "salir") {
