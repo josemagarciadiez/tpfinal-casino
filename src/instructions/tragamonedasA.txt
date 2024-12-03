@@ -20,6 +20,13 @@ DINÁMICA DEL JUEGO:
 1. El jugador inicia con un saldo determinado.
 2. Antes de cada tirada, el jugador debe establecer su apuesta, respetando los límites establecidos.
 3. El juego permite múltiples tiradas en una sesión, con un máximo de 5 tiros consecutivos por jugada.
+3.a1 Al terminar cada tiro dentro de una misma jugada, al jugador se le dará la opciones de salir, cambiar la apuesta
+    o seguir jugando
+3.a2 En caso de elegir la opcion salir, el jugador deberá confirmar dicha accion, debido a no se devolverá el saldo ya apostado 
+      y se perderá la ganancia de la tirada ya realizada.
+3.a3 En caso de elegir la opcion cambiar apuesta, se solicitará al usuario que ingrese el nuevo monton, pero a su vez no le será 
+    reintegrado lo apostado anteriormente.
+3.a4  En caso de preferir seguir jugando, la jugada continuará con normalidad.
 4. Al iniciar una tirada, se generan símbolos aleatorios para determinar el resultado.
 5. Si se obtienen símbolos consecutivos iguales (mínimo dos), el jugador recibe ganancias según los valores 
    del símbolo correspondiente y la cantidad de repeticiones.

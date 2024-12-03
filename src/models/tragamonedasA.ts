@@ -21,6 +21,7 @@ export class DeluxeCrazyDK extends Juego {
   };
   private ganancia: number;
   private apuesta: number;
+  private saldoInicial: number;
   public constructor() {
     super();
     this.apuestaMinima = 100;
@@ -30,6 +31,7 @@ export class DeluxeCrazyDK extends Juego {
     this.apuesta = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
     this.instrucciones = "";
+    this.saldoInicial = 0;
   }
   private readonly tiros: number = 5;
 
@@ -45,21 +47,17 @@ export class DeluxeCrazyDK extends Juego {
     } else {
       resultado = "derrota";
     }
+    this.saldoInicial = jugador.obtenerSaldo();
 
     // Opciones del jugador dentro del juego
     this.interfaceTragamonedas(jugador, this.apuesta);
 
     this.apuesta = await this.pedirApuesta(jugador);
     if (this.apuesta === 0) {
-      const confirmacion = await Menu.pedirConfirmacion(
-        "Estás seguro que deseas salir?"
-      );
-      if (confirmacion) {
-        return {
-          apuestaTotal: 0,
-          resultado: "derrota",
-        };
-      }
+      return {
+        apuestaTotal: 0,
+        resultado: "derrota",
+      };
     }
 
     let opcion = "";
@@ -84,6 +82,7 @@ export class DeluxeCrazyDK extends Juego {
     while (opcion !== "salir") {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
+        jugador.restarSaldo(this.apuesta);
         const interactuarTirada = [
           {
             valor: "jugar",
@@ -120,27 +119,16 @@ export class DeluxeCrazyDK extends Juego {
           if (interaccion === "cambiar") {
             this.apuesta = await this.pedirApuesta(jugador);
             if (this.apuesta === 0) {
-              const confirmacion = await Menu.pedirConfirmacion(
-                "Estás seguro que deseas salir?"
-              );
-              if (confirmacion) {
-                return {
-                  apuestaTotal: 0,
-                  resultado: "derrota",
-                };
-              }
+              continue;
             }
             await this.interfaceTragamonedas(jugador, this.apuesta);
           }
           if (interaccion === "salir") {
             const confirmacion = await Menu.pedirConfirmacion(
-              "¿Estás seguro? Perderas todo el progreso obtenido en este tiro"
+              "¿Estás seguro? [Preciones cualquier tecla para salir, y n para continuar]"
             );
             if (confirmacion) {
-              return {
-                apuestaTotal: this.apuesta,
-                resultado: "derrota",
-              };
+              console.log(await this.mostrarResultados("derrota", jugador));
             }
           }
         }
@@ -148,25 +136,24 @@ export class DeluxeCrazyDK extends Juego {
 
       // Abandona, pierde todo
       if (opcion === "salir") {
-        console.log(this.mostrarResultados("derrota", jugador, true));
+        if (jugador.obtenerSaldo() > this.saldoInicial) {
+          console.log(await this.mostrarResultados("victoria", jugador));
+        } else {
+          console.log(await this.mostrarResultados("derrota", jugador));
+        }
       }
       if (opcion === "apuesta") {
         this.apuesta += await this.pedirApuesta(jugador);
         if (this.apuesta === 0) {
-          const confirmacion = await Menu.pedirConfirmacion(
-            "Estás seguro que deseas salir?"
+          const opcionesApuestaCero = await Menu.elegirOpcion(
+            "¿Que deseas hacer?",
+            opciones
           );
-          if (confirmacion) {
-            return {
-              apuestaTotal: 0,
-              resultado: "derrota",
-            };
-          }
         }
         await this.interfaceTragamonedas(jugador, this.apuesta);
       }
       if (jugador.obtenerSaldo() < 100) {
-        console.log(this.mostrarResultados("derrota", jugador, true));
+        console.log(await this.mostrarResultados("derrota", jugador));
       }
       if (opcion === "instrucciones") {
         console.log(this.leerInstrucciones("tragamonedasA.txt"));
@@ -239,7 +226,7 @@ export class DeluxeCrazyDK extends Juego {
     ]; // Inicializamos con el primer simbolo
     let i: number;
     for (i = 0; i < rieles.length; i++) {
-      for (let j = 0; j < 10; j++) {
+      for (let j = 0; j < 5; j++) {
         rieles[i] =
           this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
 
@@ -257,7 +244,7 @@ export class DeluxeCrazyDK extends Juego {
   }
   private async pedirApuesta(jugador: Jugador) {
     const montoApostado = await Menu.pedirNumero(
-      "Ingrese su apuesta [0: Para salir]",
+      "Ingrese su apuesta [0: Para regresar]",
       (apuesta) => {
         // Primero valida que sea un numero
         if (typeof apuesta === "number") {
@@ -274,16 +261,15 @@ export class DeluxeCrazyDK extends Juego {
           if (apuesta > jugador.obtenerSaldo()) {
             return "Saldo insuficiente.";
           }
-
-          // Cuando todo va bien se resta la apuesta al saldo del jugador
-          jugador.restarSaldo(apuesta);
-          // y se retorna true.
           return true;
         } else {
           return "Debes ingresar un número válido.";
         }
       }
     );
+    if (montoApostado === 0) {
+      return this.apuesta;
+    }
     return montoApostado;
   }
 
@@ -325,8 +311,7 @@ export class DeluxeCrazyDK extends Juego {
 
   private async mostrarResultados(
     resultado: "victoria" | "derrota",
-    jugador: Jugador,
-    salir: boolean = false
+    jugador: Jugador
   ) {
     console.clear();
     if (resultado === "victoria") {
@@ -336,6 +321,9 @@ export class DeluxeCrazyDK extends Juego {
       console.log("========================================================");
       console.log("              Ganancia total: ", jugador.obtenerSaldo());
       console.log("========================================================");
+      return {
+        resultado: "victoria",
+      };
     } else {
       console.log("========================================================");
       console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
@@ -343,40 +331,10 @@ export class DeluxeCrazyDK extends Juego {
       console.log("========================================================");
       console.log("                 ¡Mejor suerte la proxima!              ");
       console.log("========================================================");
-    }
-    const opcionesFinales = [
-      {
-        valor: "jugar",
-        nombre: "▶️ Voler a jugar",
-        desactivada: jugador.obtenerSaldo() < this.apuestaMinima,
-      },
-      {
-        valor: "salir",
-        nombre: "🔙 Volver",
-      },
-    ];
-    if (salir) {
-      for (let i: number = 5; i > 0; i--) {
-        if (i === 1) {
-          console.log(
-            `\r🔄  Seras redirigido al menu principal en ${i} segundo..`
-          );
-        } else {
-          console.log(
-            `\r🔄  Seras redirigido al menu principal en ${i} segundos..`
-          );
-        }
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    } else {
-      let opcion = await Menu.elegirOpcion(
-        "¿Que quieres hacer?",
-        opcionesFinales
-      );
-      if ((opcion = "jugar")) {
-        //falta agregar aca algo que guarde los datos de la partida
-        await this.ejecutar(jugador);
-      }
+      return {
+        apuestaTotal: this.apuesta,
+        resultado: "derrota",
+      };
     }
   }
 }
