@@ -1,10 +1,7 @@
-import { Juego } from "./Juego";
-import { Jugador } from "./Jugador";
-import { IJuego } from "./IJuego";
+import { Juego } from "../models/Juego";
+import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
-import { fileURLToPath } from "url";
-import { resolve } from "path";
-import * as fs from "node:fs";
+
 export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
   private apuestaMaxima: number;
@@ -29,7 +26,7 @@ export class DeluxeCrazyDK extends Juego {
     this.jugada = [];
     this.apuesta = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
-    this.instrucciones = "";
+    this.instrucciones = this.leerInstrucciones("tragamonedasA.txt");
     this.saldoInicial = 0; //inicializa en 0 para sobreescribirse cuando reciba saldo de jugador
   }
   private readonly tiros: number = 5;
@@ -73,11 +70,8 @@ export class DeluxeCrazyDK extends Juego {
         valor: "salir",
         nombre: "🔙 Volver",
       },
-      {
-        valor: "instrucciones",
-        nombre: "📜 Reglamento",
-      },
     ];
+
     while (opcion !== "salir") {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
@@ -89,7 +83,7 @@ export class DeluxeCrazyDK extends Juego {
         const interactuarTirada = [
           {
             valor: "jugar",
-            nombre: "▶️ Seguir jugando",
+            nombre: "▶️  Seguir jugando",
           },
           {
             valor: "cambiar",
@@ -97,7 +91,7 @@ export class DeluxeCrazyDK extends Juego {
           },
           {
             valor: "salir",
-            nombre: " 🚪salir",
+            nombre: "🚪 Salir",
           },
         ];
         for (let iP = 0; iP < this.tiros; iP++) {
@@ -179,13 +173,6 @@ export class DeluxeCrazyDK extends Juego {
       }
       if (jugador.obtenerSaldo() < this.apuestaMinima) {
         await this.mostrarResultados("derrota", jugador);
-      }
-      if (opcion === "instrucciones") {
-        console.log(this.leerInstrucciones("tragamonedasA.txt"));
-        let confirmarJuego = await Menu.pedirConfirmacion("¿Deseas jugar?");
-        if (confirmarJuego) {
-          continue;
-        }
       }
     }
     return {
@@ -296,31 +283,6 @@ export class DeluxeCrazyDK extends Juego {
       return this.apuesta;
     }
     return montoApostado;
-  }
-
-  protected leerInstrucciones(archivo: string): string {
-    const carpeta = "src/instructions";
-    const ruta = `${carpeta}/${archivo}`;
-
-    if (!fs.existsSync(ruta)) {
-      return `El archivo ${ruta} no existe.`;
-    }
-
-    try {
-      this.instrucciones = fs.readFileSync(ruta, "utf-8");
-
-      if (!this.instrucciones.trim()) {
-        return `El archivo ${ruta} esta vacio.`;
-      }
-
-      return this.instrucciones;
-    } catch (error) {
-      if (error instanceof Error) {
-        return `Error al leer el archivo ${ruta}: ${error.message}`;
-      }
-
-      return `Error al leer el archivo ${ruta}`;
-    }
   }
 
   private async interfaceTragamonedas(jugador: Jugador, apuestaTotal: number) {
