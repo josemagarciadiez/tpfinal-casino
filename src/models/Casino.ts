@@ -8,6 +8,7 @@ import { Menu } from "../utils/Menu";
 // Implementaciones de juegos
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
+import { LuckySpin } from "../games/LuckySpin";
 
 export class Casino {
   private jugador!: Jugador;
@@ -16,7 +17,8 @@ export class Casino {
 
   constructor() {
     this.juegos = [
-      { valor: "tragamonedas", nombre: "Deluxe Crazy DK 🎰" },
+      { valor: "tragamonedas_A", nombre: "Lucky Spin 🛼" },
+      { valor: "tragamonedas_B", nombre: "Deluxe Crazy DK 🎰" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
       { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
     ];
@@ -140,6 +142,9 @@ export class Casino {
     );
 
     switch (opcionSeleccionada) {
+      case "tragamonedas_A":
+        this.juego = new LuckySpin();
+        break;
       case "dados":
         this.juego = new Dados();
         break;
