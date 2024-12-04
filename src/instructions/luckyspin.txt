@@ -1,0 +1,55 @@
+==================================================================================
+                        🛼  LUCKY SPIN 🛼
+==================================================================================
+
+📜 **Descripción:**
+Lucky Spin es un juego de tragamonedas en el que el jugador realiza apuestas para 
+girar la palanca y obtener una combinación de símbolos. 
+Los símbolos pueden generar ganancias dependiendo de cuántos se repitan en una tirada. 
+El objetivo es obtener el mayor premio posible.
+
+==================================================================================
+                        📖 **REGLAS DEL JUEGO** 📖
+==================================================================================
+
+🎰  **Instrucciones para el Jugador:**
+1️⃣  El Jugador realiza una apuesta inicial (al menos 100 unidades).
+2️⃣  Luego puede girar la palanca o salir del juego en cada ronda.
+3️⃣  El Jugador tiene 5 intentos para girar la palanca.
+4️⃣  Cada giro de la palanca muestra una combinación de 3 símbolos seleccionados 
+    aleatoriamente de entre:
+   - 🍒 → Ganancia: 20%
+   - 🍋 → Ganancia: 25%
+   - 🍇 → Ganancia: 30%
+   - 🔔 → Ganancia: 35%
+   - ⭐ → Ganancia: 40%
+5️⃣  Las combinaciones de símbolos pueden generar ganancias. Dependiendo de cuántos 
+    símbolos coincidan, el Jugador recibirá un pago:
+   - 2 símbolos iguales: Pago del 80% del multiplicador del símbolo.
+   - 3 símbolos iguales: Pago completo del multiplicador del símbolo.
+
+💡 Ejemplo:
+- Combinación: 🍒 | 🍒 | 🍋 → Ganancia: 20% (🍒) x 80% = 16% de la apuesta.
+- Combinación: 🍇 | 🍇 | 🍇 → Ganancia: 30% (🍇) = 30% de la apuesta.
+
+🔸 **Opciones del Jugador a lo largo del juego:**
+- **Girar Palanca:** Realiza un nuevo giro de los símbolos.
+- **Salir del juego:** Abandonar el juego en cualquier momento.
+
+==================================================================================
+
+⚖️  **Manejo de Ganancias y Pérdidas:**
+- Si el Jugador obtiene una combinación ganadora, se le sumará la ganancia al pozo acumulado.
+- Si el Jugador no obtiene ganancias, una parte del pozo acumulado se pierde.
+- Al final de cada ronda, el Jugador puede elegir entre girar nuevamente o salir del juego.
+
+==================================================================================
+
+🏆 **Resultado Final:**
+- Al final de las 5 rondas, el Jugador verá su saldo total, que incluye las ganancias obtenidas.
+- Si el Jugador elige salir antes de completar las 5 rondas, el juego termina con las 
+  ganancias acumuladas hasta ese momento.
+
+==================================================================================
+                       ¡Que comience el juego! 🎉
+==================================================================================
