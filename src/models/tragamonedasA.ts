@@ -1,10 +1,7 @@
 import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
-import { IJuego } from "./IJuego";
 import { Menu } from "../utils/Menu";
-import { fileURLToPath } from "url";
-import { resolve } from "path";
-import * as fs from "node:fs";
+
 export class DeluxeCrazyDK extends Juego {
   private apuestaMinima: number;
   private apuestaMaxima: number;
