@@ -81,6 +81,10 @@ export class DeluxeCrazyDK extends Juego {
     while (opcion !== "salir") {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
+        if (jugador.obtenerSaldo() < this.apuesta) {
+          console.log("Tu monto es insuficiente para seguir apostando");
+          break;
+        }
         jugador.restarSaldo(this.apuesta);
         const interactuarTirada = [
           {
@@ -97,6 +101,8 @@ export class DeluxeCrazyDK extends Juego {
           },
         ];
         for (let iP = 0; iP < this.tiros; iP++) {
+          this.ganancia =
+            this.ganancia + this.calcularGanancia(this.jugada, jugador);
           console.clear();
           this.interfaceTragamonedas(jugador, this.apuesta);
           this.jugada = [];
