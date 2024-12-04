@@ -2,7 +2,6 @@ import { Juego } from "./Juego";
 import { Jugador } from "./Jugador";
 import { IJuego } from "./IJuego";
 import { Menu } from "../utils/Menu";
-import { exit, exitCode, off, resourceUsage } from "process";
 import { fileURLToPath } from "url";
 import { resolve } from "path";
 import * as fs from "node:fs";
@@ -122,7 +121,7 @@ export class DeluxeCrazyDK extends Juego {
             if (nuevaApuesta > this.apuesta) {
               let descontarSaldo = nuevaApuesta - this.apuesta;
               jugador.restarSaldo(descontarSaldo);
-              nuevaApuesta = this.apuesta;
+              this.apuesta = nuevaApuesta;
             }
             if (nuevaApuesta <= this.apuesta) {
               this.apuesta = nuevaApuesta;
@@ -135,7 +134,7 @@ export class DeluxeCrazyDK extends Juego {
           }
           if (interaccion === "salir") {
             const confirmacion = await Menu.pedirConfirmacion(
-              "¿Estás seguro? [Preciones cualquier tecla para salir, y n para continuar]"
+              "¿Estás seguro? [Preciona cualquier tecla para salir, y n para continuar]"
             );
             if (confirmacion) {
               await this.mostrarResultados("derrota", jugador);
@@ -171,7 +170,7 @@ export class DeluxeCrazyDK extends Juego {
         }
         await this.interfaceTragamonedas(jugador, this.apuesta);
       }
-      if (jugador.obtenerSaldo() < 100) {
+      if (jugador.obtenerSaldo() < this.apuestaMinima) {
         await this.mostrarResultados("derrota", jugador);
       }
       if (opcion === "instrucciones") {
@@ -216,7 +215,7 @@ export class DeluxeCrazyDK extends Juego {
     }
     return false;
   }
-  public calcularGanancia(tirada: any, jugador: Jugador): number {
+  public calcularGanancia(tirada: string[], jugador: Jugador): number {
     let contador = this.contarOcurrencias(tirada);
     let gananciaTotal = 0;
     for (const simbolo in contador) {
