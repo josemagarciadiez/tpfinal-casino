@@ -1,6 +1,5 @@
-import { Juego } from "./Juego";
-import { Jugador } from "./Jugador";
-import { IJuego } from "./IJuego";
+import { Juego } from "../models/Juego";
+import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 import * as fs from "node:fs";
 
@@ -17,6 +16,7 @@ export class DeluxeCachinEasyWin extends Juego {
     };
     private ganancia: number;
     private montoApostado: number;
+    private saldoInicial: number;
     public constructor() {
         super();
         this.apuestaMinima = 50;
@@ -25,6 +25,7 @@ export class DeluxeCachinEasyWin extends Juego {
         this.jugada = [];
         this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
         this.montoApostado = 50;
+        this.saldoInicial = 0;
     }
     private readonly tiros: number = 5;
 
@@ -42,6 +43,7 @@ export class DeluxeCachinEasyWin extends Juego {
         }
 
         // Opciones del jugador dentro del juego
+        this.saldoInicial = jugador.obtenerSaldo();
         this.interfaceCachin(jugador);
 
         this.montoApostado = await this.pedirMonto(jugador);
@@ -79,7 +81,7 @@ export class DeluxeCachinEasyWin extends Juego {
         while (opcion !== "salir") {
             opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
             if (opcion === "tirada") {
-                if(jugador.obtenerSaldo() < this.montoApostado){
+                if (jugador.obtenerSaldo() < this.montoApostado) {
                     console.log("Tu saldo en insuficiente");
                     await this.esperar(3);
                 }
@@ -92,9 +94,15 @@ export class DeluxeCachinEasyWin extends Juego {
 
             // Abandona, pierde todo
             if (opcion === "salir") {
-                console.log(await this.mostrarResultadosCachin("derrota", jugador));
-                await this.esperar(3);
-                break;
+                if (this.saldoInicial > jugador.obtenerSaldo()) {
+                    console.log(await this.mostrarResultadosCachin("derrota", jugador));
+                    await this.esperar(3);
+                    break;
+                }else{
+                    console.log(await this.mostrarResultadosCachin("victoria", jugador));
+                    await this.esperar(3);
+                    break;
+                }
             }
             if (opcion === "apuesta") {
                 this.montoApostado += await this.pedirMonto(jugador);
@@ -116,7 +124,7 @@ export class DeluxeCachinEasyWin extends Juego {
                     continue;
                 }
             }
-            if(jugador.obtenerSaldo() <= this.apuestaMinima ){
+            if (jugador.obtenerSaldo() <= this.apuestaMinima) {
                 console.log("No tienes suficiente saldo para seguir jugando");
                 break;
             }
@@ -135,29 +143,29 @@ export class DeluxeCachinEasyWin extends Juego {
 
     public contarParecidos(tirada: string[]): Record<string, number> {
         const contador: Record<string, number> = {};
-    
+
         // Cuenta todas los parecidos de cada símbolo en el array
         for (const simbolo of tirada) {
             contador[simbolo] = (contador[simbolo] || 0) + 1;
         }
-    
+
         return contador;
     }
-    
+
 
     public contarSimilitudes(tirada: string[]): boolean {
         const contador = this.contarParecidos(tirada);
-    
+
         // Verifica si algún símbolo aparece más de una vez
         for (const simbolo in contador) {
             if (contador[simbolo] > 1) {
                 return true; // Hay similitudes en el array
             }
         }
-    
+
         return false; // No hay similitudes
     }
-    
+
     public calcularGanancia(tirada: any, jugador: Jugador): number {
         let contador = this.contarParecidos(tirada);
         let gananciaTotal = 0;
@@ -236,7 +244,7 @@ export class DeluxeCachinEasyWin extends Juego {
             console.log("========================================================");
             console.log("              Ganancia total: ", jugador.obtenerSaldo());
             console.log("========================================================");
-            return{ 
+            return {
                 resultado: "Victoria",
                 ganancia: this.ganancia
             };
@@ -247,7 +255,7 @@ export class DeluxeCachinEasyWin extends Juego {
             console.log("========================================================");
             console.log("                 ¡La proxima lo conseguis!              ");
             console.log("========================================================");
-            return{ 
+            return {
                 resultado: "Derrota"
             };
         }
