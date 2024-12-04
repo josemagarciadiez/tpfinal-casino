@@ -1,341 +1,59 @@
-import { Juego } from "./Juego";
-import { Jugador } from "./Jugador";
-import { IJuego } from "./IJuego";
-import { Menu } from "../utils/Menu";
-import { exit, exitCode, off, resourceUsage } from "process";
-import { fileURLToPath } from "url";
-import { resolve } from "path";
-import * as fs from "node:fs";
+Instrucciones de Juego
+Objetivo
+El objetivo del juego es apostar dinero para realizar tiradas y ganar monedas acumulando combinaciones de símbolos iguales. Puedes ajustar tu apuesta dentro de los límites establecidos y decidir cuándo retirarte con las ganancias obtenidas o continuar apostando.
 
-export class DeluxeCachinEasyWin extends Juego {
-  private apuestaMinima: number;
-  private apuestaMaxima: number;
-  private simbolos: string[];
-  private jugada: string[];
-  private valoresSimbolos: Record<string, number> = {
-    "🤴": 80,
-    "🧙": 250,
-    "🦄": 40,
-    "👑": 90,
-  };
-  private ganancia: number;
-  private montoApostado: number;
-  private primerSaldo: number;
-  public constructor() {
-    super();
-    this.apuestaMinima = 50;
-    this.apuestaMaxima = 750;
-    this.simbolos = ["🦄", "🧙", "🤴","👑"];
-    this.jugada = [];
-    this.montoApostado = 100; // Inicializa en 100 para evitar conflictos con apuestaMinima
-    this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
-    this.montoApostado = 50;
-    this.primerSaldo = 0;
-  }
-  private readonly tiros: number = 5;
+Cómo jugar
+1. Inicio del juego
+Al comenzar, el jugador verá una interfaz que muestra su nombre y saldo actual.
+El jugador puede:
+Elegir un monto de apuesta.
+Realizar una tirada.
+Consultar las instrucciones.
+Retirarse del juego.
+2. Opciones principales
+Durante el juego, podrás seleccionar entre las siguientes acciones:
 
-  // Métodos
-  async ejecutar(jugador: Jugador): Promise<{
-    apuestaTotal: number;
-    resultado: "victoria" | "derrota";
-    ganancia?: number;
-  }> {
-    let resultado: "victoria" | "derrota" = "derrota";
-    if (this.ganancia > 0) {
-      resultado = "victoria";
-    } else {
-      resultado = "derrota";
-    }
-    this.primerSaldo = jugador.obtenerSaldo();
+🎰 Tirar:
 
-    // Opciones del jugador dentro del juego
-    await this.interfaceCachin(jugador, this.montoApostado);
+Realiza una tirada y consume el monto apostado de tu saldo.
+El juego generará una combinación aleatoria de símbolos. Si se repiten símbolos iguales, ganarás según el valor de cada símbolo y su cantidad.
+🎰 Cambiar apuesta:
 
-    this.montoApostado = await this.pedirApuesta(jugador);
-    if (this.montoApostado === 0) {
-        return {
-            apuestaTotal: 0,
-            resultado: "derrota"
-        }
-    }
+Ajusta tu monto de apuesta dentro de los valores permitidos:
+Apuesta mínima: $50
+Apuesta máxima: $750
+Recuerda que no puedes apostar más de tu saldo disponible.
+📜 Instrucciones:
 
-    let opcion = "";
-    let opciones = [
-      {
-        valor: "tirada",
-        nombre: "🎰 Probar suerte",
-      },
-      {
-        valor: "apuesta",
-        nombre: "🎰 Cambiar apuesta",
-      },
-      {
-        valor: "salir",
-        nombre: "🔙 Volver",
-      },
-      {
-        valor: "instrucciones",
-        nombre: "📜 Reglamente",
-      }
-    ];
-    while (opcion !== "salir") {
-      opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
-      if (opcion === "tirada") {
-        jugador.restarSaldo(this.montoApostado);
-        const interactuarTirada = [
-          {
-            valor: "jugar",
-            nombre: "▶️ Seguir jugando",
-          },
-          {
-            valor: "cambiar",
-            nombre: "🎰 Cambiar apuesta",
-          },
-          {
-            valor: "salir",
-            nombre: " 🚪salir",
-          },
-        ];
-        for (let i = 0; i < this.tiros; i++) {
-          console.clear();
-          await this.interfaceCachin(jugador, this.montoApostado);
-          this.jugada = [];
-          console.log(
-            `\n                 Tiros restantes: ${this.tiros - i}   `
-          );
-          console.log(
-            "========================================================"
-          );
-          await this.simularTiro();
-          console.log("\n", this.calcularGanancia(this.jugada, jugador)); // Calcula la ganancia para el tiro actual
-          let interaccion = await Menu.elegirOpcion(
-            "¿Deseas continuar con la jugada?",
-            interactuarTirada
-          );
-          if (interaccion === "jugar") {
-            continue;
-          }
-          if (interaccion === "cambiar") {
-            this.montoApostado = await this.pedirApuesta(jugador);
-            if (this.montoApostado === 0) {
-              continue;
-            }
-            await this.interfaceCachin(jugador, this.montoApostado);
-          }
-          if (interaccion === "salir") {
-            const confirmacion = await Menu.pedirConfirmacion(
-              "¿Estás seguro? [Preciones cualquier tecla para salir, y n para continuar]"
-            );
-            if (confirmacion) {
-                console.log(await this.mostrarResultadosCachin("derrota", jugador));
-            }
-          }
-        }
-      }
-      if (opcion === "salir") {
-        if (jugador.obtenerSaldo() > this.montoApostado) {
-            console.log(await this.mostrarResultadosCachin("victoria", jugador));
-          } else {
-            console.log(await this.mostrarResultadosCachin("derrota", jugador));
-          }
-      }
-      if (opcion === "apuesta") {
-        this.montoApostado += await this.pedirApuesta(jugador);
-        if (this.montoApostado === 0) {
-            await Menu.elegirOpcion(
-            "¿Que deseas hacer?",
-             opciones
-            );
-        }
-        await this.interfaceCachin(jugador, this.montoApostado);
-      }
-      if (jugador.obtenerSaldo() < 100) {
-        console.log(await this.mostrarResultadosCachin("derrota", jugador));
-      }
-      
-      if(opcion === "instrucciones"){
-        console.log(this.leerInstrucciones("Reglas_Deluxe_Cachin_Easy_Win.txt"));
-        let confirmarJuego = await Menu.pedirConfirmacion(
-          "¿Deseas jugar?"
-        );
-        if(confirmarJuego){
-          continue;
-        }
-      }
-    }
-    return {
-      apuestaTotal: this.montoApostado,
-      resultado: resultado,
-      ganancia: this.ganancia, // Si no hay ganancia, ganancia será 0
-    };
-  }
+Consulta las reglas y objetivos del juego.
+Puedes decidir si continuar jugando o retirarte.
+🔙 Salir:
 
-  public simboloRandom() {
-    let i = Math.floor(Math.random() * this.simbolos.length);
-    return this.simbolos[i];
-  }
+Termina el juego y revisa tus resultados:
+Si tu saldo final es mayor al inicial: ¡Victoria!
+Si tu saldo final es menor al inicial: Derrota.
+Puedes salir del juego en cualquier momento.
+3. Reglas de las tiradas
+Cada tirada genera una combinación de 4 símbolos aleatorios entre los siguientes:
 
-  public contarOcurrencias(tirada: string[]): Record<string, number> {
-    const contador: Record<string, number> = {};
+🤴 Rey: Valor: 8
+🧙 Mago: Valor: 10
+🦄 Unicornio: Valor: 4
+👑 Corona: Valor: 9
+Condiciones de victoria:
 
-    // Itera sobre la tirada de izquierda a derecha
-    for (let i = 1; i < tirada.length; i++) {
-      if (tirada[i] === tirada[i - 1]) {
-        contador[tirada[i]] = (contador[tirada[i]] || 0) + 1;
-      }
-    }
-    return contador;
-  }
+Si al menos 2 símbolos son iguales, ganas.
+La ganancia se calcula como:
+𝐺𝑎𝑛𝑎𝑛𝑐𝑖𝑎=(Monto Apostado+Valor del Sımbolo)×Cantidad de Sımbolos IgualesGanancia=(Monto Apostado+Valor del Sımbolo)×Cantidad de S imbolos Iguales
+Sin símbolos repetidos: Pierdes la apuesta de esa tirada.
 
-  public contarSimilitudes(tirada: string[]): boolean {
-    const contador = this.contarOcurrencias(tirada);
-
-    for (const simbolo in contador) {
-      if (contador[simbolo] >= 2) {
-        return true; // Si encontramos símbolos consecutivos iguales, devolvemos true
-      }
-    }
-    return false;
-  }
-  public calcularGanancia(tirada: any, jugador: Jugador): number {
-    let contador = this.contarOcurrencias(tirada);
-    let gananciaTotal = 0;
-    for (const simbolo in contador) {
-      if (contador[simbolo] >= 2) {
-        // Verifica que se repita al menos dos veces
-        const valorSimbolo = this.valoresSimbolos[simbolo];
-        gananciaTotal = this.montoApostado + valorSimbolo * contador[simbolo];
-        jugador?.sumarSaldo(gananciaTotal);
-      }
-    }
-    if (gananciaTotal > 0) {
-      console.log("\n😃 Ganaste: ");
-    } else if (gananciaTotal === 0) {
-      console.log("\n😔 No hubo suerte esta vez:");
-    }
-    return gananciaTotal;
-  }
-  private async simularTiro() {
-    const rieles = [
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-    ]; // Inicializamos con el primer simbolo
-    let i: number;
-    for (i = 0; i < rieles.length; i++) {
-      for (let j = 0; j < 5; j++) {
-        rieles[i] =
-          this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
-
-        process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
-
-        await new Promise((resolve) => setTimeout(resolve, 150));
-      }
-      rieles[i] =
-        this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
-    }
-    this.jugada.push(...rieles);
-  }
-  private async esperar(segundos: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, segundos * 1000));
-  }
-  private async pedirApuesta(jugador: Jugador) {
-    const nuevoMonto = await Menu.pedirNumero(
-      "Ingrese su apuesta [0: Para regresar]",
-      (apuesta) => {
-        // Primero valida que sea un numero
-        if (typeof apuesta === "number") {
-          // Si es numero
-          // chequea que lo ingresado no sea menor q la apuesta minima
-          // y distinto de 0
-          if (apuesta >= 1 && apuesta < this.apuestaMinima) {
-            return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
-          }
-          // despues, chequea que no supere la apuesta maxima
-          if (apuesta > this.apuestaMaxima) {
-            return `El monto ingresado (${apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`;
-          }
-          if (apuesta > jugador.obtenerSaldo()) {
-            return "Saldo insuficiente.";
-          }
-          return true;
-        } else {
-          return "Debes ingresar un número válido.";
-        }
-      }
-    );
-    if(nuevoMonto === 0){
-        return this.montoApostado;
-    }
-    return nuevoMonto;
-  }
-  protected leerInstrucciones(archivo: string): string {
-    const carpeta = "src/instructions";
-    const ruta = `${carpeta}/${archivo}`;
-
-    if (!fs.existsSync(ruta)) {
-      return `El archivo ${ruta} no existe.`;
-    }
-
-    try {
-      this.instrucciones = fs.readFileSync(ruta, "utf-8");
-
-      if (!this.instrucciones.trim()) {
-        return `El archivo ${ruta} esta vacio.`;
-      }
-
-      return this.instrucciones;
-    } catch (error) {
-      if (error instanceof Error) {
-        return `Error al leer el archivo ${ruta}: ${error.message}`;
-      }
-
-      return `Error al leer el archivo ${ruta}`;
-    }
-  }
-
-
-  private async interfaceCachin(jugador: Jugador, apuestaTotal: number) {
-    apuestaTotal = this.montoApostado;
-    console.clear();
-    console.log("|========================================================|");
-    console.log("|                 🎰 Deluxe Crazy DK 🎰                  |");
-    console.log("|========================================================|");
-    console.log(
-      `| 💲Apuesta total: ${apuestaTotal}      🤑 Saldo: ${jugador.obtenerSaldo()}             |`
-    );
-    console.log("|--------------------------------------------------------|");
-  }
-
-  private async mostrarResultadosCachin(
-    resultado: "victoria" | "derrota",
-    jugador: Jugador,
-  ) {
-    console.clear();
-    if (resultado === "victoria") {
-      console.log("========================================================");
-      console.log("              🎰 Deluxe Cachin Easy Win 🎰               ");
-      console.log("              🥳 Felicidades, ganaste!! 🥳               ");
-      console.log("========================================================");
-      console.log("              Ganancia total: ", jugador.obtenerSaldo());
-      console.log("========================================================");
-      return {
-        resultado: "victoria"
-      };
-    } else {
-      console.log("========================================================");
-      console.log("                🎰 Deluxe Cachin Easy Win 🎰             ");
-      console.log("                     💔 Perdiste 💔                      ");
-      console.log("========================================================");
-      console.log("                 ¡La proxima lo conseguis!              ");
-      console.log("========================================================");
-      return {
-        apuestaTotal: this.montoApostado,
-        resultado: "derrota",
-      };
-    }
-  }
-}
+Condiciones especiales
+Saldo insuficiente: Si tu saldo es menor a la apuesta mínima, el juego termina automáticamente.
+Ganancias acumuladas: Las ganancias se suman automáticamente a tu saldo.
+Salida anticipada: Si decides salir antes de terminar tu saldo, conservarás lo restante como tu ganancia.
+Ejemplo de una tirada
+Realizas una apuesta de $100.
+El resultado de la tirada es: 🤴 🤴 👑 🦄
+Hay 2 símbolos "🤴" iguales.
+La ganancia será:(100+8)×2=216(100+8)×2=216
+Recuperas $216 en tu saldo.
