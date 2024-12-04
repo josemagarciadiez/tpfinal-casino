@@ -1,5 +1,5 @@
-import { Juego } from "./Juego";
-import { Jugador } from "./Jugador";
+import { Juego } from "../models/Juego";
+import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 
 export class DeluxeCrazyDK extends Juego {
