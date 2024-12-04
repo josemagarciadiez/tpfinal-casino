@@ -6,8 +6,10 @@ import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 
 // Implementaciones de juegos
+
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
+import { DeluxeCrazyDK } from "../games/tragamonedasA";
 
 export class Casino {
   private jugador!: Jugador;
@@ -138,13 +140,15 @@ export class Casino {
       "Selecciona que juego quieres jugar",
       opciones
     );
-
     switch (opcionSeleccionada) {
       case "dados":
         this.juego = new Dados();
         break;
       case "ruleta":
         this.juego = new Ruleta();
+        break;
+      case "tragamonedas":
+        this.juego = new DeluxeCrazyDK();
         break;
       case "salir":
         break;
