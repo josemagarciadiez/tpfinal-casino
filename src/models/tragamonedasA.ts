@@ -138,6 +138,7 @@ export class DeluxeCrazyDK extends Juego {
             );
             if (confirmacion) {
               await this.mostrarResultados("derrota", jugador);
+              break;
             }
           }
         }
