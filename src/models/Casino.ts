@@ -22,7 +22,7 @@ export class Casino {
       { valor: "tragamonedas", nombre: "Deluxe Crazy DK 🎰" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
       { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
-      { valor: "tragamonedas2", nombre: "ACA" },
+      { valor: "tragamonedas2", nombre: "Deluxe Cachin Easy Win 🎁" },
     ];
   }
 
