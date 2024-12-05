@@ -308,9 +308,7 @@ export class DeluxeCrazyDK extends Juego {
       console.log("========================================================");
       console.log("              Ganancia total: ", jugador.obtenerSaldo());
       console.log("========================================================");
-      return {
-        resultado: "victoria",
-      };
+      console.log("   Porfavor aguarda y serás llevado al menu principal   ");
     } else {
       console.log("========================================================");
       console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
@@ -318,10 +316,7 @@ export class DeluxeCrazyDK extends Juego {
       console.log("========================================================");
       console.log("                 ¡Mejor suerte la proxima!              ");
       console.log("========================================================");
-      return {
-        apuestaTotal: this.apuesta,
-        resultado: "derrota",
-      };
+      console.log("   Porfavor aguarda y serás llevado al menu principal   ");
     }
   }
 }
