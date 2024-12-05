@@ -263,6 +263,9 @@ export class DeluxeCrazyDK extends Juego {
           // Si es numero
           // chequea que lo ingresado no sea menor q la apuesta minima
           // y distinto de 0
+          if (apuesta < 0) {
+            return "Debes ingresar un número válido.";
+          }
           if (apuesta >= 1 && apuesta < this.apuestaMinima) {
             return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
           }
