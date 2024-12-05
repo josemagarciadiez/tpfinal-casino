@@ -75,6 +75,10 @@ export class DeluxeCrazyDK extends Juego {
     while (opcion !== "salir") {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
+        if (jugador.obtenerSaldo() < this.apuesta) {
+          console.log("Tu monto es insuficiente para seguir apostando");
+          break;
+        }
         jugador.restarSaldo(this.apuesta);
         const interactuarTirada = [
           {
@@ -91,6 +95,8 @@ export class DeluxeCrazyDK extends Juego {
           },
         ];
         for (let iP = 0; iP < this.tiros; iP++) {
+          this.ganancia =
+            this.ganancia + this.calcularGanancia(this.jugada, jugador);
           console.clear();
           this.interfaceTragamonedas(jugador, this.apuesta);
           this.jugada = [];
@@ -257,6 +263,9 @@ export class DeluxeCrazyDK extends Juego {
           // Si es numero
           // chequea que lo ingresado no sea menor q la apuesta minima
           // y distinto de 0
+          if (apuesta < 0) {
+            return "Debes ingresar un número válido.";
+          }
           if (apuesta >= 1 && apuesta < this.apuestaMinima) {
             return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
           }
@@ -302,9 +311,6 @@ export class DeluxeCrazyDK extends Juego {
       console.log("========================================================");
       console.log("              Ganancia total: ", jugador.obtenerSaldo());
       console.log("========================================================");
-      return {
-        resultado: "victoria",
-      };
     } else {
       console.log("========================================================");
       console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
@@ -312,10 +318,6 @@ export class DeluxeCrazyDK extends Juego {
       console.log("========================================================");
       console.log("                 ¡Mejor suerte la proxima!              ");
       console.log("========================================================");
-      return {
-        apuestaTotal: this.apuesta,
-        resultado: "derrota",
-      };
     }
   }
 }
