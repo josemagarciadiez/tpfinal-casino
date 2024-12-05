@@ -10,7 +10,7 @@ import { Menu } from "../utils/Menu";
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
 import { DeluxeCrazyDK } from "../games/tragamonedasA";
-import { DeluxeCachinEasyWin } from "../games/cachin";
+import { DeluxeCachinEasyWin } from "../games/deluxeCachinEasyWin";
 
 export class Casino {
   private jugador!: Jugador;
