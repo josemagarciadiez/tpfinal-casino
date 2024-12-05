@@ -2,7 +2,6 @@ import { Juego } from "../models/Juego";
 import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 import * as fs from "fs";
-import { promises } from "dns";
 
 export class Ruleta extends Juego {
   protected tablero: { [key: number]: string };
@@ -201,14 +200,6 @@ export class Ruleta extends Juego {
     }
   }
 
-  private async mostrarInstrucciones() {
-    this.mostrarEncabezado();
-    console.log(this.instrucciones + "\n");
-    let resp = await Menu.elegirOpcion("Presione enter para continuar: ", [
-      { valor: "continuar", nombre: "Continuar" },
-    ]);
-  }
-
   private async comprobarSaldo(jugador: Jugador) {
     if (jugador.obtenerSaldo() < this.apuestaMinima) {
       this.mostrarEncabezado();
@@ -274,7 +265,6 @@ export class Ruleta extends Juego {
         // Esperar 250 ms
         await new Promise((resolve) => setTimeout(resolve, 250));
 
-        
         process.stdout.write("  🎡 ");
         // Esperar 250 ms
         await new Promise((resolve) => setTimeout(resolve, 250));
