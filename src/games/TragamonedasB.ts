@@ -26,6 +26,7 @@ export class DeluxeCachinEasyWin extends Juego {
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
     this.montoApostado = 50;
     this.saldoInicial = 0;
+    this.instrucciones = this.leerInstrucciones("tragamonedasB.txt");
   }
   private readonly tiros: number = 5;
 
@@ -185,6 +186,7 @@ export class DeluxeCachinEasyWin extends Juego {
     }
     return gananciaTotal;
   }
+
   private async tirada() {
     this.jugada = [];
     for (let i: number = 0; i < this.simbolos.length; i++) {
@@ -193,9 +195,11 @@ export class DeluxeCachinEasyWin extends Juego {
     }
     return this.jugada;
   }
+
   private async esperar(segundos: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, segundos * 1000));
   }
+
   private async pedirMonto(jugador: Jugador) {
     const montoApostado = await Menu.pedirNumero(
       "Ingrese su apuesta [0: Para salir]",
@@ -223,6 +227,7 @@ export class DeluxeCachinEasyWin extends Juego {
     );
     return montoApostado;
   }
+
   private async interfaceCachin(jugador: Jugador) {
     console.clear();
     console.log("========================================================");
@@ -233,6 +238,7 @@ export class DeluxeCachinEasyWin extends Juego {
     );
     console.log("--------------------------------------------------------");
   }
+
   private async mostrarResultadosCachin(
     resultado: "victoria" | "derrota",
     jugador: Jugador
