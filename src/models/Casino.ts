@@ -10,7 +10,7 @@ import { Menu } from "../utils/Menu";
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
 import { DeluxeCrazyDK } from "../games/tragamonedasA";
-import { DeluxeCachinEasyWin } from "../games/tragamonedasB";
+import { DeluxeCachinEasyWin } from "../games/deluxeCachinEasyWin";
 
 export class Casino {
   private jugador!: Jugador;
@@ -23,6 +23,7 @@ export class Casino {
       { valor: "tragamonedas_b", nombre: "Deluxe Cachin EW 🕹️" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
       { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
+      { valor: "tragamonedas2", nombre: "Deluxe Cachin Easy Win 🎁" },
     ];
   }
 
@@ -152,8 +153,6 @@ export class Casino {
       case "tragamonedas_a":
         this.juego = new DeluxeCrazyDK();
         break;
-      case "tragamonedas_b":
-        this.juego = new DeluxeCachinEasyWin();
       case "salir":
         break;
       default:
