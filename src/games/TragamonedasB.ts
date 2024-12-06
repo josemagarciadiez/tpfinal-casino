@@ -13,6 +13,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
     this.apuesta = this.apuestaMinima;
     this.saldoInicial = 0;
     this.nombreTragamonedas = "Deluxe Cachin Easy Win";
+    this.instrucciones = this.leerInstrucciones("tragamonedasB.txt");
   }
   private readonly tiros: number = 5;
 
@@ -60,10 +61,6 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
         valor: "salir",
         nombre: "🔙 Salir",
       },
-      {
-        valor: "instrucciones",
-        nombre: "📜 Instrucciones",
-      },
     ];
 
     while (opcion !== "salir") {
@@ -104,15 +101,6 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
         this.mostrarResultados("derrota", jugador);
       }
 
-      if (opcion === "instrucciones") {
-        console.log(
-          this.leerInstrucciones("Reglas_Deluxe_Cachin_Easy_Win.txt")
-        );
-        let confirmarJuego = await Menu.pedirConfirmacion("¿Deseas jugar?");
-        if (confirmarJuego) {
-          continue;
-        }
-      }
       if (jugador.obtenerSaldo() <= this.apuestaMinima) {
         console.log("No tienes suficiente saldo para seguir jugando");
         break;
