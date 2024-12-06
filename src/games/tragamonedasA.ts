@@ -110,9 +110,6 @@ export class DeluxeCrazyDK extends Tragamonedas {
             "¿Deseas continuar con la jugada?",
             interactuarTirada
           );
-          if (interaccion === "jugar") {
-            continue;
-          }
           if (interaccion === "cambiar") {
             let nuevaApuesta = await this.pedirApuesta(jugador);
             await this.interfaceTragamonedas(jugador);
