@@ -1,7 +1,6 @@
 import { Juego } from "../models/Juego";
 import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
-import * as fs from "fs";
 
 export class Ruleta extends Juego {
   protected tablero: { [key: number]: string };
@@ -11,10 +10,7 @@ export class Ruleta extends Juego {
   constructor() {
     super();
     this.apuestaMinima = 500;
-    this.instrucciones = fs.readFileSync(
-      "src/instructions/instruccionesRuleta.txt",
-      "utf8"
-    );
+    this.instrucciones = this.leerInstrucciones("instruccionesRuleta.txt");
     this.tablero = {
       1: "rojo",
       2: "negro",
