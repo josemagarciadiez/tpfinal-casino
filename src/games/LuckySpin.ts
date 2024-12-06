@@ -3,13 +3,14 @@ import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 
 export class LuckySpin extends Juego {
-  private readonly simbolos = ["🍒", "🍋", "🍇", "🔔", "⭐"];
+  private readonly simbolos = ["🍒", "🍋", "🍇", "🔔", "⭐", "💔"];
   private readonly pagos = {
     "🍒": 0.2,
     "🍋": 0.25,
     "🍇": 0.3,
     "🔔": 0.35,
     "⭐": 0.4,
+    "💔": 0,
   };
   private readonly tiros = 5;
   private readonly apuestaMinima = 100;
