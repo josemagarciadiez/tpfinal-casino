@@ -1,8 +1,6 @@
-import { Juego } from "../models/Juego";
 import { Jugador } from "../models/Jugador";
 import { Tragamonedas } from "../models/Tragamonedas";
 import { Menu } from "../utils/Menu";
-import * as fs from "node:fs";
 
 export class DeluxeCachinEasyWin extends Tragamonedas {
   public constructor() {
