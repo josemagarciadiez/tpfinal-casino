@@ -5,18 +5,6 @@ import { Menu } from "../utils/Menu";
 import * as fs from "node:fs";
 
 export class DeluxeCachinEasyWin extends Tragamonedas {
-  protected valores: Record<string, number> = {
-    "🤴": 80,
-    "🧙": 100,
-    "🦄": 40,
-    "👑": 90,
-    "🐈": 80,
-    "🌹": 250,
-    "🐕": 40,
-    "🎄": 30,
-    "🍀": 50,
-    "🐞": 90,
-  };
   public constructor() {
     super();
     this.apuestaMinima = 50;

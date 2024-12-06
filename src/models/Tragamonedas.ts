@@ -12,10 +12,10 @@ export abstract class Tragamonedas extends Juego {
   protected nombreTragamonedas: string;
   protected simbolos: string[];
   protected valores: Record<string, number> = {
-    "🤴": 80,
-    "🧙": 100,
-    "🦄": 40,
-    "👑": 90,
+    "🤴": 8,
+    "🧙": 10,
+    "🦄": 4,
+    "👑": 9,
     "🐈": 80,
     "🌹": 250,
     "🐕": 40,

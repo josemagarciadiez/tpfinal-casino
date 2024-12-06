@@ -3,18 +3,6 @@ import { Tragamonedas } from "../models/Tragamonedas";
 import { Menu } from "../utils/Menu";
 
 export class DeluxeCrazyDK extends Tragamonedas {
-  protected valores: Record<string, number> = {
-    "🤴": 80,
-    "🧙": 100,
-    "🦄": 40,
-    "👑": 90,
-    "🐈": 80,
-    "🌹": 250,
-    "🐕": 40,
-    "🎄": 30,
-    "🍀": 50,
-    "🐞": 90,
-  };
   public constructor() {
     super();
     this.apuestaMinima = 100;
