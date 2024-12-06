@@ -26,7 +26,6 @@ export class DeluxeCachinEasyWin extends Juego {
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
     this.montoApostado = 50;
     this.saldoInicial = 0;
-    this.instrucciones = this.leerInstrucciones("tragamonedasB.txt");
   }
   private readonly tiros: number = 5;
 
@@ -79,6 +78,7 @@ export class DeluxeCachinEasyWin extends Juego {
         nombre: "📜 Instrucciones",
       },
     ];
+
     while (opcion !== "salir") {
       opcion = await Menu.elegirOpcion("¿Que deseas hacer?", opciones);
       if (opcion === "tirada") {
@@ -97,11 +97,11 @@ export class DeluxeCachinEasyWin extends Juego {
       // Abandona, pierde todo
       if (opcion === "salir") {
         if (this.saldoInicial > jugador.obtenerSaldo()) {
-          console.log(await this.mostrarResultadosCachin("derrota", jugador));
+          await this.mostrarResultadosCachin("derrota", jugador);
           await this.esperar(3);
           break;
         } else {
-          console.log(await this.mostrarResultadosCachin("victoria", jugador));
+          await this.mostrarResultadosCachin("victoria", jugador);
           await this.esperar(3);
           break;
         }
@@ -114,7 +114,7 @@ export class DeluxeCachinEasyWin extends Juego {
         await this.interfaceCachin(jugador);
       }
       if (jugador.obtenerSaldo() < 100) {
-        console.log(await this.mostrarResultadosCachin("derrota", jugador));
+        await this.mostrarResultadosCachin("derrota", jugador);
       }
 
       if (opcion === "instrucciones") {
@@ -209,6 +209,9 @@ export class DeluxeCachinEasyWin extends Juego {
           // Si es numero
           // chequea que lo ingresado no sea menor q la apuesta minima
           // y distinto de 0
+          if (apuesta < 0) {
+            return "Debes ingresar un número válido";
+          }
           if (apuesta >= 1 && apuesta < this.apuestaMinima) {
             return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
           }
@@ -251,10 +254,6 @@ export class DeluxeCachinEasyWin extends Juego {
       console.log("========================================================");
       console.log("              Ganancia total: ", jugador.obtenerSaldo());
       console.log("========================================================");
-      return {
-        resultado: "Victoria",
-        ganancia: this.ganancia,
-      };
     } else {
       console.log("========================================================");
       console.log("                🎰 Deluxe Cachin Easy Win 🎰             ");
@@ -262,9 +261,6 @@ export class DeluxeCachinEasyWin extends Juego {
       console.log("========================================================");
       console.log("                 ¡La proxima lo conseguis!              ");
       console.log("========================================================");
-      return {
-        resultado: "Derrota",
-      };
     }
   }
 }
