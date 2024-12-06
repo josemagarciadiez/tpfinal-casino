@@ -10,7 +10,7 @@ import { Menu } from "../utils/Menu";
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
 import { DeluxeCrazyDK } from "../games/tragamonedasA";
-import { DeluxeCachinEasyWin } from "../games/deluxeCachinEasyWin";
+import { DeluxeCachinEasyWin } from "../games/tragamonedasB";
 
 export class Casino {
   private jugador!: Jugador;
@@ -19,10 +19,10 @@ export class Casino {
 
   constructor() {
     this.juegos = [
-      { valor: "tragamonedas", nombre: "Deluxe Crazy DK 🎰" },
+      { valor: "tragamonedas_a", nombre: "Deluxe Crazy DK 🎰" },
+      { valor: "tragamonedas_b", nombre: "Deluxe Cachin EW 🎁" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
       { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
-      { valor: "tragamonedas2", nombre: "Deluxe Cachin Easy Win 🎁" },
     ];
   }
 
@@ -135,7 +135,7 @@ export class Casino {
 
     // Creamos opciones a partir del listado de juegos, y agregamos la
     // opcion de salir
-    const opciones = [...this.juegos, { valor: "salir", nombre: "Atras" }];
+    const opciones = [...this.juegos, { valor: "salir", nombre: "Atras  ↩️" }];
 
     // ... Menu para mostrar opciones de juego
     const opcionSeleccionada = await Menu.elegirOpcion(
@@ -149,10 +149,10 @@ export class Casino {
       case "ruleta":
         this.juego = new Ruleta();
         break;
-      case "tragamonedas":
+      case "tragamonedas_a":
         this.juego = new DeluxeCrazyDK();
         break;
-      case "tragamonedas2":
+      case "tragamonedas_b":
         this.juego = new DeluxeCachinEasyWin();
         break;
       case "salir":

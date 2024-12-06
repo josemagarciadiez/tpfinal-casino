@@ -1,8 +1,6 @@
 import { Juego } from "../models/Juego";
 import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
-import * as fs from "fs";
-import { promises } from "dns";
 
 export class Ruleta extends Juego {
   protected tablero: { [key: number]: string };
@@ -12,10 +10,7 @@ export class Ruleta extends Juego {
   constructor() {
     super();
     this.apuestaMinima = 500;
-    this.instrucciones = fs.readFileSync(
-      "src/instructions/instruccionesRuleta.txt",
-      "utf8"
-    );
+    this.instrucciones = this.leerInstrucciones("instruccionesRuleta.txt");
     this.tablero = {
       1: "rojo",
       2: "negro",
@@ -171,44 +166,6 @@ export class Ruleta extends Juego {
     return { apuestaTotal, resultado, ganancia };
   }
 
-  private async mostrarResultado(
-    resultado: "victoria" | "derrota",
-    jugador: Jugador
-  ) {
-    console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
-    if (resultado === "victoria") {
-      console.log("🎉 🍾  =======================================  🎉 🍾");
-      console.log("         🥇 🏆 ¡FELICIDADES! ¡HAS GANADO! 🥇 🏆");
-      console.log("=======================================================");
-      console.log(
-        `💰                 Saldo acumulado: ${jugador.obtenerSaldo()}`
-      );
-      console.log("🎲   ¡La suerte estuvo de tu lado!");
-      console.log("🍾   Disfruta de tu victoria y sigue jugando.");
-      console.log(
-        "=======================================================" + "\n"
-      );
-    } else {
-      console.log("💔 ❤️‍🩹  =======================================  💔 ❤️‍🩹");
-      console.log("          🥲 😔 LO SENTIMOS, HAS PERDIDO 🥲 😔");
-      console.log("=======================================================");
-      console.log(`❌    Saldo restante: ${jugador.obtenerSaldo()}`);
-      console.log("🎲   ¡No te rindas, la próxima vez será mejor!");
-      console.log("🃏   Inténtalo de nuevo y vence a la casa.");
-      console.log(
-        "=======================================================" + "\n"
-      );
-    }
-  }
-
-  private async mostrarInstrucciones() {
-    this.mostrarEncabezado();
-    console.log(this.instrucciones + "\n");
-    let resp = await Menu.elegirOpcion("Presione enter para continuar: ", [
-      { valor: "continuar", nombre: "Continuar" },
-    ]);
-  }
-
   private async comprobarSaldo(jugador: Jugador) {
     if (jugador.obtenerSaldo() < this.apuestaMinima) {
       this.mostrarEncabezado();
@@ -274,7 +231,6 @@ export class Ruleta extends Juego {
         // Esperar 250 ms
         await new Promise((resolve) => setTimeout(resolve, 250));
 
-        
         process.stdout.write("  🎡 ");
         // Esperar 250 ms
         await new Promise((resolve) => setTimeout(resolve, 250));
@@ -289,7 +245,7 @@ export class Ruleta extends Juego {
       console.log(
         "        Crupier:....HA SALIDO EL " + resul + " " + color + "\n"
       );
-      this.mostrarResultado(resultado, jugador);
+      this.mostrarResultado(resultado, jugador, false);
     }, 10000);
   }
 

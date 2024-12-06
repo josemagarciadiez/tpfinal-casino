@@ -120,7 +120,7 @@ export class DeluxeCrazyDK extends Tragamonedas {
               "¿Estás seguro? [Preciona cualquier tecla para salir, y n para continuar]"
             );
             if (confirmacion) {
-              await this.mostrarResultados("derrota", jugador);
+              this.mostrarResultado("derrota", jugador);
               break;
             }
           }
@@ -130,9 +130,9 @@ export class DeluxeCrazyDK extends Tragamonedas {
       // Abandona, pierde todo
       if (opcion === "salir") {
         if (jugador.obtenerSaldo() > this.saldoInicial) {
-          await this.mostrarResultados("victoria", jugador);
+          this.mostrarResultado("victoria", jugador);
         } else {
-          await this.mostrarResultados("derrota", jugador);
+          this.mostrarResultado("derrota", jugador);
         }
       }
       if (opcion === "apuesta") {
@@ -155,7 +155,7 @@ export class DeluxeCrazyDK extends Tragamonedas {
         await this.interfaceTragamonedas(jugador);
       }
       if (jugador.obtenerSaldo() < this.apuestaMinima) {
-        await this.mostrarResultados("derrota", jugador);
+        this.mostrarResultado("derrota", jugador);
       }
     }
     return {
