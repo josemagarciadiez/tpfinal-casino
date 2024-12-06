@@ -166,35 +166,35 @@ export class Ruleta extends Juego {
     return { apuestaTotal, resultado, ganancia };
   }
 
-  private async mostrarResultado(
-    resultado: "victoria" | "derrota",
-    jugador: Jugador
-  ) {
-    console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
-    if (resultado === "victoria") {
-      console.log("🎉 🍾  =======================================  🎉 🍾");
-      console.log("         🥇 🏆 ¡FELICIDADES! ¡HAS GANADO! 🥇 🏆");
-      console.log("=======================================================");
-      console.log(
-        `💰                 Saldo acumulado: ${jugador.obtenerSaldo()}`
-      );
-      console.log("🎲   ¡La suerte estuvo de tu lado!");
-      console.log("🍾   Disfruta de tu victoria y sigue jugando.");
-      console.log(
-        "=======================================================" + "\n"
-      );
-    } else {
-      console.log("💔 ❤️‍🩹  =======================================  💔 ❤️‍🩹");
-      console.log("          🥲 😔 LO SENTIMOS, HAS PERDIDO 🥲 😔");
-      console.log("=======================================================");
-      console.log(`❌    Saldo restante: ${jugador.obtenerSaldo()}`);
-      console.log("🎲   ¡No te rindas, la próxima vez será mejor!");
-      console.log("🃏   Inténtalo de nuevo y vence a la casa.");
-      console.log(
-        "=======================================================" + "\n"
-      );
-    }
-  }
+  // private async mostrarResultado(
+  //   resultado: "victoria" | "derrota",
+  //   jugador: Jugador
+  // ) {
+  //   console.log("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+  //   if (resultado === "victoria") {
+  //     console.log("🎉 🍾  =======================================  🎉 🍾");
+  //     console.log("         🥇 🏆 ¡FELICIDADES! ¡HAS GANADO! 🥇 🏆");
+  //     console.log("=======================================================");
+  //     console.log(
+  //       `💰                 Saldo acumulado: ${jugador.obtenerSaldo()}`
+  //     );
+  //     console.log("🎲   ¡La suerte estuvo de tu lado!");
+  //     console.log("🍾   Disfruta de tu victoria y sigue jugando.");
+  //     console.log(
+  //       "=======================================================" + "\n"
+  //     );
+  //   } else {
+  //     console.log("💔 ❤️‍🩹  =======================================  💔 ❤️‍🩹");
+  //     console.log("          🥲 😔 LO SENTIMOS, HAS PERDIDO 🥲 😔");
+  //     console.log("=======================================================");
+  //     console.log(`❌    Saldo restante: ${jugador.obtenerSaldo()}`);
+  //     console.log("🎲   ¡No te rindas, la próxima vez será mejor!");
+  //     console.log("🃏   Inténtalo de nuevo y vence a la casa.");
+  //     console.log(
+  //       "=======================================================" + "\n"
+  //     );
+  //   }
+  // }
 
   private async comprobarSaldo(jugador: Jugador) {
     if (jugador.obtenerSaldo() < this.apuestaMinima) {
@@ -275,7 +275,7 @@ export class Ruleta extends Juego {
       console.log(
         "        Crupier:....HA SALIDO EL " + resul + " " + color + "\n"
       );
-      this.mostrarResultado(resultado, jugador);
+      this.mostrarResultado(resultado, jugador, false);
     }, 10000);
   }
 

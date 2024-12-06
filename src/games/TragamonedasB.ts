@@ -97,11 +97,11 @@ export class DeluxeCachinEasyWin extends Juego {
       // Abandona, pierde todo
       if (opcion === "salir") {
         if (this.saldoInicial > jugador.obtenerSaldo()) {
-          await this.mostrarResultadosCachin("derrota", jugador);
+          this.mostrarResultado("derrota", jugador);
           await this.esperar(3);
           break;
         } else {
-          await this.mostrarResultadosCachin("victoria", jugador);
+          this.mostrarResultado("victoria", jugador);
           await this.esperar(3);
           break;
         }
@@ -114,7 +114,7 @@ export class DeluxeCachinEasyWin extends Juego {
         await this.interfaceCachin(jugador);
       }
       if (jugador.obtenerSaldo() < 100) {
-        await this.mostrarResultadosCachin("derrota", jugador);
+        this.mostrarResultado("derrota", jugador);
       }
 
       if (opcion === "instrucciones") {
@@ -242,25 +242,25 @@ export class DeluxeCachinEasyWin extends Juego {
     console.log("--------------------------------------------------------");
   }
 
-  private async mostrarResultadosCachin(
-    resultado: "victoria" | "derrota",
-    jugador: Jugador
-  ) {
-    console.clear();
-    if (resultado === "victoria") {
-      console.log("========================================================");
-      console.log("              🎰 Deluxe Cachin Easy Win 🎰               ");
-      console.log("              🥳 Felicidades, ganaste!! 🥳               ");
-      console.log("========================================================");
-      console.log("              Ganancia total: ", jugador.obtenerSaldo());
-      console.log("========================================================");
-    } else {
-      console.log("========================================================");
-      console.log("                🎰 Deluxe Cachin Easy Win 🎰             ");
-      console.log("                     💔 Perdiste 💔                      ");
-      console.log("========================================================");
-      console.log("                 ¡La proxima lo conseguis!              ");
-      console.log("========================================================");
-    }
-  }
+  // private async mostrarResultadosCachin(
+  //   resultado: "victoria" | "derrota",
+  //   jugador: Jugador
+  // ) {
+  //   console.clear();
+  //   if (resultado === "victoria") {
+  //     console.log("========================================================");
+  //     console.log("              🎰 Deluxe Cachin Easy Win 🎰               ");
+  //     console.log("              🥳 Felicidades, ganaste!! 🥳               ");
+  //     console.log("========================================================");
+  //     console.log("              Ganancia total: ", jugador.obtenerSaldo());
+  //     console.log("========================================================");
+  //   } else {
+  //     console.log("========================================================");
+  //     console.log("                🎰 Deluxe Cachin Easy Win 🎰             ");
+  //     console.log("                     💔 Perdiste 💔                      ");
+  //     console.log("========================================================");
+  //     console.log("                 ¡La proxima lo conseguis!              ");
+  //     console.log("========================================================");
+  //   }
+  // }
 }

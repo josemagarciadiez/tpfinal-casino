@@ -137,7 +137,7 @@ export class DeluxeCrazyDK extends Juego {
               "¿Estás seguro? [Preciona cualquier tecla para salir, y n para continuar]"
             );
             if (confirmacion) {
-              await this.mostrarResultados("derrota", jugador);
+              this.mostrarResultado("derrota", jugador);
               break;
             }
           }
@@ -147,9 +147,9 @@ export class DeluxeCrazyDK extends Juego {
       // Abandona, pierde todo
       if (opcion === "salir") {
         if (jugador.obtenerSaldo() > this.saldoInicial) {
-          await this.mostrarResultados("victoria", jugador);
+          this.mostrarResultado("victoria", jugador);
         } else {
-          await this.mostrarResultados("derrota", jugador);
+          this.mostrarResultado("derrota", jugador);
         }
       }
       if (opcion === "apuesta") {
@@ -172,7 +172,7 @@ export class DeluxeCrazyDK extends Juego {
         await this.interfaceTragamonedas(jugador, this.apuesta);
       }
       if (jugador.obtenerSaldo() < this.apuestaMinima) {
-        await this.mostrarResultados("derrota", jugador);
+        this.mostrarResultado("derrota", jugador);
       }
     }
     return {
@@ -299,25 +299,25 @@ export class DeluxeCrazyDK extends Juego {
     console.log("--------------------------------------------------------");
   }
 
-  private async mostrarResultados(
-    resultado: "victoria" | "derrota",
-    jugador: Jugador
-  ) {
-    console.clear();
-    if (resultado === "victoria") {
-      console.log("========================================================");
-      console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
-      console.log("              🥳 Felicidades, ganaste!! 🥳               ");
-      console.log("========================================================");
-      console.log("              Ganancia total: ", jugador.obtenerSaldo());
-      console.log("========================================================");
-    } else {
-      console.log("========================================================");
-      console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
-      console.log("                     💔 Perdiste 💔                      ");
-      console.log("========================================================");
-      console.log("                 ¡Mejor suerte la proxima!              ");
-      console.log("========================================================");
-    }
-  }
+  // private async mostrarResultados(
+  //   resultado: "victoria" | "derrota",
+  //   jugador: Jugador
+  // ) {
+  //   console.clear();
+  //   if (resultado === "victoria") {
+  //     console.log("========================================================");
+  //     console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
+  //     console.log("              🥳 Felicidades, ganaste!! 🥳               ");
+  //     console.log("========================================================");
+  //     console.log("              Ganancia total: ", jugador.obtenerSaldo());
+  //     console.log("========================================================");
+  //   } else {
+  //     console.log("========================================================");
+  //     console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
+  //     console.log("                     💔 Perdiste 💔                      ");
+  //     console.log("========================================================");
+  //     console.log("                 ¡Mejor suerte la proxima!              ");
+  //     console.log("========================================================");
+  //   }
+  // }
 }
