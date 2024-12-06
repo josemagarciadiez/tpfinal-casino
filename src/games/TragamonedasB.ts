@@ -97,7 +97,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
         }
         await this.interfaceTragamonedas(jugador);
       }
-      if (jugador.obtenerSaldo() < 100) {
+      if (jugador.obtenerSaldo() < this.apuestaMinima) {
         this.mostrarResultados("derrota", jugador);
       }
 

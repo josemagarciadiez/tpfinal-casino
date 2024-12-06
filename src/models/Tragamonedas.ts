@@ -77,7 +77,7 @@ export abstract class Tragamonedas extends Juego {
       if (contador[simbolo] >= 3) {
         //verifica que se repita al menos dos veces.
         const valorSimbolo = this.valores[simbolo];
-        gananciaTotal += (this.apuesta + valorSimbolo) * contador[simbolo];
+        gananciaTotal += this.apuesta + valorSimbolo * contador[simbolo];
       }
       jugador.sumarSaldo(gananciaTotal);
     }
