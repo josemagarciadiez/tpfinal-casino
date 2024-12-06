@@ -63,7 +63,7 @@ export abstract class Tragamonedas extends Juego {
     const contador = this.contarOcurrencias(tirada);
 
     for (const simbolo in contador) {
-      if (contador[simbolo] >= 1) {
+      if (contador[simbolo] >= 3) {
         return true; //Si encontramos simbolos consecutivos iguales, retorna true
       }
     }
@@ -74,7 +74,7 @@ export abstract class Tragamonedas extends Juego {
     let contador = this.contarOcurrencias(tirada);
     let gananciaTotal = 0;
     for (const simbolo in contador) {
-      if (contador[simbolo] >= 2) {
+      if (contador[simbolo] >= 3) {
         //verifica que se repita al menos dos veces.
         const valorSimbolo = this.valores[simbolo];
         gananciaTotal += (this.apuesta + valorSimbolo) * contador[simbolo];

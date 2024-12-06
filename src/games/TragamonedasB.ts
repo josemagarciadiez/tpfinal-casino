@@ -5,9 +5,9 @@ import { Menu } from "../utils/Menu";
 export class DeluxeCachinEasyWin extends Tragamonedas {
   public constructor() {
     super();
-    this.apuestaMinima = 50;
-    this.apuestaMaxima = 750;
-    this.simbolos = ["🦄", "🧙", "🤴", "👑", "🦄", "🧙"]; //Espacio de 6, pero con dos repetidos para hacer honor al "easy win".
+    this.apuestaMinima = 25;
+    this.apuestaMaxima = 100;
+    this.simbolos = ["🦄", "🧙", "🤴", "👑"];
     this.jugada = [];
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
     this.apuesta = this.apuestaMinima;
