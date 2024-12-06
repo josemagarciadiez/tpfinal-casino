@@ -53,7 +53,7 @@ export abstract class Tragamonedas extends Juego {
 
     for (let i: number = 1; i < tirada.length; i++) {
       if (tirada[i] === tirada[i - 1]) {
-        contador[tirada[i]] = contador[tirada[i] || 0] + 1; // ||0 + 1 valida que existe
+        contador[tirada[i]] = (contador[tirada[i]] || 0) + 1; // ||0 + 1 valida que existe
       }
     }
     return contador;
@@ -77,9 +77,9 @@ export abstract class Tragamonedas extends Juego {
       if (contador[simbolo] >= 2) {
         //verifica que se repita al menos dos veces.
         const valorSimbolo = this.valores[simbolo];
-        gananciaTotal = (this.apuesta + valorSimbolo) * contador[simbolo];
-        jugador.sumarSaldo(gananciaTotal);
+        gananciaTotal += (this.apuesta + valorSimbolo) * contador[simbolo];
       }
+      jugador.sumarSaldo(gananciaTotal);
     }
     if (gananciaTotal > 0) {
       console.log("\n😃 Ganaste: ");
