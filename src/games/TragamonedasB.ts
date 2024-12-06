@@ -241,26 +241,4 @@ export class DeluxeCachinEasyWin extends Juego {
     );
     console.log("--------------------------------------------------------");
   }
-
-  // private async mostrarResultadosCachin(
-  //   resultado: "victoria" | "derrota",
-  //   jugador: Jugador
-  // ) {
-  //   console.clear();
-  //   if (resultado === "victoria") {
-  //     console.log("========================================================");
-  //     console.log("              🎰 Deluxe Cachin Easy Win 🎰               ");
-  //     console.log("              🥳 Felicidades, ganaste!! 🥳               ");
-  //     console.log("========================================================");
-  //     console.log("              Ganancia total: ", jugador.obtenerSaldo());
-  //     console.log("========================================================");
-  //   } else {
-  //     console.log("========================================================");
-  //     console.log("                🎰 Deluxe Cachin Easy Win 🎰             ");
-  //     console.log("                     💔 Perdiste 💔                      ");
-  //     console.log("========================================================");
-  //     console.log("                 ¡La proxima lo conseguis!              ");
-  //     console.log("========================================================");
-  //   }
-  // }
 }

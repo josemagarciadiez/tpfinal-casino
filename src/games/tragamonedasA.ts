@@ -298,26 +298,4 @@ export class DeluxeCrazyDK extends Juego {
     );
     console.log("--------------------------------------------------------");
   }
-
-  // private async mostrarResultados(
-  //   resultado: "victoria" | "derrota",
-  //   jugador: Jugador
-  // ) {
-  //   console.clear();
-  //   if (resultado === "victoria") {
-  //     console.log("========================================================");
-  //     console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
-  //     console.log("              🥳 Felicidades, ganaste!! 🥳               ");
-  //     console.log("========================================================");
-  //     console.log("              Ganancia total: ", jugador.obtenerSaldo());
-  //     console.log("========================================================");
-  //   } else {
-  //     console.log("========================================================");
-  //     console.log("                  🎰 Deluxe Crazy DK 🎰                  ");
-  //     console.log("                     💔 Perdiste 💔                      ");
-  //     console.log("========================================================");
-  //     console.log("                 ¡Mejor suerte la proxima!              ");
-  //     console.log("========================================================");
-  //   }
-  // }
 }
