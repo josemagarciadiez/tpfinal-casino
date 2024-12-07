@@ -13,7 +13,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
       "🤴",
       "👑",
       "🐈",
-      "🐕",
+      "🌈",
       "🌹",
       "🎄",
       "🍀",
@@ -81,7 +81,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
         }
         jugador.restarSaldo(this.apuesta);
         await this.interfaceTragamonedas(jugador);
-        await this.tirada();
+        await this.tirada(5);
         console.log(this.calcularGanancia(this.jugada, jugador));
         //console.log(this.ganancia);
       }

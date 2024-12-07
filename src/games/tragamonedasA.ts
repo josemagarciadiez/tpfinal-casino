@@ -7,7 +7,7 @@ export class DeluxeCrazyDK extends Tragamonedas {
     super();
     this.apuestaMinima = 100;
     this.apuestaMaxima = 1500;
-    this.simbolos = ["🐈", "🐕", "🌹", "🎄", "🍀", "🐞"];
+    this.simbolos = ["🐈", "🌈", "🌹", "🎄", "🍀", "🐞"];
     this.jugada = [];
     this.apuesta = this.apuestaMinima; // Inicializa en 100 para evitar conflictos con apuestaMinima
     this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
@@ -90,7 +90,7 @@ export class DeluxeCrazyDK extends Tragamonedas {
           console.log(
             "========================================================"
           );
-          await this.tirada();
+          await this.tirada(6);
           console.log("\n", this.calcularGanancia(this.jugada, jugador)); // Calcula la ganancia para el tiro actual
           let interaccion = await Menu.elegirOpcion(
             "¿Deseas continuar con la jugada?",

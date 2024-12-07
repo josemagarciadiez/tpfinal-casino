@@ -17,7 +17,7 @@ export abstract class Tragamonedas extends Juego {
     "👑": 9,
     "🐈": 80,
     "🌹": 250,
-    "🐕": 40,
+    "🌈": 40,
     "🎄": 30,
     "🍀": 50,
     "🐞": 90,
@@ -75,23 +75,17 @@ export abstract class Tragamonedas extends Juego {
     return gananciaTotal;
   }
   //----
-  protected async tirada() {
-    const rieles = [
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-    ]; // Inicializamos con el primer simbolo
+  protected async tirada(cantidadRieles: number) {
+    const rieles = Array(cantidadRieles).fill(this.simbolos[0]);
+
     for (let i = 0; i < rieles.length; i++) {
-      for (let j = 0; j < 4; j++) {
+      for (let j = 0; j < 15; j++) {
         rieles[i] =
           this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
 
         process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
 
-        await new Promise((resolve) => setTimeout(resolve, 150));
+        await new Promise((resolve) => setTimeout(resolve, 75));
       }
     }
     this.jugada = rieles;
