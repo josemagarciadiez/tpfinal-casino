@@ -81,8 +81,6 @@ export class DeluxeCrazyDK extends Tragamonedas {
           },
         ];
         for (let i = 0; i < this.tiros; i++) {
-          this.ganancia =
-            this.ganancia + this.calcularGanancia(this.jugada, jugador);
           console.clear();
           this.interfaceTragamonedas(jugador);
           this.jugada = [];

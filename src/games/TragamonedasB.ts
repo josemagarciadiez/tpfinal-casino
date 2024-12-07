@@ -7,16 +7,25 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
     super();
     this.apuestaMinima = 25;
     this.apuestaMaxima = 100;
-    this.simbolos = ["🦄", "🧙", "🤴", "👑"];
+    this.simbolos = [
+      "🦄",
+      "🧙",
+      "🤴",
+      "👑",
+      "🐈",
+      "🐕",
+      "🌹",
+      "🎄",
+      "🍀",
+      "🐞",
+    ];
     this.jugada = [];
-    this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
     this.apuesta = this.apuestaMinima;
+    this.ganancia = 0;
     this.saldoInicial = 0;
     this.nombreTragamonedas = "Deluxe Cachin Easy Win";
     this.instrucciones = this.leerInstrucciones("tragamonedasB.txt");
   }
-  private readonly tiros: number = 5;
-
   // Métodos
   async ejecutar(jugador: Jugador): Promise<{
     apuestaTotal: number;
@@ -74,8 +83,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
         await this.interfaceTragamonedas(jugador);
         await this.tirada();
         console.log(this.calcularGanancia(this.jugada, jugador));
-        this.ganancia =
-          this.ganancia + this.calcularGanancia(this.jugada, jugador);
+        //console.log(this.ganancia);
       }
 
       // Abandona, pierde todo

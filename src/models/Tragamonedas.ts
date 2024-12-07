@@ -1,6 +1,8 @@
 import { Juego } from "./Juego";
 import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
+import { off } from "process";
+import { timeEnd } from "console";
 
 export abstract class Tragamonedas extends Juego {
   protected apuestaMinima: number;
@@ -51,36 +53,27 @@ export abstract class Tragamonedas extends Juego {
   protected contarOcurrencias(tirada: string[]): Record<string, number> {
     const contador: Record<string, number> = {};
 
-    for (let i: number = 1; i < tirada.length; i++) {
-      if (tirada[i] === tirada[i - 1]) {
-        contador[tirada[i]] = (contador[tirada[i]] || 0) + 1; // ||0 + 1 valida que existe
-      }
+    for (let i: number = 0; i < tirada.length; i++) {
+      contador[tirada[i]] = (contador[tirada[i]] || 0) + 1; //||0 + 1 valida que existe
     }
     return contador;
   }
   //----
-  protected contarSimilitudes(tirada: string[]): boolean {
-    const contador = this.contarOcurrencias(tirada);
-
-    for (const simbolo in contador) {
-      if (contador[simbolo] >= 3) {
-        return true; //Si encontramos simbolos consecutivos iguales, retorna true
-      }
-    }
-    return false;
-  }
-  //----
   protected calcularGanancia(tirada: string[], jugador: Jugador): number {
     let contador = this.contarOcurrencias(tirada);
+    console.log(contador);
     let gananciaTotal = 0;
-    for (const simbolo in contador) {
-      if (contador[simbolo] >= 3) {
-        //verifica que se repita al menos dos veces.
+    for (const [simbolo, cantidadVeces] of Object.entries(contador)) {
+      if (cantidadVeces >= 3) {
         const valorSimbolo = this.valores[simbolo];
-        gananciaTotal += this.apuesta + valorSimbolo * contador[simbolo];
+        gananciaTotal = this.apuesta + valorSimbolo * cantidadVeces;
+        //codigo auxiliar
+        console.log(valorSimbolo);
+        console.log(cantidadVeces);
+        console.log(this.apuesta);
       }
-      jugador.sumarSaldo(gananciaTotal);
     }
+    jugador.sumarSaldo(gananciaTotal);
     if (gananciaTotal > 0) {
       console.log("\n😃 Ganaste: ");
     } else if (gananciaTotal === 0) {
@@ -98,9 +91,8 @@ export abstract class Tragamonedas extends Juego {
       this.simbolos[0],
       this.simbolos[0],
     ]; // Inicializamos con el primer simbolo
-    let i: number;
-    for (i = 0; i < rieles.length; i++) {
-      for (let j = 0; j < 5; j++) {
+    for (let i = 0; i < rieles.length; i++) {
+      for (let j = 0; j < 4; j++) {
         rieles[i] =
           this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
 
@@ -108,10 +100,12 @@ export abstract class Tragamonedas extends Juego {
 
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
-      rieles[i] =
-        this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
+      // rieles[i] =
+      // this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
+      // process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
     }
-    this.jugada.push(...rieles);
+    this.jugada = rieles;
+    console.log(this.jugada);
   }
   //----
   protected async esperar(segundos: number): Promise<void> {
