@@ -5,7 +5,6 @@ import { off } from "process";
 import { timeEnd } from "console";
 
 export abstract class Tragamonedas extends Juego {
-  protected apuestaMinima: number;
   protected apuestaMaxima: number;
   protected jugada: string[];
   protected ganancia: number;

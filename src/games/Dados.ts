@@ -5,13 +5,13 @@ import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
 
 export class Dados extends Juego {
-  private readonly apuestaMinima: number = 150;
   private readonly multiplicadorPremio: number = 7;
 
   constructor() {
     super();
     this.nombre = "Las Vegas's Roller Master 🎲";
     this.instrucciones = this.leerInstrucciones("dados.txt");
+    this.apuestaMinima = 150;
   }
 
   public async ejecutar(jugador: Jugador): Promise<{

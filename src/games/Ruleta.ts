@@ -4,7 +4,6 @@ import { Menu } from "../utils/Menu";
 
 export class Ruleta extends Juego {
   protected tablero: { [key: number]: string };
-  protected apuestaMinima: number;
   protected instrucciones: string;
 
   constructor() {

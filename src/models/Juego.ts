@@ -6,6 +6,7 @@ import { Jugador } from "./Jugador";
 export abstract class Juego implements IJuego {
   protected nombre!: string;
   protected instrucciones!: string;
+  protected apuestaMinima!: number;
 
   obtenerNombre(): string {
     return this.nombre;
