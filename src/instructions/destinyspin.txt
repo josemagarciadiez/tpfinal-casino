@@ -1,0 +1,53 @@
+==================================================================================  
+                        🌀  DESTINY SPIN 🌀  
+==================================================================================  
+
+📜 **Descripción:**  
+Stairway Spin es un emocionante juego de tragamonedas con un giro único: 
+El jugador apuesta y gira la palanca para obtener combinaciones de símbolos 
+en tres filas y tres columnas. El objetivo es obtener combinaciones ganadoras, 
+las cuales varían en valor dependiendo de su ubicación (fila, columna, o diagonal). 
+Cuanto mejor sea la coincidencia, mayor será la ganancia.
+
+==================================================================================  
+                        📖 **REGLAS DEL JUEGO** 📖  
+==================================================================================  
+
+🎰 **Instrucciones para el Jugador:**  
+1️⃣ El Jugador realiza una apuesta inicial (al menos 50 unidades).  
+2️⃣ Luego puede girar la palanca o salir del juego en cada ronda.  
+3️⃣ El Jugador tiene 5 intentos para girar la palanca.  
+4️⃣ Cada giro muestra una combinación de 3 filas con 3 símbolos seleccionados aleatoriamente de entre:  
+   - 🍒 → Ganancia: 20%  
+   - 🍋 → Ganancia: 25%  
+   - 🍇 → Ganancia: 30%  
+   - 🔔 → Ganancia: 35%  
+   - ⭐ → Ganancia: 40%  
+   - 💔 → Perdida de la apuesta.  
+
+5️⃣ Las combinaciones de símbolos pueden generar ganancias dependiendo de su ubicación:  
+   - **Fila completa:** Ganancia con un multiplicador de 1.25x.  
+   - **Columna completa:** Ganancia con un multiplicador de 1.30x.  
+   - **Diagonal completa:** Ganancia con un multiplicador de 1.50x.  
+   - **Toda la matriz llena con el mismo símbolo:** Ganancia con un multiplicador de 3x.  
+
+🔸 **Opciones del Jugador a lo largo del juego:**  
+- **Girar Palanca:** Realiza un nuevo giro de los símbolos.  
+- **Salir del juego:** Abandonar el juego en cualquier momento.
+
+==================================================================================  
+
+⚖️ **Manejo de Ganancias y Pérdidas:**  
+- Si el Jugador obtiene una combinación ganadora, se le sumará la ganancia al pozo acumulado.  
+- Si el Jugador no obtiene ganancias, una parte del pozo acumulado se pierde.  
+- Al final de cada ronda, el Jugador puede elegir entre girar nuevamente o salir del juego.
+
+==================================================================================  
+
+🏆 **Resultado Final:**  
+- Al final de las 5 rondas, el Jugador verá su saldo total, que incluye las ganancias obtenidas.  
+- Si el Jugador elige salir antes de completar las 5 rondas, pierde todo el pozo acumulado.
+
+==================================================================================  
+                       ¡Que comience el juego! 🎉  
+==================================================================================

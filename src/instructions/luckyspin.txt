@@ -47,8 +47,7 @@ El objetivo es obtener el mayor premio posible.
 
 🏆 **Resultado Final:**
 - Al final de las 5 rondas, el Jugador verá su saldo total, que incluye las ganancias obtenidas.
-- Si el Jugador elige salir antes de completar las 5 rondas, el juego termina con las 
-  ganancias acumuladas hasta ese momento.
+- Si el Jugador elige salir antes de completar las 5 rondas, pierde todo el pozo acumulado.
 
 ==================================================================================
                        ¡Que comience el juego! 🎉
