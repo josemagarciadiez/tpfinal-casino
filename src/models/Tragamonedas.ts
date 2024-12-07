@@ -7,15 +7,24 @@ import { Menu } from "../utils/Menu";
 
 export abstract class Tragamonedas extends Juego {
   protected readonly tiros = 5;
-  protected readonly simbolos = ["🍒", "🍋", "🍇", "🔔", "⭐", "💔"] as const;
+  protected readonly simbolos = [
+    "🍒",
+    "🍋",
+    "🍇",
+    "🔔",
+    "⭐",
+    "🌈",
+    "💔",
+  ] as const;
 
   protected readonly pagos = {
+    "💔": 0.1,
+    "🌈": 0.15,
     "🍒": 0.2,
     "🍋": 0.25,
     "🍇": 0.3,
     "🔔": 0.35,
     "⭐": 0.4,
-    "💔": 0.1,
   };
 
   /**
