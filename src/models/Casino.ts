@@ -9,7 +9,7 @@ import { Menu } from "../utils/Menu";
 
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
-import { DeluxeCrazyDK } from "../games/TragamonedasA";
+import { DeluxeCrazyDK } from "../games/tragamonedasA";
 import { DeluxeCachinEasyWin } from "../games/TragamonedasB";
 
 export class Casino {
