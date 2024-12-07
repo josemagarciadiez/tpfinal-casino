@@ -1,5 +1,9 @@
 # CASINO <nombre> - Trabajo Final Programación
 
+## Diagrama de clases
+
+![Diagrama de clases](./src/assets/Diagrama.jpg)
+
 ## Menu de navegación (propuesta #1)
 
 ![Propuesta Menu navegación](./src/assets/MenuCasino.jpg)
