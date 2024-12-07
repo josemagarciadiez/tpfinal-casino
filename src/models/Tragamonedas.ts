@@ -58,7 +58,6 @@ export abstract class Tragamonedas extends Juego {
   //----
   protected calcularGanancia(tirada: string[], jugador: Jugador): number {
     let contador = this.contarOcurrencias(tirada);
-    console.log(contador);
     let gananciaTotal = 0;
     for (const [simbolo, cantidadVeces] of Object.entries(contador)) {
       if (cantidadVeces >= 3) {
