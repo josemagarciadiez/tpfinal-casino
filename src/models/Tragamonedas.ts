@@ -1,169 +1,297 @@
+// Modelos
 import { Juego } from "./Juego";
-import { Jugador } from "../models/Jugador";
+import { Jugador } from "./Jugador";
+
+// Clases utilitarias
 import { Menu } from "../utils/Menu";
 
 export abstract class Tragamonedas extends Juego {
-  protected apuestaMaxima: number;
-  protected jugada: string[];
-  protected ganancia: number;
-  protected saldoInicial: number;
-  protected apuesta: number;
-  protected nombreTragamonedas: string;
-  protected simbolos: string[];
-  protected valores: Record<string, number> = {
-    "🤴": 8,
-    "🧙": 10,
-    "🦄": 4,
-    "👑": 9,
-    "🐈": 80,
-    "🌹": 250,
-    "🌈": 40,
-    "🎄": 30,
-    "🍀": 50,
-    "🐞": 90,
+  protected readonly tiros = 5;
+  protected readonly simbolos = ["🍒", "🍋", "🍇", "🔔", "⭐", "💔"] as const;
+
+  protected readonly pagos = {
+    "🍒": 0.2,
+    "🍋": 0.25,
+    "🍇": 0.3,
+    "🔔": 0.35,
+    "⭐": 0.4,
+    "💔": 0.1,
   };
-  public constructor() {
-    super();
-    //todos los valores inicilizan en 0, despues se cambian en las clases hijas con un setter
-    this.apuestaMinima = 0;
-    this.apuestaMaxima = 0;
-    this.jugada = [];
-    this.simbolos = [];
-    this.ganancia = 0;
-    this.saldoInicial = 0;
-    this.apuesta = this.apuestaMinima;
-    this.nombreTragamonedas = "";
-  }
-  //setters----
-  //methods----
-  abstract ejecutar(jugador: Jugador): Promise<{
+
+  /**
+   *
+   * @param jugador
+   * @returns
+   */
+  async ejecutar(jugador: Jugador): Promise<{
     apuestaTotal: number;
     resultado: "victoria" | "derrota";
     ganancia?: number;
-  }>;
-  //----
-  protected simboloRandom() {
-    let i = Math.floor(Math.random() * this.simbolos.length);
-    return this.simbolos[i];
-  }
-  //----
-  protected contarOcurrencias(tirada: string[]): Record<string, number> {
-    const contador: Record<string, number> = {};
-
-    for (let i: number = 0; i < tirada.length; i++) {
-      contador[tirada[i]] = (contador[tirada[i]] || 0) + 1; //||0 + 1 valida que existe
+  }> {
+    // PUNTO DE ENTRADA AL JUEGO
+    // 1. Muestro primera pantalla
+    this.interface();
+    // 2. Pido apuesta al jugador
+    let apuesta = await this.obtenerApuesta(jugador);
+    // 3. Variable para guardar pozo acumulado.
+    let premioAcumulado = 0;
+    // 4. Chequear si la apuesta es 0, se sale.
+    if (!apuesta) {
+      return {
+        apuestaTotal: 0,
+        resultado: "derrota",
+      };
     }
-    return contador;
-  }
-  //----
-  protected calcularGanancia(tirada: string[], jugador: Jugador): number {
-    let contador = this.contarOcurrencias(tirada);
-    let gananciaTotal = 0;
-    for (const [simbolo, cantidadVeces] of Object.entries(contador)) {
-      if (cantidadVeces >= 3) {
-        const valorSimbolo = this.valores[simbolo];
-        gananciaTotal = this.apuesta + valorSimbolo * cantidadVeces;
+
+    // 5. Actualizar pantalla.
+    this.interface(apuesta, premioAcumulado, true);
+
+    // 6. Determino las variables para manejar la interaccion
+    // con el usuario.
+
+    let opciones = [
+      {
+        valor: "tirar",
+        nombre: "🎰 [Girar palanca]",
+      },
+      {
+        valor: "salir",
+        nombre: "↩️  [Salir del juego]",
+      },
+    ];
+
+    // 6. Comienza el ciclo de los 5 tiros x juego
+    for (let r = 0; r < this.tiros; r++) {
+      // 7. Actualizo pantalla para mostrar tiros restantes
+      this.interface(apuesta, premioAcumulado, false, r);
+      // 8. Giro la palanca
+      const tiro = await this.simularTiro();
+      // 9. Calculo ganancia
+      const gananciaRonda = this.calcularGanancias(tiro, apuesta);
+      // 9.a. Si hubo ganancia la sumo
+      if (gananciaRonda) {
+        premioAcumulado += gananciaRonda;
+        // 9.a.1 - ACTUALIZAR PANTALLA
+        this.interface(apuesta, premioAcumulado, false, r);
+        // 9.a.2 - Mostrar resultado de la ronda
+        this.resultadoRonda(tiro, gananciaRonda, "victoria");
+      } else {
+        // 9.b. Si no, achico pozo
+        const perdidaRonda = Math.floor(premioAcumulado * 0.4);
+        if (perdidaRonda >= premioAcumulado) {
+          premioAcumulado = 0;
+        } else {
+          premioAcumulado -= perdidaRonda;
+        }
+        // 9.b.1 - ACTUALIZAR PANTALLA
+        this.interface(apuesta, premioAcumulado, false, r);
+        // 9.b.2 - Mostrar resultado de la ronda
+        this.resultadoRonda(tiro, perdidaRonda, "derrota");
+      }
+
+      // 10. Salto de linea
+      console.log();
+      // 11. Chequeo si no es el ultimo tiro
+      if (r < this.tiros - 1) {
+        // 12. Pregunto al usuario
+        const opcion = await Menu.elegirOpcion(
+          "¿Que quieres hacer a continuación?",
+          opciones
+        );
+        // 13.
+        if (opcion === "salir") {
+          // 14.
+          const confirmacion = await Menu.pedirConfirmacion(
+            "¿Estás seguro de salir? Perderás todo lo apostado hasta ahora."
+          );
+          // 15.
+          if (confirmacion) {
+            await this.mostrarResultado("derrota", jugador, true, true);
+            return {
+              apuestaTotal: apuesta,
+              resultado: "derrota",
+            };
+          }
+        }
       }
     }
-    jugador.sumarSaldo(gananciaTotal);
-    if (gananciaTotal > 0) {
-      console.log("\n😃 Ganaste: ");
-    } else if (gananciaTotal === 0) {
-      console.log("\n😔 No hubo suerte esta vez:");
+
+    // 16. Si no gano nada, muestro resultado y retorno resultado de la jugada.
+    if (premioAcumulado === 0) {
+      // 17. Muestro resultado
+      await this.mostrarResultado("derrota", jugador, false, false);
+      // 18. Retorno a casino el resultado de la jugada.
+      return {
+        apuestaTotal: apuesta,
+        resultado: "derrota",
+      };
     }
-    return gananciaTotal;
-  }
-  //----
-  protected async tirada(cantidadRieles: number) {
-    const rieles = Array(cantidadRieles).fill(this.simbolos[0]);
 
-    for (let i = 0; i < rieles.length; i++) {
-      for (let j = 0; j < 15; j++) {
-        rieles[i] =
-          this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
-
-        process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
-
-        await new Promise((resolve) => setTimeout(resolve, 75));
-      }
-    }
-    this.jugada = rieles;
+    // 19. Si gano algo, sumo saldo al jugador
+    jugador.sumarSaldo(premioAcumulado);
+    // 20. Muestro resultado.
+    await this.mostrarResultado("victoria", jugador, false, false);
+    // 21. Retorno a casino el resultado de la jugada.
+    return {
+      apuestaTotal: apuesta,
+      resultado: "victoria",
+      ganancia: premioAcumulado,
+    };
   }
-  //----
-  protected async esperar(segundos: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, segundos * 1000));
-  }
-  //----
-  protected async pedirApuesta(jugador: Jugador) {
-    const montoApostado = await Menu.pedirNumero(
-      "Ingrese su apuesta [0: Para regresar]",
-      (apuesta) => {
-        // Primero valida que sea un numero
-        if (typeof apuesta === "number") {
-          // Si es numero
-          // chequea que lo ingresado no sea menor q la apuesta minima
-          // y distinto de 0
-          if (apuesta < 0) {
-            return "Debes ingresar un número válido.";
+
+  /**
+   *
+   * @param jugador
+   * @returns
+   */
+  private async obtenerApuesta(jugador: Jugador): Promise<number> {
+    const apuesta = await Menu.pedirNumero(
+      "¿Cúanto quieres apostar?  [0: Para salír]",
+      (entrada) => {
+        if (typeof entrada === "number") {
+          if (entrada !== 0 && entrada < this.apuestaMinima) {
+            return `El mínimo para apostar en la primer ronda es de ${this.apuestaMinima} por ronda.`;
           }
-          if (apuesta >= 1 && apuesta < this.apuestaMinima) {
-            return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
+
+          if (entrada > jugador.obtenerSaldo()) {
+            return `No cuentas con saldo suficiente para realizar esta apuesta. Tu saldo ${jugador.obtenerSaldo()}`;
           }
-          // despues, chequea que no supere la apuesta maxima
-          if (apuesta > this.apuestaMaxima) {
-            return `El monto ingresado (${apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`;
-          }
-          if (apuesta > jugador.obtenerSaldo()) {
-            return "Saldo insuficiente.";
-          }
+
+          jugador.restarSaldo(entrada);
+
           return true;
         } else {
           return "Debes ingresar un número válido.";
         }
       }
     );
-    if (montoApostado === 0) {
-      return this.apuesta;
-    }
-    return montoApostado;
+
+    return apuesta;
   }
-  //----
-  protected async interfaceTragamonedas(jugador: Jugador) {
-    console.clear();
-    console.log("========================================================");
-    console.log(
-      `                 🎰 ${this.nombreTragamonedas} 🎰                  `
-    );
-    console.log("========================================================");
-    console.log(
-      ` Bienvenido: ${jugador.obtenerNombre()}      🤑 Saldo: ${jugador.obtenerSaldo()}`
-    );
-    console.log("--------------------------------------------------------");
-  }
-  //----
-  protected async mostrarResultados(
-    resultado: "victoria" | "derrota",
-    jugador: Jugador
+
+  /**
+   *
+   * @param apuestaTotal
+   * @param premioTotal
+   * @param esPrimeraApuesta
+   * @param tiros
+   */
+  private async interface(
+    apuestaTotal?: number,
+    premioTotal?: number,
+    esPrimeraApuesta = true,
+    tiros: number = 0
   ) {
     console.clear();
-    if (resultado === "victoria") {
-      console.log("========================================================");
+    console.log("=======================================================");
+    console.log(`                   ${this.transformarNombre(this.nombre)}`);
+    console.log("=======================================================");
+    console.log(
+      `💰  Apuesta total: ${apuestaTotal ?? "--"}         🏆  Pozo acumulado: ${premioTotal ? premioTotal : "--"}`
+    );
+
+    console.log("=======================================================");
+
+    if (!esPrimeraApuesta) {
+      // Actualizo tiros restantes
       console.log(
-        `               🎰 ${this.nombreTragamonedas} 🎰                  `
+        `                   TIROS RESTANTES: ${this.tiros - tiros - 1}`
       );
-      console.log("              🥳 Felicidades, ganaste!! 🥳               ");
-      console.log("========================================================");
-      console.log("              Ganancia total: ", jugador.obtenerSaldo());
-      console.log("========================================================");
+      console.log("=======================================================");
+    }
+    console.log();
+  }
+
+  /** POLIMORFISMO */
+  protected async mostrarResultado(
+    resultado: "victoria" | "derrota",
+    jugador: Jugador,
+    limpiar: boolean = true,
+    salir: boolean = false
+  ): Promise<void> {
+    super.mostrarResultado(resultado, jugador, limpiar);
+    const opciones = [
+      {
+        valor: "jugar",
+        nombre: "🔁  Volver a jugar",
+        desactivada: jugador.obtenerSaldo() < this.apuestaMinima,
+      },
+      {
+        valor: "salir",
+        nombre: "↩️   Salir",
+      },
+    ];
+
+    // Si el usuario eligio salir, se muestra mensaje
+    // y se redirige automaticamente.
+    if (salir) {
+      // Conteo para volver al menu
+      for (let i = 5; i > 0; i--) {
+        if (i === 1) {
+          process.stdout.write(
+            `\r🔄  Seras redirigido al menu principal en ${i} segundo..`
+          );
+        } else {
+          process.stdout.write(
+            `\r🔄  Seras redirigido al menu principal en ${i} segundos..`
+          );
+        }
+        // Esperar 1 s
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     } else {
-      console.log("========================================================");
-      console.log(
-        `               🎰 ${this.nombreTragamonedas} 🎰                  `
+      // Si no, se muestran las opciones
+      const opcion = await Menu.elegirOpcion(
+        "¿Que quieres hacer a continuación?",
+        opciones
       );
-      console.log("                     💔 Perdiste 💔                      ");
-      console.log("========================================================");
-      console.log("                 ¡Mejor suerte la proxima!              ");
-      console.log("========================================================");
+
+      if (opcion === "jugar") {
+        // TODO: Agregar aqui la escritura de la partida en base de datos.
+        await this.ejecutar(jugador);
+      }
     }
   }
+
+  /**
+   *
+   * @param nombre
+   * @returns
+   */
+  private transformarNombre(nombre: string) {
+    // Separar nombre
+    const partes = nombre.split(" ");
+    // Extraer emoji del final
+    const emoji = partes.pop();
+    // Juntar solo texto
+    const texto = partes.join(" ");
+    // Retornar texto transformado
+    return `${emoji}  ${texto.toUpperCase()} ${emoji}`;
+  }
+
+  /** */
+  protected abstract resultadoRonda(
+    tiro: string[] | string[][],
+    monto: number,
+    tipo: "victoria" | "derrota"
+  ): void;
+
+  protected abstract simularTiro(): Promise<string[] | string[][]>;
+
+  /** */
+  protected abstract contarCoincidencias(tiro: string[] | string[][]):
+    | { simbolo: string; concurrencia: number }
+    | {
+        simbolo: string;
+        lugar: "columna" | "fila" | "diagonal";
+        concurrencia: number;
+      }[]
+    | { simbolo: string; lugar: "full" }
+    | null;
+
+  /** */
+  protected abstract calcularGanancias(
+    tiro: string[] | string[][],
+    apuesta: number
+  ): number;
 }
