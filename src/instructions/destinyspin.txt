@@ -14,10 +14,10 @@ Cuanto mejor sea la coincidencia, mayor será la ganancia.
 ==================================================================================  
 
 🎰 **Instrucciones para el Jugador:**  
-1️⃣ El Jugador realiza una apuesta inicial (al menos 50 unidades).  
-2️⃣ Luego puede girar la palanca o salir del juego en cada ronda.  
-3️⃣ El Jugador tiene 5 intentos para girar la palanca.  
-4️⃣ Cada giro muestra una combinación de 3 filas con 3 símbolos seleccionados aleatoriamente de entre:  
+1️⃣  El Jugador realiza una apuesta inicial (al menos 50 unidades).  
+2️⃣  Luego puede girar la palanca o salir del juego en cada ronda.  
+3️⃣  El Jugador tiene 5 intentos para girar la palanca.  
+4️⃣  Cada giro muestra una combinación de 3 filas con 3 símbolos seleccionados aleatoriamente de entre:  
    - 💔 → Ganancia: 10%
    - 🌈 → Ganancia: 10%
    - 🍒 → Ganancia: 20%  
@@ -26,7 +26,7 @@ Cuanto mejor sea la coincidencia, mayor será la ganancia.
    - 🔔 → Ganancia: 35%  
    - ⭐ → Ganancia: 40%  
 
-5️⃣ Las combinaciones de símbolos pueden generar ganancias dependiendo de su ubicación:  
+5️⃣  Las combinaciones de símbolos pueden generar ganancias dependiendo de su ubicación:  
    - **Fila completa:** Ganancia con un multiplicador de 1.25x.  
    - **Columna completa:** Ganancia con un multiplicador de 1.30x.  
    - **Diagonal completa:** Ganancia con un multiplicador de 1.50x.  
@@ -38,7 +38,7 @@ Cuanto mejor sea la coincidencia, mayor será la ganancia.
 
 ==================================================================================  
 
-⚖️ **Manejo de Ganancias y Pérdidas:**  
+⚖️  **Manejo de Ganancias y Pérdidas:**  
 - Si el Jugador obtiene una combinación ganadora, se le sumará la ganancia al pozo acumulado.  
 - Si el Jugador no obtiene ganancias, una parte del pozo acumulado se pierde.  
 - Al final de cada ronda, el Jugador puede elegir entre girar nuevamente o salir del juego.
