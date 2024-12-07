@@ -162,4 +162,15 @@ export class DeluxeCrazyDK extends Tragamonedas {
       ganancia: this.ganancia, // Si no hay ganancia, ganancia será 0
     };
   }
+
+  protected contarOcurrencias(tirada: string[]): Record<string, number> {
+    const contador: Record<string, number> = {};
+
+    for (let i: number = 1; i < tirada.length; i++) {
+      if (tirada[i] === tirada[i - 1]) {
+        contador[tirada[i]] = (contador[tirada[i]] || 0) + 1; // ||0 + 1 valida que existe
+      }
+    }
+    return contador;
+  }
 }
