@@ -9,7 +9,7 @@ export class Ruleta extends Juego {
   constructor() {
     super();
     this.apuestaMinima = 500;
-    this.instrucciones = this.leerInstrucciones("instruccionesRuleta.txt");
+    this.instrucciones = this.leerInstrucciones("ruleta.txt");
     this.tablero = {
       1: "rojo",
       2: "negro",
