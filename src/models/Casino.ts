@@ -10,8 +10,7 @@ import { Menu } from "../utils/Menu";
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
 import { LuckySpin } from "../games/LuckySpin";
-import { DeluxeCrazyDK } from "../games/tragamonedasA";
-import { DeluxeCachinEasyWin } from "../games/TragamonedasB";
+import { StairwaySpin } from "../games/DestinySpin";
 
 export class Casino {
   private jugador!: Jugador;
@@ -20,9 +19,8 @@ export class Casino {
 
   constructor() {
     this.juegos = [
-      { valor: "tragamonedas_A", nombre: "Lucky Spin 🛼" },
-      { valor: "tragamonedas_B_a", nombre: "Deluxe Crazy DK 🎰" },
-      { valor: "tragamonedas_b", nombre: "Deluxe Cachin EW 🎁" },
+      { valor: "tragamonedas_a", nombre: "Lucky Spin 🛼" },
+      { valor: "tragamonedas_b", nombre: "Destiny Spin 🌀" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
       { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
     ];
@@ -145,20 +143,17 @@ export class Casino {
       opciones
     );
     switch (opcionSeleccionada) {
-      case "tragamonedas_A":
-        // this.juego = new LuckySpin();
+      case "tragamonedas_a":
+        this.juego = new LuckySpin();
         break;
-      case "dados":
-        this.juego = new Dados();
+      case "tragamonedas_b":
+        this.juego = new StairwaySpin();
         break;
       case "ruleta":
         this.juego = new Ruleta();
         break;
-      case "tragamonedas_a":
-        this.juego = new DeluxeCrazyDK();
-        break;
-      case "tragamonedas_b":
-        this.juego = new DeluxeCachinEasyWin();
+      case "dados":
+        this.juego = new Dados();
         break;
       case "salir":
         break;
