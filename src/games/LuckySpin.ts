@@ -1,6 +1,7 @@
 import { Tragamonedas } from "../models/Tragamonedas";
 
 export class LuckySpin extends Tragamonedas {
+  private readonly comodin = "🤡";
   constructor() {
     super();
     this.nombre = "Lucky Spin 🛼";
@@ -8,6 +9,16 @@ export class LuckySpin extends Tragamonedas {
     this.apuestaMinima = 100;
   }
 
+  private simbolosConComodin() {
+    let simbolos = [];
+    for (const simbolo of this.simbolos) {
+      simbolos.push(simbolo);
+    }
+
+    simbolos.push(this.comodin);
+
+    return simbolos;
+  }
   /**
    *
    * @param tiro
@@ -21,11 +32,11 @@ export class LuckySpin extends Tragamonedas {
   ): void {
     if (tipo === "victoria") {
       console.log(
-        `                   [ ${tiro.join(" | ")} ]   😃 \x1b[32m+ $ ${monto}\x1b[0m`
+        `                | ${tiro.join(" | ")} |   😃 \x1b[32m+ $ ${monto}\x1b[0m`
       );
     } else {
       console.log(
-        `                   [ ${tiro.join(" | ")} ]   😔 \x1b[31m- $ ${monto}\x1b[0m`
+        `                | ${tiro.join(" | ")} |   😔 \x1b[31m- $ ${monto}\x1b[0m`
       );
     }
   }
@@ -35,16 +46,16 @@ export class LuckySpin extends Tragamonedas {
    * @returns
    */
   protected async simularTiro() {
-    const rieles = Array(3).fill(this.simbolos[0]);
+    const simbolos = this.simbolosConComodin();
+    const rieles = Array(5).fill(simbolos[0]);
 
     for (let i = 0; i < rieles.length; i++) {
-      for (let j = 0; j < 5; j++) {
-        rieles[i] =
-          this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
+      for (let j = 0; j < 15; j++) {
+        rieles[i] = simbolos[Math.floor(Math.random() * simbolos.length)];
 
-        process.stdout.write(`\r                   [ ${rieles.join(" | ")} ] `);
+        process.stdout.write(`\r                | ${rieles.join(" | ")} | `);
 
-        await new Promise((resolve) => setTimeout(resolve, 150));
+        await new Promise((resolve) => setTimeout(resolve, 75));
       }
     }
     return rieles;
@@ -61,18 +72,25 @@ export class LuckySpin extends Tragamonedas {
   } | null {
     // Creo un contador
     const contador: Record<string, number> = {};
-    // y lo lleno
+    // y una variable para contar los comodines
+    let comodines = 0;
+    // y las llenamos
     for (let i = 0; i < tiro.length; i++) {
-      contador[tiro[i]] = (contador[tiro[i]] || 0) + 1;
+      if (tiro[i] === this.comodin) {
+        comodines++;
+      } else {
+        contador[tiro[i]] = (contador[tiro[i]] || 0) + 1;
+      }
     }
-    // Lo recorro y veo que simbolo se repite 2 o 3 veces.
-    // Si un simbolo esta 2 veces no puede estar 3,
-    // pero un simbolo que esta 3 veces, esta 2 tambien.
+    // Lo recorro y veo que simbolo se repite 4 o 5 veces.
+    // Si un simbolo esta 4 veces no puede estar 5,
+    // pero un simbolo que esta 5 veces, esta 4 tambien.
     for (const [simbolo, concurrencia] of Object.entries(contador)) {
-      if (concurrencia >= 2) {
+      const total = concurrencia + comodines;
+      if (total >= 4) {
         return {
           simbolo,
-          concurrencia,
+          concurrencia: total,
         };
       }
     }
@@ -89,11 +107,11 @@ export class LuckySpin extends Tragamonedas {
     // 2. Chequeo si hubo alguna coincidencia
     if (resultado) {
       const simbolo = resultado.simbolo as (typeof this.simbolos)[number];
-      // Si el simbolo se repitio solo 2 veces, pago el 80% del multiplicador
-      if (resultado.concurrencia === 2) {
+      // Si el simbolo se repitio 4 veces, pago el 80% del multiplicador
+      if (resultado.concurrencia === 4) {
         return Math.floor(apuesta * this.pagos[simbolo] * 0.8);
       } else {
-        // Si se repitio 3 veces, pago el multiplicador completo
+        // Si se repitio 5 veces, pago el multiplicador completo
         return Math.floor(apuesta * this.pagos[simbolo]);
       }
     }
