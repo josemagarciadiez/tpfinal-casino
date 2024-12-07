@@ -67,10 +67,6 @@ export abstract class Tragamonedas extends Juego {
       if (cantidadVeces >= 3) {
         const valorSimbolo = this.valores[simbolo];
         gananciaTotal = this.apuesta + valorSimbolo * cantidadVeces;
-        //codigo auxiliar
-        console.log(valorSimbolo);
-        console.log(cantidadVeces);
-        console.log(this.apuesta);
       }
     }
     jugador.sumarSaldo(gananciaTotal);
@@ -100,12 +96,8 @@ export abstract class Tragamonedas extends Juego {
 
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
-      // rieles[i] =
-      // this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
-      // process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
     }
     this.jugada = rieles;
-    console.log(this.jugada);
   }
   //----
   protected async esperar(segundos: number): Promise<void> {
