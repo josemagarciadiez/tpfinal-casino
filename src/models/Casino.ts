@@ -6,9 +6,12 @@ import { Jugador } from "./Jugador";
 import { Menu } from "../utils/Menu";
 
 // Implementaciones de juegos
+
 import { Ruleta } from "../games/Ruleta";
 import { Dados } from "../games/Dados";
 import { LuckySpin } from "../games/LuckySpin";
+import { DeluxeCrazyDK } from "../games/tragamonedasA";
+import { DeluxeCachinEasyWin } from "../games/TragamonedasB";
 
 export class Casino {
   private jugador!: Jugador;
@@ -18,7 +21,8 @@ export class Casino {
   constructor() {
     this.juegos = [
       { valor: "tragamonedas_A", nombre: "Lucky Spin 🛼" },
-      { valor: "tragamonedas_B", nombre: "Deluxe Crazy DK 🎰" },
+      { valor: "tragamonedas_B_a", nombre: "Deluxe Crazy DK 🎰" },
+      { valor: "tragamonedas_b", nombre: "Deluxe Cachin EW 🎁" },
       { valor: "ruleta", nombre: "Devil's Roullette 🎡" },
       { valor: "dados", nombre: "Las Vegas's Roller Master 🎲" },
     ];
@@ -133,23 +137,28 @@ export class Casino {
 
     // Creamos opciones a partir del listado de juegos, y agregamos la
     // opcion de salir
-    const opciones = [...this.juegos, { valor: "salir", nombre: "Atras" }];
+    const opciones = [...this.juegos, { valor: "salir", nombre: "Atras  ↩️" }];
 
     // ... Menu para mostrar opciones de juego
     const opcionSeleccionada = await Menu.elegirOpcion(
       "Selecciona que juego quieres jugar",
       opciones
     );
-
     switch (opcionSeleccionada) {
       case "tragamonedas_A":
-        this.juego = new LuckySpin();
+        // this.juego = new LuckySpin();
         break;
       case "dados":
         this.juego = new Dados();
         break;
       case "ruleta":
         this.juego = new Ruleta();
+        break;
+      case "tragamonedas_a":
+        this.juego = new DeluxeCrazyDK();
+        break;
+      case "tragamonedas_b":
+        this.juego = new DeluxeCachinEasyWin();
         break;
       case "salir":
         break;

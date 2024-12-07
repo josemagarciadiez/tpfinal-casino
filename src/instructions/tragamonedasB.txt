@@ -1,0 +1,59 @@
+Instrucciones de Juego
+Objetivo
+El objetivo del juego es apostar dinero para realizar tiradas y ganar monedas acumulando combinaciones de símbolos iguales. Puedes ajustar tu apuesta dentro de los límites establecidos y decidir cuándo retirarte con las ganancias obtenidas o continuar apostando.
+
+Cómo jugar
+1. Inicio del juego
+Al comenzar, el jugador verá una interfaz que muestra su nombre y saldo actual.
+El jugador puede:
+Elegir un monto de apuesta.
+Realizar una tirada.
+Consultar las instrucciones.
+Retirarse del juego.
+2. Opciones principales
+Durante el juego, podrás seleccionar entre las siguientes acciones:
+
+🎰 Tirar:
+
+Realiza una tirada y consume el monto apostado de tu saldo.
+El juego generará una combinación aleatoria de símbolos. Si se repiten símbolos iguales, ganarás según el valor de cada símbolo y su cantidad.
+🎰 Cambiar apuesta:
+
+Ajusta tu monto de apuesta dentro de los valores permitidos:
+Apuesta mínima: $50
+Apuesta máxima: $750
+Recuerda que no puedes apostar más de tu saldo disponible.
+📜 Instrucciones:
+
+Consulta las reglas y objetivos del juego.
+Puedes decidir si continuar jugando o retirarte.
+🔙 Salir:
+
+Termina el juego y revisa tus resultados:
+Si tu saldo final es mayor al inicial: ¡Victoria!
+Si tu saldo final es menor al inicial: Derrota.
+Puedes salir del juego en cualquier momento.
+3. Reglas de las tiradas
+Cada tirada genera una combinación de 4 símbolos aleatorios entre los siguientes:
+
+🤴 Rey: Valor: 8
+🧙 Mago: Valor: 10
+🦄 Unicornio: Valor: 4
+👑 Corona: Valor: 9
+Condiciones de victoria:
+
+Si al menos 2 símbolos son iguales, ganas.
+La ganancia se calcula como:
+𝐺𝑎𝑛𝑎𝑛𝑐i𝑎=(Monto Apostado+Valor del Sımbolo)×Cantidad de Sımbolos IgualesGanancia=(Monto Apostado+Valor del S ımbolo)×Cantidad de S ıˊmbolos Iguales
+Sin símbolos repetidos: Pierdes la apuesta de esa tirada.
+
+Condiciones especiales
+Saldo insuficiente: Si tu saldo es menor a la apuesta mínima, el juego termina automáticamente.
+Ganancias acumuladas: Las ganancias se suman automáticamente a tu saldo.
+Salida anticipada: Si decides salir antes de terminar tu saldo, conservarás lo restante como tu ganancia.
+Ejemplo de una tirada
+Realizas una apuesta de $100.
+El resultado de la tirada es: 🤴 🤴 👑 🦄
+Hay 2 símbolos "🤴" iguales.
+La ganancia será:(100+8)×2=216(100+8)×2=216
+Recuperas $216 en tu saldo.
