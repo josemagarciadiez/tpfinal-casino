@@ -18,12 +18,13 @@ Cuanto mejor sea la coincidencia, mayor será la ganancia.
 2️⃣ Luego puede girar la palanca o salir del juego en cada ronda.  
 3️⃣ El Jugador tiene 5 intentos para girar la palanca.  
 4️⃣ Cada giro muestra una combinación de 3 filas con 3 símbolos seleccionados aleatoriamente de entre:  
+   - 💔 → Ganancia: 10%
+   - 🌈 → Ganancia: 10%
    - 🍒 → Ganancia: 20%  
    - 🍋 → Ganancia: 25%  
    - 🍇 → Ganancia: 30%  
    - 🔔 → Ganancia: 35%  
    - ⭐ → Ganancia: 40%  
-   - 💔 → Perdida de la apuesta.  
 
 5️⃣ Las combinaciones de símbolos pueden generar ganancias dependiendo de su ubicación:  
    - **Fila completa:** Ganancia con un multiplicador de 1.25x.  
