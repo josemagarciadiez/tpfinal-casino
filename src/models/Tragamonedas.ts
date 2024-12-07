@@ -1,8 +1,6 @@
 import { Juego } from "./Juego";
 import { Jugador } from "../models/Jugador";
 import { Menu } from "../utils/Menu";
-import { off } from "process";
-import { timeEnd } from "console";
 
 export abstract class Tragamonedas extends Juego {
   protected apuestaMaxima: number;
