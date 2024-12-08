@@ -21,8 +21,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
     ];
     this.jugada = [];
     this.apuesta = this.apuestaMinima;
-    this.ganancia = 0;
-    this.saldoInicial = 0;
+    this.saldoInicial = 0; //inicializa en 0 para sobreescribirse despues
     this.nombreTragamonedas = "Deluxe Cachin Easy Win";
     this.instrucciones = this.leerInstrucciones("tragamonedasB.txt");
   }
@@ -33,7 +32,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
     ganancia?: number;
   }> {
     let resultado: "victoria" | "derrota" = "derrota";
-    if (this.ganancia > 0) {
+    if (this.saldoInicial > 0) {
       resultado = "victoria";
     } else {
       resultado = "derrota";
@@ -117,7 +116,7 @@ export class DeluxeCachinEasyWin extends Tragamonedas {
     return {
       apuestaTotal: this.apuesta,
       resultado: resultado,
-      ganancia: this.ganancia, // Si no hay ganancia, ganancia será 0
+      ganancia: this.saldoInicial, // Si no hay ganancia, ganancia será 0
     };
   }
 }

@@ -7,15 +7,15 @@ export class DeluxeCrazyDK extends Tragamonedas {
     super();
     this.apuestaMinima = 100;
     this.apuestaMaxima = 1500;
-    this.simbolos = ["🐈", "🐕", "🌹", "🎄", "🍀", "🐞"];
+    this.simbolos = ["🐈", "🐕", "🌹", "🎄", "🍀", "🐞", "🌟"];
     this.jugada = [];
     this.apuesta = this.apuestaMinima; // Inicializa en 100 para evitar conflictos con apuestaMinima
-    this.ganancia = 0; // inicializa en 0 porque aun no hay ganancia
+    this.saldoInicial = 0; // inicializa en 0 porque aun no hay ganancia
     this.instrucciones = this.leerInstrucciones("tragamonedasA.txt");
     this.saldoInicial = 0; //inicializa en 0 para sobreescribirse cuando reciba saldo de jugador
     this.nombreTragamonedas = "Deluxe Crazy DK";
   }
-  private readonly tiros: number = 5;
+  private readonly tiros: number = 3;
 
   // Métodos
   async ejecutar(jugador: Jugador): Promise<{
@@ -24,7 +24,7 @@ export class DeluxeCrazyDK extends Tragamonedas {
     ganancia?: number;
   }> {
     let resultado: "victoria" | "derrota" = "derrota";
-    if (this.ganancia > 0) {
+    if (this.saldoInicial > 0) {
       resultado = "victoria";
     } else {
       resultado = "derrota";
@@ -159,7 +159,7 @@ export class DeluxeCrazyDK extends Tragamonedas {
     return {
       apuestaTotal: this.apuesta,
       resultado: resultado,
-      ganancia: this.ganancia, // Si no hay ganancia, ganancia será 0
+      ganancia: this.saldoInicial, // Si no hay ganancia, ganancia será 0
     };
   }
 }
