@@ -8,7 +8,6 @@ export abstract class Tragamonedas extends Juego {
   protected apuestaMinima: number;
   protected apuestaMaxima: number;
   protected jugada: string[];
-  protected ganancia: number;
   protected saldoInicial: number;
   protected apuesta: number;
   protected nombreTragamonedas: string;
@@ -24,109 +23,106 @@ export abstract class Tragamonedas extends Juego {
     "🎄": 30,
     "🍀": 50,
     "🐞": 90,
+    "🌟": 0, // Comodín
   };
+
   public constructor() {
     super();
-    //todos los valores inicilizan en 0, despues se cambian en las clases hijas con un setter
+    // Todos los valores inicializan en 0, después se cambian en las clases hijas con un setter
     this.apuestaMinima = 0;
     this.apuestaMaxima = 0;
     this.jugada = [];
     this.simbolos = [];
-    this.ganancia = 0;
     this.saldoInicial = 0;
     this.apuesta = this.apuestaMinima;
     this.nombreTragamonedas = "";
   }
-  //setters----
-  //methods----
+
+  // Métodos abstractos
   abstract ejecutar(jugador: Jugador): Promise<{
     apuestaTotal: number;
     resultado: "victoria" | "derrota";
     ganancia?: number;
   }>;
-  //----
+
+  // Métodos comunes
   protected simboloRandom() {
     let i = Math.floor(Math.random() * this.simbolos.length);
     return this.simbolos[i];
   }
-  //----
+
   protected contarOcurrencias(tirada: string[]): Record<string, number> {
     const contador: Record<string, number> = {};
 
-    // for (let i: number = 1; i < tirada.length; i++) {
-    //   if (tirada[i] === tirada[i - 1]) {
-    //     contador[tirada[i]] = (contador[tirada[i]] || 0) + 1; // ||0 + 1 valida que existe
-    //   }
-    // }
-
-    for (let i: number = 0; i < tirada.length; i++) {
-      contador[tirada[i]] = (contador[tirada[i]] || 0) + 1; //||0 + 1 valida que existe
+    for (let simbolo of tirada) {
+      contador[simbolo] = (contador[simbolo] || 0) + 1;
     }
+
     return contador;
   }
-  //----
+
   protected calcularGanancia(tirada: string[], jugador: Jugador): number {
     let contador = this.contarOcurrencias(tirada);
     let gananciaTotal = 0;
+    let tieneComodin = contador["🌟"] || 0;
+
     for (const [simbolo, cantidadVeces] of Object.entries(contador)) {
-      if (cantidadVeces >= 3) {
+      if (simbolo === "🌟") continue; // El comodín se maneja aparte
+
+      let cantidadFinal = cantidadVeces;
+
+      if (tieneComodin > 0) {
+        cantidadFinal += Math.min(tieneComodin, 3); // Máximo 3 comodines cuentan
+      }
+
+      if (cantidadFinal >= 3) {
         const valorSimbolo = this.valores[simbolo];
-        gananciaTotal = this.apuesta + valorSimbolo * cantidadVeces;
+        gananciaTotal += this.apuesta + valorSimbolo * cantidadFinal;
       }
     }
     jugador.sumarSaldo(gananciaTotal);
+
     if (gananciaTotal > 0) {
-      console.log("\n😃 Ganaste: ");
-    } else if (gananciaTotal === 0) {
-      console.log("\n😔 No hubo suerte esta vez:");
+      console.log("\n😃 Ganaste: ", gananciaTotal);
+    } else {
+      console.log("\n😔 No hubo suerte esta vez.");
     }
+
     return gananciaTotal;
   }
-  //----
+
   protected async tirada() {
-    const rieles = [
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-      this.simbolos[0],
-    ]; // Inicializamos con el primer simbolo
+    const rieles = Array(6).fill(this.simbolos[0]); // Inicializamos con el primer símbolo
+
     for (let i = 0; i < rieles.length; i++) {
       for (let j = 0; j < 4; j++) {
         rieles[i] =
           this.simbolos[Math.floor(Math.random() * this.simbolos.length)];
-
         process.stdout.write(`\r[ ${rieles.join(" | ")} ] `);
-
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
     }
+
     this.jugada = rieles;
   }
-  //----
+
   protected async esperar(segundos: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, segundos * 1000));
   }
-  //----
+
   protected async pedirApuesta(jugador: Jugador) {
     const montoApostado = await Menu.pedirNumero(
       "Ingrese su apuesta [0: Para regresar]",
       (apuesta) => {
-        // Primero valida que sea un numero
         if (typeof apuesta === "number") {
-          // Si es numero
-          // chequea que lo ingresado no sea menor q la apuesta minima
-          // y distinto de 0
           if (apuesta < 0) {
             return "Debes ingresar un número válido.";
           }
           if (apuesta >= 1 && apuesta < this.apuestaMinima) {
-            return `El monto ingresado (${apuesta}) es inferior al minimo requerido (${this.apuestaMinima})`;
+            return `El monto ingresado (${apuesta}) es inferior al mínimo requerido (${this.apuestaMinima})`;
           }
-          // despues, chequea que no supere la apuesta maxima
           if (apuesta > this.apuestaMaxima) {
-            return `El monto ingresado (${apuesta}) es superior al maximo permitido (${this.apuestaMaxima})`;
+            return `El monto ingresado (${apuesta}) es superior al máximo permitido (${this.apuestaMaxima})`;
           }
           if (apuesta > jugador.obtenerSaldo()) {
             return "Saldo insuficiente.";
@@ -137,12 +133,14 @@ export abstract class Tragamonedas extends Juego {
         }
       }
     );
+
     if (montoApostado === 0) {
       return this.apuesta;
     }
+
     return montoApostado;
   }
-  //----
+
   protected async interfaceTragamonedas(jugador: Jugador) {
     console.clear();
     console.log("========================================================");
@@ -155,7 +153,7 @@ export abstract class Tragamonedas extends Juego {
     );
     console.log("--------------------------------------------------------");
   }
-  //----
+
   protected async mostrarResultados(
     resultado: "victoria" | "derrota",
     jugador: Jugador
@@ -177,7 +175,7 @@ export abstract class Tragamonedas extends Juego {
       );
       console.log("                     💔 Perdiste 💔                      ");
       console.log("========================================================");
-      console.log("                 ¡Mejor suerte la proxima!              ");
+      console.log("                 ¡Mejor suerte la próxima!              ");
       console.log("========================================================");
     }
   }
